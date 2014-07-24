@@ -30,8 +30,10 @@ object Application extends Controller {
   def login = Action { implicit request =>
    loginForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.index(formWithErrors)),
-      user => { 
-        Ok(views.html.home(getUser(user._1, user._2)))
+      user => {
+        val userData  =  getUser(user._1, user._2)
+        val userToken =  java.util.UUID.randomUUID().toString() + userData.id.toString +userData.name
+        Ok(views.html.home(userData)).withSession("userSession" -> userToken.toString)
       }
     )
   }
