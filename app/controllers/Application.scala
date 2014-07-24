@@ -16,7 +16,7 @@ object Application extends Controller {
     tuple(
       "username" -> nonEmptyText,
 	  "password" -> nonEmptyText
-    ) verifying ("Invalid username or password", result => result match {
+	) verifying ("Invalid username or password", result => result match {
           case (username, password) => getUser(username, password) != null
     })
   ) 
@@ -30,8 +30,14 @@ object Application extends Controller {
   def login = Action { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.index(formWithErrors)),
-      user => Ok(views.html.home("Your new application is ready."))
+      user => Ok(views.html.home(new User(1,"MalcolmP","MalcolmP","MalcolmP")))
+      //user => Ok(views.html.home("Your new application is ready."))
     )
+  }
+  
+  //Logout Action
+  def logout = Action { implicit request =>
+    Ok(views.html.index(loginForm)).withNewSession.flashing("success" -> "You are now logged out.")
   }
   
   //Get User

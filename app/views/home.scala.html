@@ -1,5 +1,6 @@
-@(message: String)
+@import model._
+@(user: User)
 
 @main("genQuest App") {
-     home screen!
+     home screen! @user.firstName!
 }
