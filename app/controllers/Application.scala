@@ -28,10 +28,11 @@ object Application extends Controller {
   
   //Login Action
   def login = Action { implicit request =>
-    loginForm.bindFromRequest.fold(
+   loginForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.index(formWithErrors)),
-      user => Ok(views.html.home(new User(1,"MalcolmP","MalcolmP","MalcolmP")))
-      //user => Ok(views.html.home("Your new application is ready."))
+      user => { 
+        Ok(views.html.home(getUser(user._1, user._2)))
+      }
     )
   }
   

@@ -1,6 +1,5 @@
 @import model._
 @(user: User)
-
-@main("genQuest App") {
-     home screen! @user.firstName!
+@main(title = "genQuest Home Screen") {
+     home screen! @user.firstName! @user.lastName! @user.id
 }
