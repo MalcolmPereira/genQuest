@@ -49,12 +49,17 @@ class ApplicationSpec extends Specification {
   }
   
   "BCryptUtil" should {
-    "Should encrypt String " in {
+    "encrypt String " in {
         val encypted = BCryptUtil.create("malcolm")
         println(encypted)
     	println(BCryptUtil.check("malcolm","$2a$10$NeNjyd5AFIIsEB9VdWTp0Op339ewJFdh55EZ/0xFtupdm0r6ahO0q"))
         encypted must not be null
-    	
+    }
+    "decrypt and check String " in {
+        val encypted = BCryptUtil.create("malcolm")
+        println(encypted)
+    	println(BCryptUtil.check("malcolm","$2a$10$NeNjyd5AFIIsEB9VdWTp0Op339ewJFdh55EZ/0xFtupdm0r6ahO0q"))
+        encypted must not be null
     }
   }
 }
