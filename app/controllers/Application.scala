@@ -8,34 +8,35 @@ import scala.xml.XML
 import model.User
 import scala.xml.Elem
 import hashutil.BCryptUtil
+import play.api.data.validation.ValidationError
 
 object Application extends Controller {
-   val loginForm = Form(
-		   tuple(
-				  "username" -> text,
-				  "password" -> text
-			)
-  )
+  //Login Form
+  val loginForm = Form(
+    tuple(
+      "username" -> nonEmptyText,
+	  "password" -> nonEmptyText
+    ) verifying ("Invalid username or password", result => result match {
+          case (username, password) => getUser(username, password) != null
+    })
+  ) 
   
+  //Login Index Page
   def index = Action {
     Ok(views.html.index(loginForm))
   }
   
+  //Login Action
   def login = Action { implicit request =>
-    val (userName,userPassword) = loginForm.bindFromRequest.get
-    val loginNode = xml.XML.loadFile("conf/login.xml")
-    val user = checkLogin(loginNode, userName, userPassword)
-    if(user != null){
-       println(user.firstName)
-       println(user.lastName)
-       Ok(views.html.home("Your new application is ready."))
-    
-    }else{
-       Ok(views.html.index(loginForm))
-    }
+    loginForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(views.html.index(formWithErrors)),
+      user => Ok(views.html.home("Your new application is ready."))
+    )
   }
   
-  def checkLogin(loginNode: Elem, userName: String, userPassword: String) : User = {
+  //Get User
+  def getUser(userName: String, userPassword: String) : User = {
+     val loginNode = xml.XML.loadFile("conf/login.xml")
 	 loginNode match {
 	    case <users>{users @ _*}</users> => {
 	    	for (user <- users) {

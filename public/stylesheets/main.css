@@ -17,6 +17,30 @@ body {
     background-image: linear-gradient(top, #ebeef2, #393939);
 }
 
+.info, .success, .warning, .error, .validation {
+	border: 1px solid;
+	margin: 4px 0px;
+	padding:8px 10px 8px 5px;
+	background-repeat: no-repeat;
+	background-position: 10px center;
+}
+.info {
+	color: #00529B;
+	background-color: #BDE5F8;
+}
+.success {
+	color: #4F8A10;
+	background-color: #DFF2BF;
+}
+.warning {
+	color: #9F6000;
+	background-color: #FEEFB3;
+}
+.error {
+	color: #D8000C;
+	background-color: #FFBABA;
+}
+
 #login {
     background-color: #393939;
     background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#eee));

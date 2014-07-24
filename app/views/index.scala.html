@@ -1,6 +1,7 @@
 @(loginForm: Form[(String,String)])
 @import helper._
 
+
 @main(title = "Login") {
 	@helper.form(action = routes.Application.login, args='id -> "login") {
 		<fieldset id="inputs">
@@ -10,5 +11,8 @@
         <fieldset id="actions">
             <input type="submit" id="submit" value="Log in">
         </fieldset>	
+        @if(loginForm.hasErrors) {
+        	<div class="error">Invalid username or password</div>
+        }
 	}
 }
