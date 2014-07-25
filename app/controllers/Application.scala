@@ -38,6 +38,22 @@ object Application extends Controller {
     )
   }
   
+  def genQuest = Action { implicit request =>
+    request.session.get("userSession").map { userToken =>
+    	Ok(views.html.genQuest(userToken))
+    }.getOrElse {
+    	Unauthorized("Oops, you are not connected")
+    }
+  }
+  
+  def editQuest = Action { implicit request =>
+    request.session.get("userSession").map { userToken =>
+    	Ok(views.html.editQuest(userToken))
+    }.getOrElse {
+    	Unauthorized("Oops, you are not connected")
+    }
+  }
+  
   //Logout Action
   def logout = Action { implicit request =>
     Ok(views.html.index(loginForm)).withNewSession.flashing("success" -> "You are now logged out.")
