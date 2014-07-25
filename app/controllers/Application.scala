@@ -42,7 +42,7 @@ object Application extends Controller {
     request.session.get("userSession").map { userToken =>
     	Ok(views.html.genQuest(userToken))
     }.getOrElse {
-    	Unauthorized("Oops, you are not connected")
+    	Ok(views.html.index(loginForm)).withNewSession.flashing("success" -> "You are now logged out.")
     }
   }
   
@@ -50,7 +50,7 @@ object Application extends Controller {
     request.session.get("userSession").map { userToken =>
     	Ok(views.html.editQuest(userToken))
     }.getOrElse {
-    	Unauthorized("Oops, you are not connected")
+    	Ok(views.html.index(loginForm)).withNewSession.flashing("success" -> "You are now logged out.")
     }
   }
   
