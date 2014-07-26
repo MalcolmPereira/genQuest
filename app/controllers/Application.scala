@@ -75,23 +75,17 @@ object Application extends Controller {
   //Login Action
   def login = Action { 
 	  implicit request =>
-	  println("in lgin !!!")
-   		loginForm.bindFromRequest.fold(
-   		formWithErrors => BadRequest(views.html.index(categoryList(),null,loginForm)),
+	  	loginForm.bindFromRequest.fold(
+   		formWithErrors => BadRequest(views.html.index(categoryList(),null,formWithErrors)),
    	  	user => {
    		  Ok(views.html.index(categoryList,getUser(user._1, user._2),loginForm))
       }
     )
   }
   
-  
-  
-  
   //Logout Action
-  def logout = Action { 
-	//implicit request =>
-    //Ok(views.html.index(loginForm)).withNewSession.flashing("success" -> "You are now logged out.")
-	Ok(views.html.index(List(),null,loginForm))
+  def logout = Action {  implicit request =>
+	Ok(views.html.index(List(),null,loginForm)).withNewSession.flashing("success" -> "You are now logged out.")
   }
   
   //Get User
