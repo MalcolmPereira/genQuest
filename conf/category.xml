@@ -1,0 +1,12 @@
+<catrgories>
+	<category>
+		<categoryId>100001</categoryId>
+		<categoryName>Java</categoryName>
+		<categoryDescription>Core Java Questions</categoryDescription>
+	</category>	
+	<category>
+		<categoryId>100002</categoryId>
+		<categoryName>Spring</categoryName>
+		<categoryDescription>Core Spring Questions</categoryDescription>
+	</category>	
+</catrgories>

@@ -1,12 +1,16 @@
 html, body {
-    height: 100%;
+    min-height: 100%;
     font-size: 100%;
 	-webkit-text-size-adjust: 100%;
 	-ms-text-size-adjust: 100%;
 }
 
 body {
-    font: 12px 'Helvetica Neue', Arial, Helvetica;    
+	padding-top: 60px;
+	padding-bottom: 20px;
+	padding-left: 10px;
+	padding-right: 10px;
+	font: 12px 'Helvetica Neue', Arial, Helvetica;    
     margin: 0;
     background-color: #393939;
     background-image: -webkit-gradient(linear, left top, left bottom, from(#ebeef2), to(#d9dee2));

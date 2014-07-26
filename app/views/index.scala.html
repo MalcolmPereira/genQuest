@@ -1,18 +1,22 @@
-@(loginForm: Form[(String,String)])
-@import helper._
-
-
-@main(title = "Login") {
-	@helper.form(action = routes.Application.login, args='id -> "login") {
-		<fieldset id="inputs">
-			<input type="text"     id="username" name="username" placeholder="Username" autofocus required>   
-            <input type="password" id="password" name="password" placeholder="Password" required>
-		</fieldset>
-        <fieldset id="actions">
-            <input type="submit" id="submit" value="Log in" onclick="javascript:clearLoginError();">
-        </fieldset>	
-        @if(loginForm.hasErrors) {
-        	<div id="errorDiv" class="error">Invalid username or password</div>
-        }
-	}
+@import model._
+@(categories: List[Category],user: User,loginForm: Form[(String,String)])(implicit lang: Lang)
+@main(title = "Home",user,loginForm) {
+	<form class="form-horizontal" role="form" method="POST" action="@routes.Application.genQuest">
+		<div class="form-group form-group-sm">
+			<label class="control-label">Select Categories:</label> 
+			<a href="#"><small>Select All</small></a>	
+			<a href="#"><small>Unselect All</small></a>
+			<span class="help-block">Select categories below and click on the submit button to generate questions.</span>
+			@for(categoriesSubList <- categories.grouped(5).toList) {
+				<div class="row">
+					 @for(category <- categoriesSubList) {
+					  <div class="col-md-2">
+					 	 <input  type="checkbox" name="category@category.id" id="category@category.id" value="@category.id"/> <strong>@category.name</strong>
+					  </div>
+					 } 
+				</div>
+			}
+		</div>	
+		<button type="submit" class="btn btn-info btn-xs">Submit</button>	
+	</form>	
 }
