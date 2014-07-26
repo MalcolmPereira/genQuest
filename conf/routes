@@ -8,6 +8,7 @@ POST    /genQuest                   controllers.Application.genQuest
 POST    /login                      controllers.Application.login
 POST    /logout                     controllers.Application.logout
 GET     /register                   controllers.Application.register
+POST    /adduser                    controllers.Application.adduser
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

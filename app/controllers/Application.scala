@@ -118,6 +118,18 @@ object Application extends Controller {
 	   Ok(views.html.register(null,userDataForm))
   }	  
   
+  //REgister User
+  def adduser = Action {  implicit request => 
+	   	userDataForm.bindFromRequest.fold(
+    		formWithErrors => BadRequest(views.html.register(null,formWithErrors)),
+    	  	user => {
+ 		     val userData  =  getUser("malcolm", "malcolm")
+ 		     val userToken =  java.util.UUID.randomUUID().toString()+"GQ2014QG_"+userData.id.toString 	
+    		 Ok(views.html.index(categoryList,userData,loginForm)).withSession("userSession" -> userToken.toString)
+       }
+	   )
+  }	 
+  
   //Chec User Name
   def checkUserName(userName: String) : User = {
      val loginNode = xml.XML.loadFile("conf/login.xml")
