@@ -36,7 +36,7 @@
   		          <a class="navbar-brand" href="#">GenQuest</a>
 				</div>		
 				<div class="navbar-collapse collapse">
-					@if(user == null){
+					@if(user == null && loginForm != null){
 						<form class="navbar-form navbar-right" role="form" method="POST" action="@routes.Application.login">
 	  		            <div class="form-group">
 	  		              <input type="text"  name="username" placeholder="Username" class="form-control" autofocus required>
@@ -45,20 +45,28 @@
 	  		              <input type="password" name="password" placeholder="Password" class="form-control" required>
 	  		            </div>
 	  		            <button type="submit" class="btn btn-success btn-xs">Sign in</button>
-	  					<button type="button" class="btn btn-warning btn-xs">Register</button>
+	  					<button type="button" onclick="location.href='@routes.Application.register'" class="btn btn-warning btn-xs">Register</button>
 					   </form>
-					}else{
+					} else {
+						 @if(user != null ) {
 						<form class="navbar-form navbar-right" role="form" method="POST" action="@routes.Application.logout">
 						<span class="label label-success">Welcome @user.firstName @user.lastName</span>
 						<button type="submit" class="btn btn-danger btn-xs">Logout</button>
 					</form>
+					}else{
+						<form class="navbar-form navbar-right" role="form" method="POST" action="@routes.Application.logout">
+							<div class="form-group">
+					   <button type="submit" class="btn btn-warning btn-xs">Back</button>
+				   </div>
+				   </form>
+					}
 					}  
   		        </div>	
 				<!--/.navbar-collapse -->
 			</div>	
 		</div>	
 		<div class="container">
-			@if(loginForm.hasErrors) {
+			@if(loginForm != null && loginForm.hasErrors) {
 			  <div class="alert alert-danger">
 			      <a href="#" class="close" data-dismiss="alert">&times;</a>
 			      Invalid User Name / Password, Please register if you do not have a account yet.

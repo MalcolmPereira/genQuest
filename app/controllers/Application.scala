@@ -20,6 +20,17 @@ object Application extends Controller {
           case (username, password) => getUser(username, password) != null
     })
   ) 
+  //User Data Form
+  val userDataForm = Form(
+      tuple(
+        "username"  -> nonEmptyText,
+  	    "password"  -> nonEmptyText,
+		"firstname" -> nonEmptyText,
+		"lastName"  -> nonEmptyText
+  	  )verifying ("Invalid user details", result => result match {
+          case (username, password,firstname,lastName) => checkUserName(username) == null
+    })
+  )
   
   //Get Category TODO
   def categoryList() : List[Category]  = {
@@ -63,13 +74,25 @@ object Application extends Controller {
   }
   
   //Index Page
-  def index = Action {
-	 Ok(views.html.index(categoryList,null,loginForm))
+  def index = Action { implicit request =>
+	 if(request.session.get("userSession") != null ){
+		 val userID = request.session.get("userSession").toString.substring(request.session.get("userSession").toString.lastIndexOf("GQ2014QG_")+9).replace(")","")
+	     println("INDEX userID now"+userID.toInt)
+		 Ok(views.html.index(categoryList,getUser(userID.toInt),loginForm))
+		 }else{
+	      Ok(views.html.index(categoryList,null,loginForm))
+         }
   }
   
   //Generate Questions
   def genQuest = Action {  implicit request =>
+	 if(request.session.get("userSession") != null ){
+		 val userID = request.session.get("userSession").toString.substring(request.session.get("userSession").toString.lastIndexOf("GQ2014QG_")+9).replace(")","")
+	     println("GEN QUEST userID now"+userID.toInt+" Get USer "+getUser(userID.toInt))
+		 Ok(views.html.genQuest(questionList,getUser(userID.toInt),loginForm))
+		 }else{
 	  Ok(views.html.genQuest(questionList,null,loginForm))
+      }
   }
   
   //Login Action
@@ -78,7 +101,9 @@ object Application extends Controller {
 	  	loginForm.bindFromRequest.fold(
    		formWithErrors => BadRequest(views.html.index(categoryList(),null,formWithErrors)),
    	  	user => {
-   		  Ok(views.html.index(categoryList,getUser(user._1, user._2),loginForm))
+		  val userData  =  getUser(user._1, user._2)
+		  val userToken =  java.util.UUID.randomUUID().toString()+"GQ2014QG_"+userData.id.toString 	
+   		  Ok(views.html.index(categoryList,userData,loginForm)).withSession("userSession" -> userToken.toString)
       }
     )
   }
@@ -88,6 +113,31 @@ object Application extends Controller {
 	Ok(views.html.index(List(),null,loginForm)).withNewSession.flashing("success" -> "You are now logged out.")
   }
   
+  //REgister User
+  def register = Action {  implicit request => 
+	   Ok(views.html.register(null,userDataForm))
+  }	  
+  
+  //Chec User Name
+  def checkUserName(userName: String) : User = {
+     val loginNode = xml.XML.loadFile("conf/login.xml")
+	 loginNode match {
+	    case <users>{users @ _*}</users> => {
+	    	for (user <- users) {
+	    	  if((user \"userName").text == userName){
+	    		   return new User(
+	    			  (user \"userID").text.toInt,
+	    			  (user \"userName").text,
+	    			  (user \"userFirstName").text,
+	    			  (user \"userLastName").text
+	    		  )
+	    	  }
+	    	}
+	    	null
+	    }
+	 }
+  }
+  
   //Get User
   def getUser(userName: String, userPassword: String) : User = {
      val loginNode = xml.XML.loadFile("conf/login.xml")
@@ -95,6 +145,28 @@ object Application extends Controller {
 	    case <users>{users @ _*}</users> => {
 	    	for (user <- users) {
 	    	  if((user \"userName").text == userName && BCryptUtil.check(userPassword,(user \"userPassword").text)){
+	    		   return new User(
+	    			  (user \"userID").text.toInt,
+	    			  (user \"userName").text,
+	    			  (user \"userFirstName").text,
+	    			  (user \"userLastName").text
+	    		  )
+	    	  }
+	    	}
+	    	null
+	    }
+	 }
+  }
+  
+  //Get User
+  def getUser(userId: Integer) : User = {
+     val loginNode = xml.XML.loadFile("conf/login.xml")
+	 loginNode match {
+	    case <users>{users @ _*}</users> => {
+	    	for (user <- users) {
+				println("GOT userId "+userId)
+				println("GOT (user userID).text "+(user \"userID").text)
+	    	  if((user \"userID").text.trim.length > 0 &&  (user \"userID").text.toInt == userId){
 	    		   return new User(
 	    			  (user \"userID").text.toInt,
 	    			  (user \"userName").text,
