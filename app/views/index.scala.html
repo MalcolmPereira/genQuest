@@ -6,7 +6,7 @@
 			<label class="control-label">Select Categories:</label> 
 			<a href="#"><small>Select All</small></a>	
 			<a href="#"><small>Unselect All</small></a>
-			<span class="help-block">Select categories below and click on the submit button to generate questions.</span>
+			<span class="help-block">Select categories below and click on the submit button to generate questions. @if(user != null){Click on Edit Category button to edit/add category. Click on Edit Questions button to edit/add questions.}</span>
 			@for(categoriesSubList <- categories.grouped(5).toList) {
 				<div class="row">
 					 @for(category <- categoriesSubList) {
@@ -18,5 +18,9 @@
 			}
 		</div>	
 		<button type="submit" class="btn btn-info btn-xs">Submit</button>	
+		@if(user != null){
+			<button type="button" class="btn btn-info btn-xs">Edit Category</button>
+			<button type="button" class="btn btn-info btn-xs">Edit Questions</button>	
+		}	
 	</form>	
 }

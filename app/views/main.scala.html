@@ -30,7 +30,7 @@
   		            <span class="icon-bar"></span>
   		            <span class="icon-bar"></span>
   		          </button>
-  		          <a class="navbar-brand" href="/">GenQuest</a>
+  		          <a class="navbar-brand" href="#">GenQuest</a>
 				</div>		
 				<div class="navbar-collapse collapse">
   		          	@if(user == null){
@@ -46,8 +46,8 @@
 					   </form>
 					}else{
 						<form class="navbar-form navbar-right" role="form" method="POST" action="@routes.Application.logout">
-						Welcome @user.firstName @user.lastName
-						<button type="submit" class="btn btn-success btn-xs">Logout</button>
+						<span class="label label-success">Welcome @user.firstName @user.lastName</span>
+						<button type="submit" class="btn btn-danger btn-xs">Logout</button>
 					</form>
 					}  
   		        </div>	
