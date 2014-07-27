@@ -1,7 +1,14 @@
 @import model._
 @(user: User,userDataForm: Form[(String,String,String,String)])(implicit lang: Lang)
 @main(title = "Register",null,null) {
-	
+	<div class="container">
+		@if(userDataForm != null && userDataForm.hasErrors) {
+		  <div class="alert alert-danger">
+		      <a href="#" class="close" data-dismiss="alert">&times;</a>
+		       User Name already exists please choose another user name.
+		  </div>
+		}
+	</div>
 	<form class="form-horizontal" role="form" method="POST" action="@routes.Application.adduser">
 		<div class="form-group col-lg-7">
 			<label for="username">User Name:</label>
