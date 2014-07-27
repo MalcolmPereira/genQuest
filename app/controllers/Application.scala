@@ -76,7 +76,7 @@ object Application extends Controller {
   //Index Page
   def index = Action { implicit request =>
 	 request.session.get("userSession").map { userID =>
-		 Ok(views.html.index(categoryList,getUser(userID.substring(userID.lastIndexOf("GQ2014QG_")+9).replace(")","").toInt),loginForm))
+		 Ok(views.html.index(categoryList,getUser(userID.substring(userID.lastIndexOf("GQ2014QG-")+9).replace(")","").toInt),loginForm))
 	 }.getOrElse {
 		  Ok(views.html.index(categoryList,null,loginForm))
 	 }	 
@@ -85,7 +85,7 @@ object Application extends Controller {
   //Generate Questions
   def genQuest = Action {  implicit request =>
  	 request.session.get("userSession").map { userID =>
- 	    Ok(views.html.genQuest(questionList,getUser(userID.substring(userID.lastIndexOf("GQ2014QG_")+9).replace(")","").toInt),loginForm))
+ 	    Ok(views.html.genQuest(questionList,getUser(userID.substring(userID.lastIndexOf("GQ2014QG-")+9).replace(")","").toInt),loginForm))
  	 }.getOrElse {
  		  Ok(views.html.genQuest(questionList,null,loginForm))
  	 }	 
@@ -98,7 +98,7 @@ object Application extends Controller {
    		formWithErrors => BadRequest(views.html.index(categoryList(),null,formWithErrors)),
    	  	user => {
 		  val userData  =  getUser(user._1, user._2)
-		  val userToken =  java.util.UUID.randomUUID().toString()+"GQ2014QG_"+userData.id.toString 	
+		  val userToken =  java.util.UUID.randomUUID().toString()+"GQ2014QG-"+userData.id.toString 	
    		  Ok(views.html.index(categoryList,userData,loginForm)).withSession("userSession" -> userToken.toString)
       }
     )
@@ -120,7 +120,7 @@ object Application extends Controller {
     		formWithErrors => BadRequest(views.html.register(null,formWithErrors)),
     	  	user => {
  		     val userData  =  getUser("malcolm", "malcolm")
- 		     val userToken =  java.util.UUID.randomUUID().toString()+"GQ2014QG_"+userData.id.toString 	
+ 		     val userToken =  java.util.UUID.randomUUID().toString()+"GQ2014QG-"+userData.id.toString 	
     		 Ok(views.html.index(categoryList,userData,loginForm)).withSession("userSession" -> userToken.toString)
        }
 	   )
