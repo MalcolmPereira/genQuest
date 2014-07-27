@@ -7,7 +7,10 @@ import play.api.data.Forms._
 import scala.xml.XML
 import model._
 import scala.xml.Elem
+import scala.xml.NodeSeq
+import scala.xml.Node
 import hashutil.BCryptUtil
+import hashutil.IDGenerator
 import play.api.data.validation.ValidationError
 
 object Application extends Controller {
@@ -119,12 +122,32 @@ object Application extends Controller {
 	   	userDataForm.bindFromRequest.fold(
     		formWithErrors => BadRequest(views.html.register(null,formWithErrors)),
     	  	user => {
- 		     val userData  =  getUser("malcolm", "malcolm")
+				
+			 val nodeString   = "<user><userID>"+IDGenerator.next+
+			                    "</userID><userName>"+user._1+
+								"</userName><userPassword>"+BCryptUtil.create(user._2)+
+								"</userPassword><userFirstName>"+user._3+
+								"</userFirstName><userLastName>"+user._4+
+								"</userLastName></user>"
+			 val nodeXML =xml.XML.loadString(nodeString)				
+			 val loginNode = xml.XML.loadFile("conf/login.xml")
+			 println(loginNode)
+			 val loginNodeUpdated = addChild(loginNode, nodeXML)
+			 println(loginNodeUpdated)
+			 xml.XML.save("conf/login.xml", loginNodeUpdated, "UTF-8", false, null)
+				
+ 		     val userData  =  getUser(user._1, user._2)
  		     val userToken =  java.util.UUID.randomUUID().toString()+"GQ2014QG-"+userData.id.toString 	
     		 Ok(views.html.index(categoryList,userData,loginForm)).withSession("userSession" -> userToken.toString)
        }
 	   )
   }	 
+  
+  def addChild(n: Node, newChild: Node) = n match {
+    case Elem(prefix, label, attribs, scope, child @ _*) =>
+      Elem(prefix, label, attribs, scope, child ++ newChild : _*)
+    case _ => error("Can only add children to elements!")
+  }
   
   //Chec User Name
   def checkUserName(userName: String) : User = {
@@ -172,9 +195,7 @@ object Application extends Controller {
 	 loginNode match {
 	    case <users>{users @ _*}</users> => {
 	    	for (user <- users) {
-				println("GOT userId "+userId)
-				println("GOT (user userID).text "+(user \"userID").text)
-	    	  if((user \"userID").text.trim.length > 0 &&  (user \"userID").text.toInt == userId){
+			  if((user \"userID").text.trim.length > 0 &&  (user \"userID").text.toInt == userId){
 	    		   return new User(
 	    			  (user \"userID").text.toInt,
 	    			  (user \"userName").text,
