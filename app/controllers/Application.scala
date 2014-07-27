@@ -75,24 +75,20 @@ object Application extends Controller {
   
   //Index Page
   def index = Action { implicit request =>
-	 if(request.session.get("userSession") != null ){
-		 val userID = request.session.get("userSession").toString.substring(request.session.get("userSession").toString.lastIndexOf("GQ2014QG_")+9).replace(")","")
-	     println("INDEX userID now"+userID.toInt)
-		 Ok(views.html.index(categoryList,getUser(userID.toInt),loginForm))
-		 }else{
-	      Ok(views.html.index(categoryList,null,loginForm))
-         }
-  }
+	 request.session.get("userSession").map { userID =>
+		 Ok(views.html.index(categoryList,getUser(userID.substring(userID.lastIndexOf("GQ2014QG_")+9).replace(")","").toInt),loginForm))
+	 }.getOrElse {
+		  Ok(views.html.index(categoryList,null,loginForm))
+	 }	 
+   }
   
   //Generate Questions
   def genQuest = Action {  implicit request =>
-	 if(request.session.get("userSession") != null ){
-		 val userID = request.session.get("userSession").toString.substring(request.session.get("userSession").toString.lastIndexOf("GQ2014QG_")+9).replace(")","")
-	     println("GEN QUEST userID now"+userID.toInt+" Get USer "+getUser(userID.toInt))
-		 Ok(views.html.genQuest(questionList,getUser(userID.toInt),loginForm))
-		 }else{
-	  Ok(views.html.genQuest(questionList,null,loginForm))
-      }
+ 	 request.session.get("userSession").map { userID =>
+ 	    Ok(views.html.genQuest(questionList,getUser(userID.substring(userID.lastIndexOf("GQ2014QG_")+9).replace(")","").toInt),loginForm))
+ 	 }.getOrElse {
+ 		  Ok(views.html.genQuest(questionList,null,loginForm))
+ 	 }	 
   }
   
   //Login Action
