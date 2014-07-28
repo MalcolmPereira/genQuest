@@ -7,14 +7,14 @@
 	<form class="form-horizontal" role="form" method="POST" action="@routes.Application.genQuest">
 		<div class="form-group form-group-sm">
 			<label class="control-label">Select Categories:</label> 
-			<a href="#"><small>Select All</small></a>	
-			<a href="#"><small>Unselect All</small></a>
+			<a href="#" id="selecctall"><small>Select All</small></a>	
+			<a href="#" id="unselecctall"><small>Unselect All</small></a>
 			<span class="help-block">Select categories below and click on the submit button to generate questions. @if(user != null){Click on Edit Category button to edit/add category. Click on Edit Questions button to edit/add questions.}</span>
 			@for(categoriesSubList <- categories.grouped(5).toList) {
 				<div class="row">
 					 @for(category <- categoriesSubList) {
 					  <div class="col-md-2">
-					 	 <input  type="checkbox" name="category@category.id" id="category@category.id" value="@category.id"/> <strong>@category.name</strong>
+					 	 <input  class="checkbox1" type="checkbox" name="category@category.id" id="category@category.id" value="@category.id"/> <strong>@category.name</strong>
 					  </div>
 					 } 
 				</div>
