@@ -8,15 +8,15 @@ function clearLoginError() {
 }
 
 $(document).ready(function() {
-    $('#selecctall').click(function(event) {  //on click 
-        $('.checkbox1').each(function() { //loop through each checkbox
-                this.checked = true;  //select all checkboxes with class "checkbox1"               
-        });
+    $('#selectall').click(function(event) {   
+       if(this.checked) { 
+        	$('.checkbox1').each(function() { 
+            	    this.checked = true;                 
+        	});
+       }else{
+       		$('.checkbox1').each(function() { 
+                this.checked = false;                 
+        	});
+       } 	
     });
-    $('#unselecctall').click(function(event) {  //on click 
-        $('.checkbox1').each(function() { //loop through each checkbox
-                this.checked = false;  //select all checkboxes with class "checkbox1"               
-        });
-    });
-	
 });
