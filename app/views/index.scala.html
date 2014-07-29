@@ -1,29 +1,40 @@
 @import model._
-@(categories: List[Category],user: User,loginForm: Form[(String,String)])(implicit lang: Lang)
+@(categories: List[Category],user: User,loginForm: Form[(String,String)], selectedCategoryForm: Form[List[Int]])(implicit flash: Flash)
 @main(title = "Home",user,loginForm) {
+	<div class="container">
+		@if(selectedCategoryForm != null && selectedCategoryForm.hasErrors) {
+		  <div class="alert alert-danger">
+		      <a href="#" class="close" data-dismiss="alert">&times;</a>
+		       Please select at least one category before submitting.
+		  </div>
+		}
+	</div>
 	<div class="page-header">
 		<h1>Generate Questions</h1>
 	</div>	
 	<form class="form-horizontal" role="form" method="POST" action="@routes.Application.genQuest">
 		<div class="form-group form-group-sm">
 			<label class="control-label">Select Categories:</label> 
-			<a href="#" id="selecctall"><small>Select All</small></a>	
-			<a href="#" id="unselecctall"><small>Unselect All</small></a>
 			<span class="help-block">Select categories below and click on the submit button to generate questions. @if(user != null){Click on Edit Category button to edit/add category. Click on Edit Questions button to edit/add questions.}</span>
+			<input type="checkbox" id="selectall"/><label>Select All</label>
+			<br/><br/>
+			
 			@for(categoriesSubList <- categories.grouped(5).toList) {
 				<div class="row">
 					 @for(category <- categoriesSubList) {
 					  <div class="col-md-2">
-					 	 <input  class="checkbox1" type="checkbox" name="category@category.id" id="category@category.id" value="@category.id"/> <strong>@category.name</strong>
+					 	 <input  class="checkbox1" type="checkbox" name="categoryCheckBox[@category.id]" id="category@category.id" value="@category.id"/> <strong>@category.name</strong>
 					  </div>
 					 } 
 				</div>
 			}
+			<br/><br/>	
+			<button type="submit" class="btn btn-info btn-sm">Submit</button>	
+			@if(user != null){
+				<button type="button" class="btn btn-info btn-sm">Edit Category</button>
+				<button type="button" class="btn btn-info btn-sm">Edit Questions</button>	
+			}
 		</div>	
-		<button type="submit" class="btn btn-info btn-xs">Submit</button>	
-		@if(user != null){
-			<button type="button" class="btn btn-info btn-xs">Edit Category</button>
-			<button type="button" class="btn btn-info btn-xs">Edit Questions</button>	
-		}	
+		
 	</form>	
 }

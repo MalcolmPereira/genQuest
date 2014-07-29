@@ -34,6 +34,15 @@ object Application extends Controller {
           case (username, password,firstname,lastName) => checkUserName(username) == null
     })
   )
+  //Select Category Form
+  val selectedCategoryForm = Form(
+     single(
+          "categoryCheckBox" -> list(number) 
+     )verifying ("Invalid username or password", result => result match {
+            case (categoryCheckBox) => categoryCheckBox != null && categoryCheckBox.length > 0
+     })
+  )
+  
   
   //Get Category TODO
   def categoryList() : List[Category]  = {
@@ -58,7 +67,6 @@ object Application extends Controller {
 	  		  new Category(18, "Test 18","WS Cate")
 	  	)
   }
-  
   //Get Questions TODO
   def questionList() : List[Question] = {
 	  List(
@@ -79,37 +87,53 @@ object Application extends Controller {
   //Index Page
   def index = Action { implicit request =>
 	 request.session.get("userSession").map { userID =>
-		 Ok(views.html.index(categoryList,getUser(userID.substring(userID.lastIndexOf("GQ2014QG-")+9).replace(")","").toInt),loginForm))
+		 Ok(views.html.index(categoryList,getUser(userID.substring(userID.lastIndexOf("GQ2014QG-")+9).replace(")","").toInt),loginForm,selectedCategoryForm))
 	 }.getOrElse {
-		  Ok(views.html.index(categoryList,null,loginForm))
+		  Ok(views.html.index(categoryList,null,loginForm,selectedCategoryForm))
 	 }	 
    }
   
   //Generate Questions
   def genQuest = Action {  implicit request =>
- 	 request.session.get("userSession").map { userID =>
- 	    Ok(views.html.genQuest(questionList,getUser(userID.substring(userID.lastIndexOf("GQ2014QG-")+9).replace(")","").toInt),loginForm))
- 	 }.getOrElse {
- 		  Ok(views.html.genQuest(questionList,null,loginForm))
- 	 }	 
+	  var userTokenStr = "0"
+	  if(request.session.get("userSession").isDefined){
+	     userTokenStr = request.session.get("userSession").get
+		 userTokenStr = userTokenStr.substring(userTokenStr.lastIndexOf("GQ2014QG-")+9)
+	  }
+	  selectedCategoryForm.bindFromRequest.fold(
+		formWithErrors => {
+			BadRequest(views.html.index(categoryList, getUser(userTokenStr.toInt),loginForm,formWithErrors))
+		}	
+		,
+		success => {
+	 	   Ok(views.html.genQuest(questionList, getUser(userTokenStr.toInt),loginForm))
+ 		}	
+	  )		 
+	  
+	 
+	 //request.session.get("userSession").map { userID =>
+ 	 //   Ok(views.html.genQuest(questionList,getUser(userID.substring(userID.lastIndexOf("GQ2014QG-")+9).replace(")","").toInt),loginForm))
+ 	 //}.getOrElse {
+ 	 //	  Ok(views.html.genQuest(questionList,null,loginForm))
+ 	 //}	 
   }
   
   //Login Action
   def login = Action { 
 	  implicit request =>
 	  	loginForm.bindFromRequest.fold(
-   		formWithErrors => BadRequest(views.html.index(categoryList(),null,formWithErrors)),
+   		formWithErrors => BadRequest(views.html.index(categoryList(),null,formWithErrors,selectedCategoryForm)),
    	  	user => {
 		  val userData  =  getUser(user._1, user._2)
 		  val userToken =  java.util.UUID.randomUUID().toString()+"GQ2014QG-"+userData.id.toString 	
-   		  Ok(views.html.index(categoryList,userData,loginForm)).withSession("userSession" -> userToken.toString)
+   		  Ok(views.html.index(categoryList,userData,loginForm,selectedCategoryForm)).withSession("userSession" -> userToken.toString)
       }
     )
   }
   
   //Logout Action
   def logout = Action {  implicit request =>
-	Ok(views.html.index(List(),null,loginForm)).withNewSession.flashing("success" -> "You are now logged out.")
+	Ok(views.html.index(List(),null,loginForm,selectedCategoryForm)).withNewSession.flashing("success" -> "You are now logged out.")
   }
   
   //REgister User
@@ -138,7 +162,7 @@ object Application extends Controller {
 				
  		     val userData  =  getUser(user._1, user._2)
  		     val userToken =  java.util.UUID.randomUUID().toString()+"GQ2014QG-"+userData.id.toString 	
-    		 Ok(views.html.index(categoryList,userData,loginForm)).withSession("userSession" -> userToken.toString)
+    		 Ok(views.html.index(categoryList,userData,loginForm,selectedCategoryForm)).withSession("userSession" -> userToken.toString)
        }
 	   )
   }	 
