@@ -117,10 +117,10 @@ object Application extends Controller {
           "</userPassword><userFirstName>"+user._3+
           "</userFirstName><userLastName>"+user._4+
           "</userLastName></user>"
-        val nodeXML           = xml.XML.loadString(nodeString)
-        val loginNode         = xml.XML.loadFile("conf/login.xml")
+        val nodeXML           = scala.xml.XML.loadString(nodeString)
+        val loginNode         = scala.xml.XML.loadFile("conf/login.xml")
         val loginNodeUpdated  = addChild(loginNode, nodeXML)
-        xml.XML.save("conf/login.xml", loginNodeUpdated, "UTF-8", false, null)
+        scala.xml.XML.save("conf/login.xml", loginNodeUpdated, "UTF-8", false, null)
 
         val userData  =  getUser(user._1, user._2)
         val header    = views.html.header(loginForm,userData.id.toString,userData.firstName,userData.lastName)
@@ -209,7 +209,7 @@ object Application extends Controller {
   
 
   def checkUserName(userName: String) : User = {
-     val loginNode = xml.XML.loadFile("conf/login.xml")
+     val loginNode = scala.xml.XML.loadFile("conf/login.xml")
 	 loginNode match {
 	    case <users>{users @ _*}</users> => {
 	    	for (user <- users) {
@@ -229,7 +229,7 @@ object Application extends Controller {
   
   //Get User
   def getUser(userName: String, userPassword: String) : User = {
-     val loginNode = xml.XML.loadFile("conf/login.xml")
+     val loginNode = scala.xml.XML.loadFile("conf/login.xml")
 	 loginNode match {
 	    case <users>{users @ _*}</users> => {
 	    	for (user <- users) {
@@ -249,7 +249,7 @@ object Application extends Controller {
   
   //Get User
   def getUser(userId: Integer) : User = {
-     val loginNode = xml.XML.loadFile("conf/login.xml")
+     val loginNode = scala.xml.XML.loadFile("conf/login.xml")
 	 loginNode match {
 	    case <users>{users @ _*}</users> => {
 	    	for (user <- users) {
