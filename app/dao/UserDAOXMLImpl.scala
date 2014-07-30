@@ -118,12 +118,31 @@ object UserDAOXMLImpl extends UserDAO {
       userID
   }
 
-  def addChild(n: Node, newChild: Node) = n match {
+  override def updateUser(userval: User): User = {
+      val loginNode = scala.xml.XML.loadFile("conf/login.xml")
+      loginNode match {
+          case <users>{users @ _*}</users> => {
+              for (user <- users) {
+                  if((user \"userID").text.trim.length > 0 &&  (user \"userID").text.trim.toInt == userval.id){
+                    println("user is "+user)
+                      //user match {
+                      //  case <userPassword>{ ch @ _* }</userPassword> => <userPassword>{BCryptUtil.create(userval.password)}</userPassword>
+                      //  case <userFirstName>{ ch @ _* }</userFirstName> => <userFirstName>{userval.firstName}</userFirstName>
+                      //  case <userLastName>{ ch @ _* }</userLastName> => <userLastName>{userval.lastName}</userLastName>
+                      //}
+                  }
+              }
+          }
+      }
+      userval
+  }
+
+  private def addChild(n: Node, newChild: Node) = n match {
     case Elem(prefix, label, attribs, scope, child @ _*) =>
       Elem(prefix, label, attribs, scope, true, child ++ newChild : _*)
   }
 
   //override def deleteUser(user: User): Int = ???
 
-  //override def updateUser(user: User): Int = ???
+
 }

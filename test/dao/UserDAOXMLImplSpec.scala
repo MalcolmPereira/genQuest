@@ -6,6 +6,7 @@ import model.User
 
 class UserDAOXMLImplSpec extends FlatSpec {
 
+  /*
   "UserDAO " should " Return all users " in {
     assert(UserDAOXMLImpl.listUsers != null)
     assert(UserDAOXMLImpl.listUsers.size > 0 )
@@ -44,5 +45,12 @@ class UserDAOXMLImplSpec extends FlatSpec {
   "UserDAO " should " add new user " in {
     assert(UserDAOXMLImpl.addUser(new User(0,"newuser","newuser","newuser firstname", "new user lastname")) > 0)
   }
+  */
+  "UserDAO " should " update user " in {
+    val user = new User(10003,"sometest","malcolm","new name", "new name")
+    UserDAOXMLImpl.updateUser(user)
+    assert(true)
+  }
+
 
 }

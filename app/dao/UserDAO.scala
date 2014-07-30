@@ -7,6 +7,6 @@ trait UserDAO {
     def findUser(userName: String): User
     def findUser(userId: Integer): User
     def addUser(user: User): Long
-    //def updateUser(user: User): Int
+    def updateUser(user: User): User
     //def deleteUser(user: User): Int
 }
