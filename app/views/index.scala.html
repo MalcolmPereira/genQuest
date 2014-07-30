@@ -15,7 +15,7 @@
 	<form class="form-horizontal" role="form" method="POST" action="@routes.Application.genQuest">
 		<div class="form-group form-group-sm">
 			<label class="control-label">Select Categories:</label> 
-			<span class="help-block">Select categories below and click on the submit button to generate questions. @if(userID == null || userID.length == 0){Click on Edit Category button to edit/add category. Click on Edit Questions button to edit/add questions.}</span>
+			<span class="help-block">Select categories below and click on the submit button to generate questions. @if(userID != null &&  userID.length > 0){Click on Edit Category button to edit/add category. Click on Edit Questions button to edit/add questions.}</span>
 			<input type="checkbox" id="selectall"/><label>Select All</label>
 			<br/><br/>
 			
@@ -30,7 +30,7 @@
 			}
 			<br/><br/>	
 			<button type="submit" class="btn btn-info btn-sm">Submit</button>	
-			@if(userID == null || userID.length == 0){
+			@if(userID != null &&  userID.length > 0){
 				<button type="button" class="btn btn-info btn-sm">Edit Category</button>
 				<button type="button" class="btn btn-info btn-sm">Edit Questions</button>	
 			}
