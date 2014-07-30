@@ -1,5 +1,5 @@
 @(loginForm: Form[(String,String)], userID: String, userFirstName:String, userLastName:String)
-@if(userID == null || userID.length == 0){
+@if(userID == null || userID.trim.length == 0){
 	<form class="navbar-form navbar-right" role="form" method="POST" action="@routes.Application.login">
 	  	<div class="form-group">
 	  		<input type="text"  name="username" placeholder="Username" class="form-control" autofocus required>
@@ -11,7 +11,16 @@
 	  	<button type="button" onclick="location.href='@routes.Application.register'" class="btn btn-warning btn-xs">Register</button>
 	</form>
 } else {
-	<form class="navbar-form navbar-right" role="form" method="POST" action="@routes.Application.logout">
+    <ul class="nav navbar-nav navbar-left">
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><strong>Options </strong><span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+               <li><a href="#">Edit Category</a></li>
+               <li><a href="#">Edit Questions</a></li>
+            </ul>
+        </li>
+    </ul>
+    <form class="navbar-form navbar-right" role="form" method="POST" action="@routes.Application.logout">
 	    <span class="label label-success">Welcome @userFirstName @userLastName</span>
 	    <button type="submit" class="btn btn-danger btn-xs">Logout</button>
     </form>

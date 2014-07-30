@@ -1,5 +1,5 @@
 @import model._
-@(categories: List[Category],selectedCategoryForm: Form[List[Int]],userID: String,header:Html,errorStr: String)
+@(categories: List[Category],selectedCategoryForm: Form[List[Int]],header:Html,errorStr: String)
 @main(header,errorStr) {
 	<div class="page-header">
 		<h1>Generate Questions</h1>
@@ -7,7 +7,7 @@
 	<form class="form-horizontal" role="form" method="POST" action="@routes.Application.genQuest">
 		<div class="form-group form-group-sm">
 			<label class="control-label">Select Categories:</label> 
-			<span class="help-block">Select categories below and click on the submit button to generate questions. @if(userID != null &&  userID.length > 0){Click on Edit Category button to edit/add category. Click on Edit Questions button to edit/add questions.}</span>
+			<span class="help-block">Select categories below and click on the submit button to generate questions.</span>
 			<input type="checkbox" id="selectall"/><label>Select All</label>
 			<br/><br/>
 			@for(categoriesSubList <- categories.grouped(5).toList) {
@@ -21,10 +21,6 @@
 			}
 			<br/><br/>	
 			<button type="submit" class="btn btn-info btn-sm">Submit</button>	
-			@if(userID != null &&  userID.length > 0){
-				<button type="button" class="btn btn-info btn-sm">Edit Category</button>
-				<button type="button" class="btn btn-info btn-sm">Edit Questions</button>	
-			}
-		</div>	
+		</div>
 	</form>
 }

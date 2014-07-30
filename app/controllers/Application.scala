@@ -4,6 +4,7 @@ import play.api._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
+import play.twirl.api.Html
 import scala.xml.XML
 import model._
 import scala.xml.Elem
@@ -83,49 +84,38 @@ object Application extends Controller {
 	  		  new Question(11, "Java","Java Cate","question","answer")
 	  	  )
   }
-  
+
+  def getHeader()(implicit request: RequestHeader) : Html = {
+    var userID = ""
+    var userFirstName = ""
+    var userLastName = ""
+    if(request.session.get("userID").isDefined ){
+      userID = request.session.get("userID").get
+    }
+    if(request.session.get("userFirstName").isDefined ){
+      userFirstName = request.session.get("userFirstName").get
+    }
+    if(request.session.get("userLastName").isDefined ){
+      userLastName = request.session.get("userLastName").get
+    }
+    return views.html.header(loginForm,userID,userFirstName,userLastName)
+  }
+
   //Index Page
   def index = Action { implicit request =>
-	  var userID = ""
-	  var userFirstName = ""
-	  var userLastName = ""
-	  if(request.session.get("userID").isDefined ){
-	     userID = request.session.get("userID").get
-	  }
-	  if(request.session.get("userFirstName").isDefined ){
-	     userFirstName = request.session.get("userFirstName").get
-	  }
-	  if(request.session.get("userLastName").isDefined ){
-	     userLastName = request.session.get("userLastName").get
-	  }
-	  val header = views.html.header(loginForm,userID,userFirstName,userLastName)   
-	  Ok(views.html.index(categoryList,selectedCategoryForm,userID,header,""))
-   }
-  
+	  Ok(views.html.index(categoryList,selectedCategoryForm,getHeader(),""))
+  }
+
   //Generate Questions
   def genQuest = Action {  implicit request =>
-	  var userID = ""
-	  var userFirstName = ""
-	  var userLastName = ""
-	  if(request.session.get("userID").isDefined ){
-	     userID = request.session.get("userID").get
-	  }
-	  if(request.session.get("userFirstName").isDefined ){
-	     userFirstName = request.session.get("userFirstName").get
-	  }
-	  if(request.session.get("userLastName").isDefined ){
-	     userLastName = request.session.get("userLastName").get
-	  }
-	  val header   = views.html.header(loginForm,userID,userFirstName,userLastName)
-    val errorStr = "Please select at least one category before submitting."
-	  
+	  val errorStr = "Please select at least one category before submitting."
 	  selectedCategoryForm.bindFromRequest.fold(
-		formWithErrors => {
-			BadRequest(views.html.index(categoryList, formWithErrors,userID,header,errorStr))
+		  formWithErrors => {
+			  BadRequest(views.html.index(categoryList, formWithErrors,getHeader(),errorStr))
 		}	
 		,
 		success => {
-	 	   Ok(views.html.genQuest(questionList, header,""))
+	 	   Ok(views.html.genQuest(questionList, getHeader(),""))
  		}	
 	  )		 
   }
@@ -135,14 +125,13 @@ object Application extends Controller {
 	  implicit request =>
 	  	loginForm.bindFromRequest.fold(
    		formWithErrors => {
-			val header = views.html.header(formWithErrors,"","","")
-      val errorStr = "Invalid User Name / Password, Please register if you do not have a account yet."
-			BadRequest(views.html.index(categoryList,selectedCategoryForm,"",header,errorStr))
+			val errorStr = "Invalid User Name / Password, Please register if you do not have a account yet."
+			BadRequest(views.html.index(categoryList,selectedCategoryForm,getHeader(),errorStr))
 		}	,
    	  	user => {
 		  val userData  =  getUser(user._1, user._2)
-		  val header = views.html.header(loginForm,userData.id.toString,userData.firstName,userData.lastName) 
-		  Ok(views.html.index(categoryList,selectedCategoryForm,userData.id.toString,header,"")).withSession(
+		  val header = views.html.header(loginForm,userData.id.toString,userData.firstName,userData.lastName)
+		  Ok(views.html.index(categoryList,selectedCategoryForm,header,"")).withSession(
 			  "userID" -> userData.id.toString,
 			  "userFirstName" -> userData.firstName,
 			  "userLastName" -> userData.lastName
@@ -153,8 +142,8 @@ object Application extends Controller {
   
   //Logout Action
   def logout = Action {  implicit request =>
-	val header = views.html.header(loginForm,null,null,null) 
-	Ok(views.html.index(categoryList,selectedCategoryForm,null,header,"")).withNewSession
+    val header = views.html.header(loginForm,null,null,null)
+	  Ok(views.html.index(categoryList,selectedCategoryForm,header,"")).withNewSession
   }
   
   //Register User
@@ -188,7 +177,7 @@ object Application extends Controller {
 				
  		     val userData  =  getUser(user._1, user._2)
    		  	 val header = views.html.header(loginForm,userData.id.toString,userData.firstName,userData.lastName) 
-   		     Ok(views.html.index(categoryList,selectedCategoryForm,userData.id.toString,header,"")).withSession(
+   		     Ok(views.html.index(categoryList,selectedCategoryForm,header,"")).withSession(
    			  "userID" -> userData.id.toString,
    			  "userFirstName" -> userData.firstName,
    			  "userLastName" -> userData.lastName
