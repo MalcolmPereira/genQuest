@@ -6,7 +6,7 @@ import org.junit.runner._
 import play.api.test._
 import play.api.test.Helpers._
 
-import hashutil.BCryptUtil
+import util.BCryptUtil
 
 /**
  * Add your spec here.

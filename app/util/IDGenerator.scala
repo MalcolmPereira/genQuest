@@ -1,4 +1,4 @@
-package hashutil
+package util
 
 object IDGenerator {
   private val n = new java.util.concurrent.atomic.AtomicLong(getLastUserID())

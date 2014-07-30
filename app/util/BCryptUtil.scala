@@ -1,4 +1,4 @@
-package hashutil
+package util
 
 import org.mindrot.jbcrypt.BCrypt;
 

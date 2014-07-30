@@ -7,8 +7,8 @@ import play.twirl.api.Html
 import model._
 import scala.xml.Elem
 import scala.xml.Node
-import hashutil.BCryptUtil
-import hashutil.IDGenerator
+import util.BCryptUtil
+import util.IDGenerator
 
 object Application extends Controller {
 
