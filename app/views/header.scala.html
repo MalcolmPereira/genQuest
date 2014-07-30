@@ -1,0 +1,35 @@
+@(loginForm: Form[(String,String)], userID: String, userFirstName:String, userLastName:String)
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+	<div class="container">
+				<div class="navbar-header">
+  		          <a class="navbar-brand" href="#">GenQuest</a>
+				</div>		
+				<div class="navbar-collapse collapse">
+					@if(userID == null || userID.length == 0){
+						<form class="navbar-form navbar-right" role="form" method="POST" action="@routes.Application.login">
+	  		            <div class="form-group">
+	  		              <input type="text"  name="username" placeholder="Username" class="form-control" autofocus required>
+	  		            </div>
+	  		            <div class="form-group">
+	  		              <input type="password" name="password" placeholder="Password" class="form-control" required>
+	  		            </div>
+	  		            <button type="submit" class="btn btn-success btn-xs">Sign in</button>
+	  					<button type="button" onclick="location.href='@routes.Application.register'" class="btn btn-warning btn-xs">Register</button>
+					   </form>
+					} else {
+						<form class="navbar-form navbar-right" role="form" method="POST" action="@routes.Application.logout">
+						<span class="label label-success">Welcome @userFirstName @userLastName</span>
+						<button type="submit" class="btn btn-danger btn-xs">Logout</button>
+					</form>
+					}
+  		        </div>	
+			</div>	
+		</div>	
+		<div class="container">
+			@if(loginForm != null && loginForm.hasErrors) {
+			  <div class="alert alert-danger">
+			      <a href="#" class="close" data-dismiss="alert">&times;</a>
+			      Invalid User Name / Password, Please register if you do not have a account yet.
+			  </div>
+			}
+		</div>

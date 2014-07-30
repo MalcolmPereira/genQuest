@@ -1,7 +1,6 @@
 @import model._
-@(questions: List[Question],user: User,loginForm: Form[(String,String)])(implicit lang: Lang)
-
-@main(title = "genQuest Screen",user,loginForm) {
+@(questions: List[Question],header:Html)
+@main(header) {
  <div class="container">
    <form class="form-horizontal" role="form" method="GET" action="@routes.Application.index">	 
    		<button type="submit" class="btn btn-info btn-xs">Generate Again</button>	

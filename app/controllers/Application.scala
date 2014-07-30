@@ -86,65 +86,88 @@ object Application extends Controller {
   
   //Index Page
   def index = Action { implicit request =>
-	 request.session.get("userSession").map { userID =>
-		 Ok(views.html.index(categoryList,getUser(userID.substring(userID.lastIndexOf("GQ2014QG-")+9).replace(")","").toInt),loginForm,selectedCategoryForm))
-	 }.getOrElse {
-		  Ok(views.html.index(categoryList,null,loginForm,selectedCategoryForm))
-	 }	 
+	  var userID = ""
+	  var userFirstName = ""
+	  var userLastName = ""
+	  if(request.session.get("userID").isDefined ){
+	     userID = request.session.get("userID").get
+	  }
+	  if(request.session.get("userFirstName").isDefined ){
+	     userFirstName = request.session.get("userFirstName").get
+	  }
+	  if(request.session.get("userLastName").isDefined ){
+	     userLastName = request.session.get("userLastName").get
+	  }
+	  val header = views.html.header(loginForm,userID,userFirstName,userLastName)   
+	  Ok(views.html.index(categoryList,selectedCategoryForm,userID,header))
    }
   
   //Generate Questions
   def genQuest = Action {  implicit request =>
-	  var userTokenStr = "0"
-	  if(request.session.get("userSession").isDefined){
-	     userTokenStr = request.session.get("userSession").get
-		 userTokenStr = userTokenStr.substring(userTokenStr.lastIndexOf("GQ2014QG-")+9)
+	  var userID = ""
+	  var userFirstName = ""
+	  var userLastName = ""
+	  if(request.session.get("userID").isDefined ){
+	     userID = request.session.get("userID").get
 	  }
+	  if(request.session.get("userFirstName").isDefined ){
+	     userFirstName = request.session.get("userFirstName").get
+	  }
+	  if(request.session.get("userLastName").isDefined ){
+	     userLastName = request.session.get("userLastName").get
+	  }
+	  val header = views.html.header(loginForm,userID,userFirstName,userLastName)  
+	  
 	  selectedCategoryForm.bindFromRequest.fold(
 		formWithErrors => {
-			BadRequest(views.html.index(categoryList, getUser(userTokenStr.toInt),loginForm,formWithErrors))
+			BadRequest(views.html.index(categoryList, formWithErrors,userID,header))
 		}	
 		,
 		success => {
-	 	   Ok(views.html.genQuest(questionList, getUser(userTokenStr.toInt),loginForm))
+	 	   Ok(views.html.genQuest(questionList, header))
  		}	
 	  )		 
-	  
-	 
-	 //request.session.get("userSession").map { userID =>
- 	 //   Ok(views.html.genQuest(questionList,getUser(userID.substring(userID.lastIndexOf("GQ2014QG-")+9).replace(")","").toInt),loginForm))
- 	 //}.getOrElse {
- 	 //	  Ok(views.html.genQuest(questionList,null,loginForm))
- 	 //}	 
   }
   
   //Login Action
   def login = Action { 
 	  implicit request =>
 	  	loginForm.bindFromRequest.fold(
-   		formWithErrors => BadRequest(views.html.index(categoryList(),null,formWithErrors,selectedCategoryForm)),
+   		formWithErrors => {
+			val header = views.html.header(formWithErrors,"","","")  
+			BadRequest(views.html.index(categoryList,selectedCategoryForm,"",header))
+		}	,
    	  	user => {
 		  val userData  =  getUser(user._1, user._2)
-		  val userToken =  java.util.UUID.randomUUID().toString()+"GQ2014QG-"+userData.id.toString 	
-   		  Ok(views.html.index(categoryList,userData,loginForm,selectedCategoryForm)).withSession("userSession" -> userToken.toString)
+		  val header = views.html.header(loginForm,userData.id.toString,userData.firstName,userData.lastName) 
+		  Ok(views.html.index(categoryList,selectedCategoryForm,userData.id.toString,header)).withSession(
+			  "userID" -> userData.id.toString,
+			  "userFirstName" -> userData.firstName,
+			  "userLastName" -> userData.lastName
+		  )
       }
     )
   }
   
   //Logout Action
   def logout = Action {  implicit request =>
-	Ok(views.html.index(List(),null,loginForm,selectedCategoryForm)).withNewSession.flashing("success" -> "You are now logged out.")
+	val header = views.html.header(loginForm,null,null,null) 
+	Ok(views.html.index(categoryList,selectedCategoryForm,null,header)).withNewSession
   }
   
-  //REgister User
+  //Register User
   def register = Action {  implicit request => 
-	   Ok(views.html.register(null,userDataForm))
+	   val header = views.html.registerheader() 
+	   Ok(views.html.register(userDataForm,header))
   }	  
   
   //REgister User
   def adduser = Action {  implicit request => 
 	   	userDataForm.bindFromRequest.fold(
-    		formWithErrors => BadRequest(views.html.register(null,formWithErrors)),
+    		formWithErrors => {
+				val header = views.html.registerheader() 
+				BadRequest(views.html.register(formWithErrors,header)).withNewSession
+			}	,
     	  	user => {
 				
 			 val nodeString   = "<user><userID>"+IDGenerator.next+
@@ -161,9 +184,13 @@ object Application extends Controller {
 			 xml.XML.save("conf/login.xml", loginNodeUpdated, "UTF-8", false, null)
 				
  		     val userData  =  getUser(user._1, user._2)
- 		     val userToken =  java.util.UUID.randomUUID().toString()+"GQ2014QG-"+userData.id.toString 	
-    		 Ok(views.html.index(categoryList,userData,loginForm,selectedCategoryForm)).withSession("userSession" -> userToken.toString)
-       }
+   		  	 val header = views.html.header(loginForm,userData.id.toString,userData.firstName,userData.lastName) 
+   		     Ok(views.html.index(categoryList,selectedCategoryForm,userData.id.toString,header)).withSession(
+   			  "userID" -> userData.id.toString,
+   			  "userFirstName" -> userData.firstName,
+   			  "userLastName" -> userData.lastName
+   		     )
+			}
 	   )
   }	 
   
