@@ -1,29 +1,29 @@
 @import model._
-@(questions: List[Question],header:Html)
-@main(header) {
+@(questions: List[Question],header:Html,errorStr: String)
+@main(header,errorStr) {
  <div class="container">
-   <form class="form-horizontal" role="form" method="GET" action="@routes.Application.index">	 
-   		<button type="submit" class="btn btn-info btn-xs">Generate Again</button>
-        <br/><br/>
-   <div class="table-responsive">
-	    @for(question <- questions) {
-   			<table class="table table-hover">
-				<tr class="active">
-					<th>Question Name: @question.name</th>
-				</tr>
-				<tr class="active">
-					<th>Question Description: @question.description</th>
-				</tr>	
-				<tr class="active">
-					<td>@question.question</td>
-				</tr>
-				<tr class="active">
-					<td>@question.answer</td>
-				</tr>
-			</table>
-		}		
-   </div>
-       <button type="submit" class="btn btn-info btn-xs">Generate Again</button>
-   </form>
+        <form class="form-horizontal" role="form" method="GET" action="@routes.Application.index">
+   		    <button type="submit" class="btn btn-info btn-xs">Generate Again</button>
+            <br/><br/>
+            <div class="table-responsive">
+	            @for(question <- questions) {
+   			        <table class="table table-hover">
+				        <tr class="active">
+					        <th>Question Name: @question.name</th>
+				        </tr>
+				        <tr class="active">
+					        <th>Question Description: @question.description</th>
+				        </tr>
+				        <tr class="active">
+					        <td>@question.question</td>
+				        </tr>
+				        <tr class="active">
+					        <td>@question.answer</td>
+				        </tr>
+			        </table>
+		        }
+            </div>
+            <button type="submit" class="btn btn-info btn-xs">Generate Again</button>
+        </form>
 </div>   
 }

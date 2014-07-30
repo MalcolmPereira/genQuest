@@ -1,14 +1,6 @@
 @import model._
-@(userDataForm: Form[(String,String,String,String)],header:Html)
-@main(header) {
-	<div class="container">
-		@if(userDataForm != null && userDataForm.hasErrors) {
-		  <div class="alert alert-danger">
-		      <a href="#" class="close" data-dismiss="alert">&times;</a>
-		       User Name already exists please choose another user name.
-		  </div>
-		}
-	</div>
+@(userDataForm: Form[(String,String,String,String)],header:Html,errorStr: String)
+@main(header,errorStr) {
 	<div class="page-header">
 		<h1>Register User</h1>
 	</div>
@@ -29,10 +21,9 @@
 			<label for="username">User Last Name:</label>
 			<input type="text" name="lastName" maxlength="50" class="form-control" id="lastName" placeholder="Last Name" required>
 		</div>
-			<div class="form-group col-lg-7">
-				<button type="submit" class="btn btn-info btn-xs">Submit</button>
-				<button type="reset" class="btn btn-info btn-xs">Reset</button>
+		<div class="form-group col-lg-7">
+			<button type="submit" class="btn btn-info btn-xs">Submit</button>
+			<button type="reset" class="btn btn-info btn-xs">Reset</button>
 		</div>
 	</form>
-		
 }

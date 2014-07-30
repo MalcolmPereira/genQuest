@@ -1,14 +1,6 @@
 @import model._
-@(categories: List[Category],selectedCategoryForm: Form[List[Int]],userID: String,header:Html)
-@main(header) {
-	<div class="container">
-		@if(selectedCategoryForm != null && selectedCategoryForm.hasErrors) {
-		  <div class="alert alert-danger">
-		      <a href="#" class="close" data-dismiss="alert">&times;</a>
-		       Please select at least one category before submitting.
-		  </div>
-		}
-	</div>
+@(categories: List[Category],selectedCategoryForm: Form[List[Int]],userID: String,header:Html,errorStr: String)
+@main(header,errorStr) {
 	<div class="page-header">
 		<h1>Generate Questions</h1>
 	</div>	
@@ -18,7 +10,6 @@
 			<span class="help-block">Select categories below and click on the submit button to generate questions. @if(userID != null &&  userID.length > 0){Click on Edit Category button to edit/add category. Click on Edit Questions button to edit/add questions.}</span>
 			<input type="checkbox" id="selectall"/><label>Select All</label>
 			<br/><br/>
-			
 			@for(categoriesSubList <- categories.grouped(5).toList) {
 				<div class="row">
 					 @for(category <- categoriesSubList) {
@@ -35,6 +26,5 @@
 				<button type="button" class="btn btn-info btn-sm">Edit Questions</button>	
 			}
 		</div>	
-		
-	</form>	
+	</form>
 }

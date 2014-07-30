@@ -99,7 +99,7 @@ object Application extends Controller {
 	     userLastName = request.session.get("userLastName").get
 	  }
 	  val header = views.html.header(loginForm,userID,userFirstName,userLastName)   
-	  Ok(views.html.index(categoryList,selectedCategoryForm,userID,header))
+	  Ok(views.html.index(categoryList,selectedCategoryForm,userID,header,""))
    }
   
   //Generate Questions
@@ -116,15 +116,16 @@ object Application extends Controller {
 	  if(request.session.get("userLastName").isDefined ){
 	     userLastName = request.session.get("userLastName").get
 	  }
-	  val header = views.html.header(loginForm,userID,userFirstName,userLastName)  
+	  val header   = views.html.header(loginForm,userID,userFirstName,userLastName)
+    val errorStr = "Please select at least one category before submitting."
 	  
 	  selectedCategoryForm.bindFromRequest.fold(
 		formWithErrors => {
-			BadRequest(views.html.index(categoryList, formWithErrors,userID,header))
+			BadRequest(views.html.index(categoryList, formWithErrors,userID,header,errorStr))
 		}	
 		,
 		success => {
-	 	   Ok(views.html.genQuest(questionList, header))
+	 	   Ok(views.html.genQuest(questionList, header,""))
  		}	
 	  )		 
   }
@@ -134,13 +135,14 @@ object Application extends Controller {
 	  implicit request =>
 	  	loginForm.bindFromRequest.fold(
    		formWithErrors => {
-			val header = views.html.header(formWithErrors,"","","")  
-			BadRequest(views.html.index(categoryList,selectedCategoryForm,"",header))
+			val header = views.html.header(formWithErrors,"","","")
+      val errorStr = "Invalid User Name / Password, Please register if you do not have a account yet."
+			BadRequest(views.html.index(categoryList,selectedCategoryForm,"",header,errorStr))
 		}	,
    	  	user => {
 		  val userData  =  getUser(user._1, user._2)
 		  val header = views.html.header(loginForm,userData.id.toString,userData.firstName,userData.lastName) 
-		  Ok(views.html.index(categoryList,selectedCategoryForm,userData.id.toString,header)).withSession(
+		  Ok(views.html.index(categoryList,selectedCategoryForm,userData.id.toString,header,"")).withSession(
 			  "userID" -> userData.id.toString,
 			  "userFirstName" -> userData.firstName,
 			  "userLastName" -> userData.lastName
@@ -152,21 +154,22 @@ object Application extends Controller {
   //Logout Action
   def logout = Action {  implicit request =>
 	val header = views.html.header(loginForm,null,null,null) 
-	Ok(views.html.index(categoryList,selectedCategoryForm,null,header)).withNewSession
+	Ok(views.html.index(categoryList,selectedCategoryForm,null,header,"")).withNewSession
   }
   
   //Register User
   def register = Action {  implicit request => 
 	   val header = views.html.registerheader() 
-	   Ok(views.html.register(userDataForm,header))
+	   Ok(views.html.register(userDataForm,header,""))
   }	  
   
   //REgister User
   def adduser = Action {  implicit request => 
 	   	userDataForm.bindFromRequest.fold(
     		formWithErrors => {
-				val header = views.html.registerheader() 
-				BadRequest(views.html.register(formWithErrors,header)).withNewSession
+				val header = views.html.registerheader()
+        val errorStr = "User Name already exists please choose another user name."
+				BadRequest(views.html.register(formWithErrors,header,errorStr)).withNewSession
 			}	,
     	  	user => {
 				
@@ -185,7 +188,7 @@ object Application extends Controller {
 				
  		     val userData  =  getUser(user._1, user._2)
    		  	 val header = views.html.header(loginForm,userData.id.toString,userData.firstName,userData.lastName) 
-   		     Ok(views.html.index(categoryList,selectedCategoryForm,userData.id.toString,header)).withSession(
+   		     Ok(views.html.index(categoryList,selectedCategoryForm,userData.id.toString,header,"")).withSession(
    			  "userID" -> userData.id.toString,
    			  "userFirstName" -> userData.firstName,
    			  "userLastName" -> userData.lastName
