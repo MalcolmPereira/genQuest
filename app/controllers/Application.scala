@@ -127,7 +127,8 @@ object Application extends Controller {
 	  	loginForm.bindFromRequest.fold(
    		    formWithErrors => {
                 implicit val errorStr: String = formWithErrors.errors(0).message
-			          BadRequest(views.html.index(categoryList,selectedCategoryForm,getHeader))
+                val header    =  views.html.header(formWithErrors,null,null,null)
+			          BadRequest(views.html.index(categoryList,selectedCategoryForm,header ))
 		      }
           ,
    	  	  user => {

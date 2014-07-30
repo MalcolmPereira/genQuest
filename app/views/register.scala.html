@@ -7,19 +7,19 @@
 	<form class="form-horizontal" role="form" method="POST" action="@routes.Application.adduser">
 		<div class="form-group col-lg-7">
 			<label for="username">User Name:</label>
-			<input type="text" name="username" maxlength="30" class="form-control" id="username" placeholder="Username" autofocus required>
+			<input type="text" name="username" value="@(userDataForm("username").value)" maxlength="30" class="form-control" id="username" placeholder="Username" autofocus required>
 		</div>	
 		<div class="form-group col-lg-7">
 			<label for="username">User Password:</label>
-			<input type="password" name="password" maxlength="30" class="form-control" id="password" placeholder="Password" required>
+			<input type="password" name="password" value="@(userDataForm("password").value)" maxlength="30" class="form-control" id="password" placeholder="Password" required>
 		</div>	
 		<div class="form-group col-lg-7">
 			<label for="username">User First Name:</label>
-			<input type="text" name="firstname" maxlength="50" class="form-control" id="firstname" placeholder="First Name" required>
+			<input type="text" name="firstname" value="@(userDataForm("firstname").value)" maxlength="50" class="form-control" id="firstname" placeholder="First Name" required>
 		</div>
 		<div class="form-group col-lg-7">
 			<label for="username">User Last Name:</label>
-			<input type="text" name="lastName" maxlength="50" class="form-control" id="lastName" placeholder="Last Name" required>
+			<input type="text" name="lastName" value="@(userDataForm("lastName").value)" maxlength="50" class="form-control" id="lastName" placeholder="Last Name" required>
 		</div>
 		<div class="form-group col-lg-7">
 			<button type="submit" class="btn btn-info btn-xs">Submit</button>
