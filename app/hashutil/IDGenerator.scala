@@ -6,7 +6,7 @@ object IDGenerator {
   def next = n.getAndIncrement()
   
   def getLastUserID() : Long = {
-      val loginNode = xml.XML.loadFile("conf/login.xml")
+      val loginNode = scala.xml.XML.loadFile("conf/login.xml")
  	  
 	  loginNode match {
  	    case <users>{users @ _*}</users> => {

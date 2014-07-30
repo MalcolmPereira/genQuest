@@ -17,49 +17,42 @@ import hashutil.BCryptUtil
 class ApplicationSpec extends Specification {
 
   "Application" should {
-
-    "send 404 on a bad request" in new WithApplication{
+    "send 404 on a bad request" in new WithApplication {
       route(FakeRequest(GET, "/boum")) must beNone
     }
 
-    "render the login page" in new WithApplication{
-      val login = route(FakeRequest(GET, "/")).get
-      status(login) must equalTo(OK)
-      contentType(login) must beSome.which(_ == "text/html")
-      contentAsString(login) must contain("Login")
+    "renders the index page" in new WithApplication {
+      val home = route(FakeRequest(GET, "/")).get
+      status(home) must equalTo(OK)
+      contentType(home) must beSome.which(_ == "text/html")
+      contentAsString(home) must find("Generate Questions")
+      contentAsString(home) must find("Select categories below and click on the submit button to generate questions.")
+      contentAsString(home) must find("Sign in")
+
     }
-    
-    "perform the login with valid user " in new WithApplication{
-      val home = route(FakeRequest(POST, "/login")
+
+    "perform Login with valid user " in new WithApplication {
+        val home = route(FakeRequest(POST, "/login")
           .withFormUrlEncodedBody(("username", "malcolm"),("password", "malcolm"))
-      ).get
-      status(home) must equalTo(OK)
-      contentType(home) must beSome.which(_ == "text/html")
-      contentAsString(home) must contain("home screen!")
+        ).get
+        status(home) must equalTo(OK)
+        contentType(home) must beSome.which(_ == "text/html")
+        contentAsString(home) must find("Generate Questions")
+        contentAsString(home) must find("Select categories below and click on the submit button to generate questions.")
+        contentAsString(home) must find("Welcome")
+        contentAsString(home) must find("Logout")
     }
-    
-    "perform the login with invalid user " in new WithApplication{
+
+    "perform Login with invalid user " in new WithApplication {
       val home = route(FakeRequest(POST, "/login")
-          .withFormUrlEncodedBody(("username", "invalid"),("password", "invalid"))
+        .withFormUrlEncodedBody(("username", "invalid"),("password", "invalid"))
       ).get
-      status(home) must equalTo(OK)
+      status(home) must equalTo(400)
       contentType(home) must beSome.which(_ == "text/html")
-      contentAsString(home) must contain("Login")
-    }
-  }
-  
-  "BCryptUtil" should {
-    "encrypt String " in {
-        val encypted = BCryptUtil.create("malcolm")
-        println(encypted)
-    	println(BCryptUtil.check("malcolm","$2a$10$NeNjyd5AFIIsEB9VdWTp0Op339ewJFdh55EZ/0xFtupdm0r6ahO0q"))
-        encypted must not be null
-    }
-    "decrypt and check String " in {
-        val encypted = BCryptUtil.create("malcolm")
-        println(encypted)
-    	println(BCryptUtil.check("malcolm","$2a$10$NeNjyd5AFIIsEB9VdWTp0Op339ewJFdh55EZ/0xFtupdm0r6ahO0q"))
-        encypted must not be null
+      contentAsString(home) must find("Generate Questions")
+      contentAsString(home) must find("Select categories below and click on the submit button to generate questions.")
+      contentAsString(home) must find("Sign in")
+      contentAsString(home) must find("Invalid User Name / Password, Please register if you do not have a account yet.")
     }
   }
 }
