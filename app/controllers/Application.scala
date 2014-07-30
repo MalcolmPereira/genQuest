@@ -15,33 +15,33 @@ import hashutil.IDGenerator
 import play.api.data.validation.ValidationError
 
 object Application extends Controller {
-  //Login Form
   val loginForm = Form(
-    tuple(
-      "username" -> nonEmptyText,
-	  "password" -> nonEmptyText
-	) verifying ("Invalid username or password", result => result match {
+      tuple(
+          "username" -> nonEmptyText,
+	        "password" -> nonEmptyText
+	    ) verifying ("Invalid User Name / Password, Please register if you do not have a account yet.", result => result match {
           case (username, password) => getUser(username, password) != null
-    })
+        }
+      )
   ) 
-  //User Data Form
   val userDataForm = Form(
       tuple(
-        "username"  -> nonEmptyText,
-  	    "password"  -> nonEmptyText,
-		"firstname" -> nonEmptyText,
-		"lastName"  -> nonEmptyText
-  	  )verifying ("Invalid user details", result => result match {
-          case (username, password,firstname,lastName) => checkUserName(username) == null
-    })
+           "username"  -> nonEmptyText,
+  	       "password"  -> nonEmptyText,
+		       "firstname" -> nonEmptyText,
+		       "lastName"  -> nonEmptyText
+  	  )verifying ("User Name already exists please choose another user name.", result => result match {
+           case (username, password,firstname,lastName) => checkUserName(username) == null
+       }
+      )
   )
-  //Select Category Form
   val selectedCategoryForm = Form(
      single(
-          "categoryCheckBox" -> list(number) 
-     )verifying ("Invalid username or password", result => result match {
-            case (categoryCheckBox) => categoryCheckBox != null && categoryCheckBox.length > 0
-     })
+           "categoryCheckBox" -> list(number)
+     )verifying ("Please select at least one category before submitting.", result => result match {
+           case (categoryCheckBox) => categoryCheckBox != null && categoryCheckBox.length > 0
+      }
+     )
   )
   
   
@@ -108,10 +108,9 @@ object Application extends Controller {
 
   //Generate Questions
   def genQuest = Action {  implicit request =>
-	  val errorStr = "Please select at least one category before submitting."
 	  selectedCategoryForm.bindFromRequest.fold(
 		  formWithErrors => {
-			  BadRequest(views.html.index(categoryList, formWithErrors,getHeader(),errorStr))
+        BadRequest(views.html.index(categoryList, formWithErrors,getHeader(),formWithErrors.errors(0).message))
 		}	
 		,
 		success => {
@@ -125,8 +124,7 @@ object Application extends Controller {
 	  implicit request =>
 	  	loginForm.bindFromRequest.fold(
    		formWithErrors => {
-			val errorStr = "Invalid User Name / Password, Please register if you do not have a account yet."
-			BadRequest(views.html.index(categoryList,selectedCategoryForm,getHeader(),errorStr))
+			BadRequest(views.html.index(categoryList,selectedCategoryForm,getHeader(),formWithErrors.errors(0).message))
 		}	,
    	  	user => {
 		  val userData  =  getUser(user._1, user._2)
@@ -157,8 +155,7 @@ object Application extends Controller {
 	   	userDataForm.bindFromRequest.fold(
     		formWithErrors => {
 				val header = views.html.registerheader()
-        val errorStr = "User Name already exists please choose another user name."
-				BadRequest(views.html.register(formWithErrors,header,errorStr)).withNewSession
+        BadRequest(views.html.register(formWithErrors,header,formWithErrors.errors(0).message)).withNewSession
 			}	,
     	  	user => {
 				
