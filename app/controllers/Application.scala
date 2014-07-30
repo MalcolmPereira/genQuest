@@ -1,23 +1,21 @@
 package controllers
 
-import play.api._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import play.twirl.api.Html
-import scala.xml.XML
 import model._
 import scala.xml.Elem
-import scala.xml.NodeSeq
 import scala.xml.Node
 import hashutil.BCryptUtil
 import hashutil.IDGenerator
-import play.api.data.validation.ValidationError
 
 object Application extends Controller {
 
+  //Implicit Error String
   implicit val errorStr: String = ""
 
+  //Login Form for Header Login Control
   val loginForm = Form(
       tuple(
           "username" -> nonEmptyText,
@@ -26,7 +24,9 @@ object Application extends Controller {
           case (username, password) => getUser(username, password) != null
         }
       )
-  ) 
+  )
+
+  //Registration Form for User Registeration
   val userDataForm = Form(
       tuple(
            "username"  -> nonEmptyText,
@@ -38,7 +38,9 @@ object Application extends Controller {
        }
       )
   )
-  val selectedCategoryForm = Form(
+
+  //Category Selection Form
+  val selectCategoryForm = Form(
      single(
            "categoryCheckBox" -> list(number)
      )verifying ("Please select at least one category before submitting.", result => result match {
@@ -46,7 +48,120 @@ object Application extends Controller {
       }
      )
   )
-  
+
+  //Index Page
+  def index = Action { implicit request =>
+    Ok(views.html.index(categoryList,selectCategoryForm,getHeader))
+  }
+
+  //Generate Questions
+  def genQuest = Action {  implicit request =>
+    selectCategoryForm.bindFromRequest.fold(
+      formWithErrors => {
+        implicit val errorStr: String = formWithErrors.errors(0).message
+        BadRequest(views.html.index(categoryList, formWithErrors,getHeader))
+      }
+      ,
+      success => {
+        Ok(views.html.genQuest(questionList, getHeader))
+      }
+    )
+  }
+
+  //Login Action
+  def login = Action { implicit request =>
+    loginForm.bindFromRequest.fold(
+      formWithErrors => {
+          implicit val errorStr: String = formWithErrors.errors(0).message
+          val header    =  views.html.header(formWithErrors,null,null,null)
+          BadRequest(views.html.index(categoryList,selectCategoryForm,header ))
+      }
+      ,
+      user => {
+          val userData  =  getUser(user._1, user._2)
+          val header    =  views.html.header(loginForm,userData.id.toString,userData.firstName,userData.lastName)
+          Ok(views.html.index(categoryList,selectCategoryForm,header)).withSession(
+              "userID"        -> userData.id.toString,
+              "userFirstName" -> userData.firstName,
+              "userLastName"  -> userData.lastName
+          )
+      }
+    )
+  }
+
+  //Logout Action
+  def logout = Action {  implicit request =>
+    val header = views.html.header(loginForm,null,null,null)
+    Ok(views.html.index(categoryList,selectCategoryForm,header)).withNewSession
+  }
+
+  //Register User
+  def register = Action {  implicit request =>
+    val header = views.html.registerheader()
+    Ok(views.html.register(userDataForm,header))
+  }
+
+  //Add New User
+  def adduser = Action {  implicit request =>
+    userDataForm.bindFromRequest.fold(
+      formWithErrors => {
+        implicit val errorStr: String = formWithErrors.errors(0).message
+        val header = views.html.registerheader()
+        BadRequest(views.html.register(formWithErrors,header)).withNewSession
+      }
+      ,
+      user => {
+        val nodeString   = "<user><userID>"+IDGenerator.next+
+          "</userID><userName>"+user._1+
+          "</userName><userPassword>"+BCryptUtil.create(user._2)+
+          "</userPassword><userFirstName>"+user._3+
+          "</userFirstName><userLastName>"+user._4+
+          "</userLastName></user>"
+        val nodeXML           = xml.XML.loadString(nodeString)
+        val loginNode         = xml.XML.loadFile("conf/login.xml")
+        val loginNodeUpdated  = addChild(loginNode, nodeXML)
+        xml.XML.save("conf/login.xml", loginNodeUpdated, "UTF-8", false, null)
+
+        val userData  =  getUser(user._1, user._2)
+        val header    = views.html.header(loginForm,userData.id.toString,userData.firstName,userData.lastName)
+        Ok(views.html.index(categoryList,selectCategoryForm,header)).withSession(
+          "userID" -> userData.id.toString,
+          "userFirstName" -> userData.firstName,
+          "userLastName" -> userData.lastName
+        )
+      }
+    )
+  }
+
+  //Get User ID from session
+  def getUserID()(implicit request: RequestHeader) : Int = {
+    if(request.session.get("userID").isDefined ){
+      return request.session.get("userID").get.toInt
+    }else{
+      return 0
+    }
+  }
+
+  //Get Header HTML
+  def getHeader()(implicit request: RequestHeader) : Html = {
+    var userID        = ""
+    var userFirstName = ""
+    var userLastName  = ""
+    if(request.session.get("userID").isDefined ){
+      userID = request.session.get("userID").get
+    }
+    if(request.session.get("userFirstName").isDefined ){
+      userFirstName = request.session.get("userFirstName").get
+    }
+    if(request.session.get("userLastName").isDefined ){
+      userLastName = request.session.get("userLastName").get
+    }
+    return views.html.header(loginForm,userID,userFirstName,userLastName)
+  }
+
+
+
+
   //Get Category TODO
   def categoryList() : List[Category]  = {
 	  List(
@@ -87,110 +202,9 @@ object Application extends Controller {
 	  	  )
   }
 
-  def getHeader()(implicit request: RequestHeader) : Html = {
-    var userID        = ""
-    var userFirstName = ""
-    var userLastName  = ""
-    if(request.session.get("userID").isDefined ){
-      userID = request.session.get("userID").get
-    }
-    if(request.session.get("userFirstName").isDefined ){
-      userFirstName = request.session.get("userFirstName").get
-    }
-    if(request.session.get("userLastName").isDefined ){
-      userLastName = request.session.get("userLastName").get
-    }
-    return views.html.header(loginForm,userID,userFirstName,userLastName)
-  }
-
-  //Index Page
-  def index = Action { implicit request =>
-    Ok(views.html.index(categoryList,selectedCategoryForm,getHeader))
-  }
-
-  //Generate Questions
-  def genQuest = Action {  implicit request =>
-	   selectedCategoryForm.bindFromRequest.fold(
-		      formWithErrors => {
-                implicit val errorStr: String = formWithErrors.errors(0).message
-                BadRequest(views.html.index(categoryList, formWithErrors,getHeader))
-		      }
-		      ,
-		      success => {
-                Ok(views.html.genQuest(questionList, getHeader))
- 		      }
-	    )
-  }
-  
-  //Login Action
-  def login = Action { implicit request =>
-	  	loginForm.bindFromRequest.fold(
-   		    formWithErrors => {
-                implicit val errorStr: String = formWithErrors.errors(0).message
-                val header    =  views.html.header(formWithErrors,null,null,null)
-			          BadRequest(views.html.index(categoryList,selectedCategoryForm,header ))
-		      }
-          ,
-   	  	  user => {
-		          val userData  =  getUser(user._1, user._2)
-		          val header    =  views.html.header(loginForm,userData.id.toString,userData.firstName,userData.lastName)
-              Ok(views.html.index(categoryList,selectedCategoryForm,header)).withSession(
-			            "userID"        -> userData.id.toString,
-			            "userFirstName" -> userData.firstName,
-			            "userLastName"  -> userData.lastName
-		          )
-          }
-      )
-  }
-  
-  //Logout Action
-  def logout = Action {  implicit request =>
-      val header = views.html.header(loginForm,null,null,null)
-      Ok(views.html.index(categoryList,selectedCategoryForm,header)).withNewSession
-  }
-  
-  //Register User
-  def register = Action {  implicit request => 
-	    val header = views.html.registerheader()
-      Ok(views.html.register(userDataForm,header))
-  }	  
-  
-  //REgister User
-  def adduser = Action {  implicit request => 
-	   	userDataForm.bindFromRequest.fold(
-    		    formWithErrors => {
-				        implicit val errorStr: String = formWithErrors.errors(0).message
-                val header = views.html.registerheader()
-                BadRequest(views.html.register(formWithErrors,header)).withNewSession
-			      }
-            ,
-    	  	  user => {
-			          val nodeString   = "<user><userID>"+IDGenerator.next+
-			                             "</userID><userName>"+user._1+
-								                   "</userName><userPassword>"+BCryptUtil.create(user._2)+
-								                   "</userPassword><userFirstName>"+user._3+
-								                   "</userFirstName><userLastName>"+user._4+
-								                   "</userLastName></user>"
-			          val nodeXML           = xml.XML.loadString(nodeString)
-			          val loginNode         = xml.XML.loadFile("conf/login.xml")
-			          val loginNodeUpdated  = addChild(loginNode, nodeXML)
-			          xml.XML.save("conf/login.xml", loginNodeUpdated, "UTF-8", false, null)
-				
- 		            val userData  =  getUser(user._1, user._2)
-   		  	      val header    = views.html.header(loginForm,userData.id.toString,userData.firstName,userData.lastName)
-   		          Ok(views.html.index(categoryList,selectedCategoryForm,header)).withSession(
-   			              "userID" -> userData.id.toString,
-   			              "userFirstName" -> userData.firstName,
-   			              "userLastName" -> userData.lastName
-   		          )
-		      	}
-	    )
-  }	 
-  
   def addChild(n: Node, newChild: Node) = n match {
     case Elem(prefix, label, attribs, scope, child @ _*) =>
-      Elem(prefix, label, attribs, scope, child ++ newChild : _*)
-    case _ => error("Can only add children to elements!")
+      Elem(prefix, label, attribs, scope, true, child ++ newChild : _*)
   }
   
 
