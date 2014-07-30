@@ -217,6 +217,7 @@ object Application extends Controller {
 	    		   return new User(
 	    			  (user \"userID").text.toInt,
 	    			  (user \"userName").text,
+              (user \"userPassword").text,
 	    			  (user \"userFirstName").text,
 	    			  (user \"userLastName").text
 	    		  )
@@ -237,6 +238,7 @@ object Application extends Controller {
 	    		   return new User(
 	    			  (user \"userID").text.toInt,
 	    			  (user \"userName").text,
+              (user \"userPassword").text,
 	    			  (user \"userFirstName").text,
 	    			  (user \"userLastName").text
 	    		  )
@@ -257,6 +259,7 @@ object Application extends Controller {
 	    		   return new User(
 	    			  (user \"userID").text.toInt,
 	    			  (user \"userName").text,
+              (user \"userPassword").text,
 	    			  (user \"userFirstName").text,
 	    			  (user \"userLastName").text
 	    		  )
