@@ -1,6 +1,6 @@
 @import model._
-@(categories: List[Category],selectedCategoryForm: Form[List[Int]],header:Html,errorStr: String)
-@main(header,errorStr) {
+@(categories: List[Category],selectedCategoryForm: Form[List[Int]],header:Html)(implicit errorStr: String)
+@main(header) {
 	<div class="page-header">
 		<h1>Generate Questions</h1>
 	</div>	

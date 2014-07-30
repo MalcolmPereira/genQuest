@@ -1,6 +1,6 @@
 @import model._
-@(userDataForm: Form[(String,String,String,String)],header:Html,errorStr: String)
-@main(header,errorStr) {
+@(userDataForm: Form[(String,String,String,String)],header:Html)(implicit errorStr: String)
+@main(header) {
 	<div class="page-header">
 		<h1>Register User</h1>
 	</div>
