@@ -1,23 +1,13 @@
-<users>
-	<user>
+<users><user>
 		<userID>10001</userID>
 		<userName>malcolm</userName>
 		<userPassword>$2a$10$NeNjyd5AFIIsEB9VdWTp0Op339ewJFdh55EZ/0xFtupdm0r6ahO0q</userPassword>
 		<userFirstName>Malcolm</userFirstName>
 		<userLastName>Pereira</userLastName>
-	</user>
-	<user>
+	</user><user>
 		<userID>10002</userID>
 		<userName>johndoe</userName>
 		<userPassword>$2a$10$E5BoGA2cFHT.zTD1esIbFO7cVvTUJEpkr8c7zE1dNy6/H6W89lsqe</userPassword>
 		<userFirstName>John</userFirstName>
 		<userLastName>Doe</userLastName>
-	</user>
-    <user>
-        <userID>10003</userID>
-        <userName>sometest</userName>
-        <userPassword>$2a$10$NeNjyd5AFIIsEB9VdWTp0Op339ewJFdh55EZ/0xFtupdm0r6ahO0q</userPassword>
-        <userFirstName>Some</userFirstName>
-        <userLastName>Test</userLastName>
-    </user>
-</users>
+	</user></users>

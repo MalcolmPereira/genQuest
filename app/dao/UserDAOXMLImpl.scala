@@ -113,36 +113,61 @@ object UserDAOXMLImpl extends UserDAO {
                          "</userLastName></user>"
       val nodeXML           = scala.xml.XML.loadString(nodeString)
       val loginNode         = scala.xml.XML.loadFile("conf/login.xml")
-      val loginNodeUpdated  = addChild(loginNode, nodeXML)
+      val loginNodeUpdated  = loginNode match {
+        case Elem(prefix, label, attribs, scope, child @ _*) => {
+          Elem(prefix, label, attribs, scope, true, child ++ nodeXML: _*)
+        }
+      }
       scala.xml.XML.save("conf/login.xml", loginNodeUpdated, "UTF-8", false, null)
       userID
   }
 
-  override def updateUser(userval: User): User = {
+  override def updateUser(user: User): User = {
       val loginNode = scala.xml.XML.loadFile("conf/login.xml")
+      var userList  = new ListBuffer[Node]()
       loginNode match {
           case <users>{users @ _*}</users> => {
-              for (user <- users) {
-                  if((user \"userID").text.trim.length > 0 &&  (user \"userID").text.trim.toInt == userval.id){
-                    println("user is "+user)
-                      //user match {
-                      //  case <userPassword>{ ch @ _* }</userPassword> => <userPassword>{BCryptUtil.create(userval.password)}</userPassword>
-                      //  case <userFirstName>{ ch @ _* }</userFirstName> => <userFirstName>{userval.firstName}</userFirstName>
-                      //  case <userLastName>{ ch @ _* }</userLastName> => <userLastName>{userval.lastName}</userLastName>
-                      //}
-                  }
-              }
+                for (user_ <- users) {
+                    if((user_ \"userID").text.trim.length > 0 &&  (user_ \"userID").text.toInt > 0 && (user_ \"userID").text.toInt == user.id){
+                      userList  += {
+                                    scala.xml.XML.loadString(
+                                      "<user><userID>" + (user_ \"userID").text +
+                                      "</userID><userName>" + (user_ \"userName").text +
+                                      "</userName><userPassword>" + (user_ \"userPassword").text +
+                                      "</userPassword><userFirstName>" + user.firstName +
+                                      "</userFirstName><userLastName>" + user.lastName +
+                                      "</userLastName></user>")
+                                   }
+                    }else{
+                        userList  += user_
+                    }
+                }
           }
       }
-      userval
+      val loginNodeUpdated = <users>{for(user <- userList) yield user}</users>
+      scala.xml.XML.save("conf/login.xml", loginNodeUpdated, "UTF-8", false, null)
+      user
   }
 
-  private def addChild(n: Node, newChild: Node) = n match {
-    case Elem(prefix, label, attribs, scope, child @ _*) =>
-      Elem(prefix, label, attribs, scope, true, child ++ newChild : _*)
+  override def deleteUser(user: User): Int = {
+      val loginNode    = scala.xml.XML.loadFile("conf/login.xml")
+      var userList     = new ListBuffer[Node]()
+      var nodeCounter  = 0;
+      loginNode match {
+        case <users>{users @ _*}</users> => {
+          for (user_ <- users) {
+              if((user_ \"userID").text.trim.length > 0 &&  (user_ \"userID").text.toInt > 0 && (user_ \"userID").text.toInt != user.id){
+                userList  += user_
+              }else{
+                nodeCounter  = nodeCounter  + 1
+              }
+          }
+        }
+      }
+      val loginNodeUpdated = <users>{for(user <- userList) yield user}</users>
+      scala.xml.XML.save("conf/login.xml", loginNodeUpdated, "UTF-8", false, null)
+      nodeCounter
   }
-
-  //override def deleteUser(user: User): Int = ???
 
 
 }
