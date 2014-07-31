@@ -10,7 +10,6 @@ import model._
 import scala.xml.Elem
 import scala.xml.Node
 import util.BCryptUtil
-import util.IDGenerator
 
 object Application extends Controller {
 
