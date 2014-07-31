@@ -152,7 +152,7 @@ object UserDAOXMLImpl extends UserDAO {
   override def deleteUser(user: User): Int = {
       val loginNode    = scala.xml.XML.loadFile("conf/login.xml")
       var userList     = new ListBuffer[Node]()
-      var nodeCounter  = 0;
+      var nodeCounter  = 0
       loginNode match {
         case <users>{users @ _*}</users> => {
           for (user_ <- users) {
