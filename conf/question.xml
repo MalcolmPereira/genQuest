@@ -5,18 +5,16 @@
         <questionDescription></questionDescription>
         <questionText></questionText>
         <questionAnswer></questionAnswer>
-        <questionAnswerOptions>
-            <options type="single">
-                <option>
-                    <name></name>
-                    <correct></correct>
-                </option>
-                <option>
-                    <name></name>
-                    <correct></correct>
-                </option>
-            </options>
-        </questionAnswerOptions>
+        <answerOptions multipeCorrect="true">
+            <answerOption>
+                <name></name>
+                <correct></correct>
+            </answerOption>
+            <answerOption>
+                <name></name>
+                <correct></correct>
+            </answerOption>
+        </answerOptions >
     </question>
 </questions>
 

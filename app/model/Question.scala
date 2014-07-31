@@ -3,8 +3,17 @@ package model
 class Question(questionId: Integer,
                questionName: String,
                questionDescription: String,
-               quest: String,
-               ans: String) {
+               questionText: String,
+               questionAnswer: String,
+               answerOptions: AnswerOptions) {
+
+  def this(questionId: Integer,
+           questionName: String,
+           questionDescription: String,
+           questionText: String,
+           questionAnswer: String) {
+    this(questionId,questionName,questionDescription,questionText,questionAnswer,null)
+  }
 
   def id = questionId
 
@@ -12,7 +21,11 @@ class Question(questionId: Integer,
 
   def description = questionDescription
 
-  def question = quest
+  def question = questionText
 
-  def answer = ans
+  def answer  = questionAnswer
+
+  def options = answerOptions
 }
+
+
