@@ -16,7 +16,7 @@ object UserDAOXMLImpl extends UserDAO {
           loginNode match {
               case <users>{users @ _*}</users> => {
                   for (user <- users) {
-                      if((user \"userID").text.trim.length > 0 &&  (user \"userID").text.toInt > 0 ){
+                      if((user \"userID").text.trim.length > 0 &&  (user \"userID").text.trim.toInt > 0 ){
                           idList += (user \"userID").text.toInt
                       }
                   }
@@ -32,10 +32,9 @@ object UserDAOXMLImpl extends UserDAO {
       loginNode match {
           case <users>{users @ _*}</users> => {
               for (user <- users) {
-                  if ((user \ "userID").text.trim.length > 0 && (user \ "userID").text.length > 0) {
+                  if ((user \ "userID").text.trim.length > 0 && (user \ "userID").text.trim.toInt > 0) {
                     userList += new User((user \ "userID").text.toInt,
                                          (user \ "userName").text,
-                                         (user \ "userPassword").text,
                                          (user \ "userFirstName").text,
                                          (user \ "userLastName").text
                                         )
@@ -54,7 +53,6 @@ object UserDAOXMLImpl extends UserDAO {
                    if((user \"userName").text == userName && BCryptUtil.check(userPassword,(user \"userPassword").text)){
                        return new User((user \"userID").text.toInt,
                                        (user \"userName").text,
-                                       (user \ "userPassword").text,
                                        (user \"userFirstName").text,
                                        (user \"userLastName").text
                                        )
@@ -73,7 +71,6 @@ object UserDAOXMLImpl extends UserDAO {
                   if((user \"userName").text == userName){
                        return new User((user \"userID").text.toInt,
                                        (user \"userName").text,
-                                       (user \ "userPassword").text,
                                        (user \"userFirstName").text,
                                        (user \"userLastName").text
                                       )
@@ -92,7 +89,6 @@ object UserDAOXMLImpl extends UserDAO {
                 if((user \"userID").text.trim.length > 0 &&  (user \"userID").text.trim.toInt == userId){
                         return new User((user \"userID").text.toInt,
                                         (user \"userName").text,
-                                        (user \ "userPassword").text,
                                         (user \"userFirstName").text,
                                         (user \"userLastName").text
                                         )
@@ -128,7 +124,7 @@ object UserDAOXMLImpl extends UserDAO {
       loginNode match {
           case <users>{users @ _*}</users> => {
                 for (user_ <- users) {
-                    if((user_ \"userID").text.trim.length > 0 &&  (user_ \"userID").text.toInt > 0 && (user_ \"userID").text.toInt == user.id){
+                    if((user_ \"userID").text.trim.length > 0 &&  (user_ \"userID").text.trim.toInt > 0 && (user_ \"userID").text.trim.toInt == user.id){
                       userList  += {
                                     scala.xml.XML.loadString(
                                       "<user><userID>" + (user_ \"userID").text +
@@ -156,7 +152,7 @@ object UserDAOXMLImpl extends UserDAO {
       loginNode match {
         case <users>{users @ _*}</users> => {
           for (user_ <- users) {
-              if((user_ \"userID").text.trim.length > 0 &&  (user_ \"userID").text.toInt > 0 && (user_ \"userID").text.toInt != user.id){
+              if((user_ \"userID").text.trim.length > 0 &&  (user_ \"userID").text.trim.toInt > 0 && (user_ \"userID").text.trim.toInt != user.id){
                 userList  += user_
               }else{
                 nodeCounter  = nodeCounter  + 1
