@@ -1,5 +1,7 @@
 package controllers
 
+import dao.UserDAO
+import dao.UserDAOXMLImpl
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
@@ -15,13 +17,16 @@ object Application extends Controller {
   //Implicit Error String
   implicit val errorStr: String = ""
 
+  //User DAO
+  val userDAO:UserDAO = UserDAOXMLImpl
+
   //Login Form for Header Login Control
   val loginForm = Form(
       tuple(
           "username" -> nonEmptyText,
 	        "password" -> nonEmptyText
 	    ) verifying ("Invalid User Name / Password, Please register if you do not have a account yet.", result => result match {
-          case (username, password) => getUser(username, password) != null
+          case (username, password) => userDAO.findUser(username, password) != null
         }
       )
   )
@@ -34,7 +39,7 @@ object Application extends Controller {
 		       "firstname" -> nonEmptyText,
 		       "lastName"  -> nonEmptyText
   	  )verifying ("User Name already exists please choose another user name.", result => result match {
-           case (username, password,firstname,lastName) => checkUserName(username) == null
+           case (username, password,firstname,lastName) => userDAO.findUser(username) == null
        }
       )
   )
@@ -78,7 +83,7 @@ object Application extends Controller {
       }
       ,
       user => {
-          val userData  =  getUser(user._1, user._2)
+          val userData  =  userDAO.findUser(user._1, user._2)
           val header    =  views.html.header(loginForm,userData.id.toString,userData.firstName,userData.lastName)
           Ok(views.html.index(categoryList,selectCategoryForm,header)).withSession(
               "userID"        -> userData.id.toString,
@@ -111,23 +116,12 @@ object Application extends Controller {
       }
       ,
       user => {
-        val nodeString   = "<user><userID>"+IDGenerator.next+
-          "</userID><userName>"+user._1+
-          "</userName><userPassword>"+BCryptUtil.create(user._2)+
-          "</userPassword><userFirstName>"+user._3+
-          "</userFirstName><userLastName>"+user._4+
-          "</userLastName></user>"
-        val nodeXML           = scala.xml.XML.loadString(nodeString)
-        val loginNode         = scala.xml.XML.loadFile("conf/login.xml")
-        val loginNodeUpdated  = addChild(loginNode, nodeXML)
-        scala.xml.XML.save("conf/login.xml", loginNodeUpdated, "UTF-8", false, null)
-
-        val userData  =  getUser(user._1, user._2)
-        val header    = views.html.header(loginForm,userData.id.toString,userData.firstName,userData.lastName)
+        val userID     = userDAO.addUser(new User(0,user._1,user._2,user._3,user._4))
+        val header     = views.html.header(loginForm,userID.toString,user._3,user._4)
         Ok(views.html.index(categoryList,selectCategoryForm,header)).withSession(
-          "userID" -> userData.id.toString,
-          "userFirstName" -> userData.firstName,
-          "userLastName" -> userData.lastName
+          "userID" -> userID.toString,
+          "userFirstName" -> user._3,
+          "userLastName" -> user._4
         )
       }
     )
@@ -158,9 +152,6 @@ object Application extends Controller {
     }
     return views.html.header(loginForm,userID,userFirstName,userLastName)
   }
-
-
-
 
   //Get Category TODO
   def categoryList() : List[Category]  = {
@@ -200,73 +191,5 @@ object Application extends Controller {
 	  		  new Question(10, "Java","Java Cate","question","answer"),
 	  		  new Question(11, "Java","Java Cate","question","answer")
 	  	  )
-  }
-
-  def addChild(n: Node, newChild: Node) = n match {
-    case Elem(prefix, label, attribs, scope, child @ _*) =>
-      Elem(prefix, label, attribs, scope, true, child ++ newChild : _*)
-  }
-  
-
-  def checkUserName(userName: String) : User = {
-     val loginNode = scala.xml.XML.loadFile("conf/login.xml")
-	 loginNode match {
-	    case <users>{users @ _*}</users> => {
-	    	for (user <- users) {
-	    	  if((user \"userName").text == userName){
-	    		   return new User(
-	    			  (user \"userID").text.toInt,
-	    			  (user \"userName").text,
-              (user \"userPassword").text,
-	    			  (user \"userFirstName").text,
-	    			  (user \"userLastName").text
-	    		  )
-	    	  }
-	    	}
-	    	null
-	    }
-	 }
-  }
-  
-  //Get User
-  def getUser(userName: String, userPassword: String) : User = {
-     val loginNode = scala.xml.XML.loadFile("conf/login.xml")
-	 loginNode match {
-	    case <users>{users @ _*}</users> => {
-	    	for (user <- users) {
-	    	  if((user \"userName").text == userName && BCryptUtil.check(userPassword,(user \"userPassword").text)){
-	    		   return new User(
-	    			  (user \"userID").text.toInt,
-	    			  (user \"userName").text,
-              (user \"userPassword").text,
-	    			  (user \"userFirstName").text,
-	    			  (user \"userLastName").text
-	    		  )
-	    	  }
-	    	}
-	    	null
-	    }
-	 }
-  }
-  
-  //Get User
-  def getUser(userId: Integer) : User = {
-     val loginNode = scala.xml.XML.loadFile("conf/login.xml")
-	 loginNode match {
-	    case <users>{users @ _*}</users> => {
-	    	for (user <- users) {
-			  if((user \"userID").text.trim.length > 0 &&  (user \"userID").text.toInt == userId){
-	    		   return new User(
-	    			  (user \"userID").text.toInt,
-	    			  (user \"userName").text,
-              (user \"userPassword").text,
-	    			  (user \"userFirstName").text,
-	    			  (user \"userLastName").text
-	    		  )
-	    	  }
-	    	}
-	    	null
-	    }
-	 }
   }
 }

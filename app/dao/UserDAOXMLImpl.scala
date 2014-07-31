@@ -103,8 +103,8 @@ object UserDAOXMLImpl extends UserDAO {
       }
   }
 
-  override def addUser(user: User): Long = {
-      val userID       = idGenerator.getAndIncrement
+  override def addUser(user: User): Integer = {
+      val userID       = idGenerator.getAndIncrement.toInt
       val nodeString   = "<user><userID>"+userID+
                          "</userID><userName>"+user.name+
                          "</userName><userPassword>"+BCryptUtil.create(user.password)+
@@ -149,7 +149,7 @@ object UserDAOXMLImpl extends UserDAO {
       user
   }
 
-  override def deleteUser(user: User): Int = {
+  override def deleteUser(user: User): Integer = {
       val loginNode    = scala.xml.XML.loadFile("conf/login.xml")
       var userList     = new ListBuffer[Node]()
       var nodeCounter  = 0

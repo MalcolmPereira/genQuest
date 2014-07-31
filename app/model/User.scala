@@ -1,6 +1,6 @@
 package model
 
-class User(userID: Long,
+class User(userID: Integer,
            userName: String,
            userPassword: String,
            userFirstName: String,
