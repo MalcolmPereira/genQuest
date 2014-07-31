@@ -1,0 +1,22 @@
+<questions>
+    <question>
+        <questionId></questionId>
+        <questionName></questionName>
+        <questionDescription></questionDescription>
+        <questionText></questionText>
+        <questionAnswer></questionAnswer>
+        <questionAnswerOptions>
+            <options type="single">
+                <option>
+                    <name></name>
+                    <correct></correct>
+                </option>
+                <option>
+                    <name></name>
+                    <correct></correct>
+                </option>
+            </options>
+        </questionAnswerOptions>
+    </question>
+</questions>
+
