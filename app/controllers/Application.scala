@@ -178,17 +178,7 @@ object Application extends Controller {
   //Get Questions TODO
   def questionList() : List[Question] = {
 	  List(
-	  		  new Question(1, "Java","Java Cate","question","answer"),
-	  		  new Question(2, "Java","Java Cate","question","answer"),
-	  		  new Question(3, "Java","Java Cate","question","answer"),
-	  		  new Question(4, "Java","Java Cate","question","answer"),
-	  		  new Question(5, "Java","Java Cate","question","answer"),
-	  		  new Question(6, "Java","Java Cate","question","answer"),
-	  		  new Question(7, "Java","Java Cate","question","answer"),
-	  		  new Question(8, "Java","Java Cate","question","answer"),
-	  		  new Question(9, "Java","Java Cate","question","answer"),
-	  		  new Question(10, "Java","Java Cate","question","answer"),
-	  		  new Question(11, "Java","Java Cate","question","answer")
-	  	  )
+	  		new Question(1,1,"question","answer")
+	  )
   }
 }

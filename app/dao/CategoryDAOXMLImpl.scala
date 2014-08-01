@@ -73,7 +73,7 @@ object CategoryDAOXMLImpl extends CategoryDAO {
     val categoryNode = scala.xml.XML.loadFile("conf/category.xml")
 
     val categoryNodeUpdated = categoryNode match {
-      case Elem(prefix, label, attribs, scope, child@_*) => {
+      case Elem(prefix, label, attribs, scope, child @ _*) => {
         Elem(prefix, label, attribs, scope, true, child ++ nodeXML: _*)
       }
     }
