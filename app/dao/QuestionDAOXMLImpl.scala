@@ -135,6 +135,26 @@ object QuestionDAOXMLImpl extends QuestionDAO {
   }
 
   override def addQuestion(question: Question): Integer = {
+    val questionID     = idGenerator.getAndIncrement.toInt
+    val nodeString     = "<question><questionId>"+questionID +
+                         "</questionId><categoryId>"+question.category+
+                         "</categoryId><questionText>"+question.question+
+                         "</questionText><questionAnswer>"+question.answer+
+                         {
+
+                           if(question.options != null){
+                             "</questionAnswer><answerOptions "+question.options.multipleCorrect.toString+">"
+                             for(answerOptions <- question.options.answerOptions){
+                               "<answerOption><name>"+answerOptions.optionName+
+                               "</name><correct>"+answerOptions.optionCorrect+
+                               "</correct></answerOption>"
+                             }
+                             "</answerOptions><question>"
+                           }else{
+                             "</questionAnswer></question>"
+                           }
+                         }
+    println(nodeString)
     null
   }
 

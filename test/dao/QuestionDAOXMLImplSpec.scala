@@ -1,7 +1,7 @@
 package dao
 
 import org.scalatest._
-import model.Question
+import model.{Question, AnswerOptions,AnswerOption}
 
 class QuestionDAOXMLImplSpec extends FlatSpec {
 
@@ -42,6 +42,10 @@ class QuestionDAOXMLImplSpec extends FlatSpec {
     }
   }
 
+  "QuestionDAO " should " Return null question by invalid id " in {
+    assert(QuestionDAOXMLImpl.findQuestion(0) == null)
+  }
+
   "QuestionDAO " should " Return all questions for category list" in {
     val questions = QuestionDAOXMLImpl.findQuestionsByCategoryID(List(1))
     assert(questions != null)
@@ -60,5 +64,16 @@ class QuestionDAOXMLImplSpec extends FlatSpec {
         assert(question.options.answerOptions.size > 0)
       }
     }
+  }
+
+  "QuestionDAO " should " Return null questions for invalid category list" in {
+     assert(QuestionDAOXMLImpl.findQuestionsByCategoryID(List(0)).size == 0)
+  }
+
+  "QuestionDAO " should " Return add valid question " in {
+    val answerOptionList = List(new AnswerOption("option1",false),new AnswerOption("option2",false),new AnswerOption("option3",false),new AnswerOption("option4",true))
+    val answerOption     = new AnswerOptions(answerOptionList,false)
+    val question         = new Question(1,"Some Question","Some Answer",answerOption)
+    QuestionDAOXMLImpl.addQuestion(question)
   }
 }

@@ -13,6 +13,19 @@ class Question(questionId: Integer,
     this(questionId,categoryId,questionText,questionAnswer,null)
   }
 
+  def this(categoryId: Integer,
+           questionText: String,
+           questionAnswer: String) {
+    this(0,categoryId,questionText,questionAnswer,null)
+  }
+
+  def this(categoryId: Integer,
+           questionText: String,
+           questionAnswer: String,
+           answerOptions: AnswerOptions) {
+    this(0,categoryId,questionText,questionAnswer,answerOptions)
+  }
+
   def id = questionId
 
   def category = categoryId
