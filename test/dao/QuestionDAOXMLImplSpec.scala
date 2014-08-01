@@ -41,4 +41,24 @@ class QuestionDAOXMLImplSpec extends FlatSpec {
       assert(question.options.answerOptions.size > 0)
     }
   }
+
+  "QuestionDAO " should " Return all questions for category list" in {
+    val questions = QuestionDAOXMLImpl.findQuestionsByCategoryID(List(1))
+    assert(questions != null)
+    assert(questions.size > 0)
+    for(question <- questions){
+      assert(question.id != null)
+      assert(question.id > 0)
+      assert(question.category != null)
+      assert(question.category > 0)
+      assert(question.question != null)
+      assert(question.question.length > 0)
+      assert(question.answer != null)
+      assert(question.answer.length > 0)
+      if(question.options != null ){
+        assert(question.options.answerOptions != null)
+        assert(question.options.answerOptions.size > 0)
+      }
+    }
+  }
 }
