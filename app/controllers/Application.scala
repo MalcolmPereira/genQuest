@@ -59,7 +59,7 @@ object Application extends Controller {
   }
 
   //Generate Questions
-  def genQuest = Action {  implicit request =>
+  def genquest = Action {  implicit request =>
     selectCategoryForm.bindFromRequest.fold(
       formWithErrors => {
         implicit val errorStr: String = formWithErrors.errors(0).message
@@ -67,7 +67,7 @@ object Application extends Controller {
       }
       ,
       success => {
-        Ok(views.html.genQuest(questionList, getHeader))
+        Ok(views.html.genquest(questionList, getHeader))
       }
     )
   }
