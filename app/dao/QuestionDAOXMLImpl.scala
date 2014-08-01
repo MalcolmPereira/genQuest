@@ -50,6 +50,7 @@ object QuestionDAOXMLImpl extends QuestionDAO {
 
                   }else{
                     null
+
                   }
                 }
               )
@@ -60,23 +61,45 @@ object QuestionDAOXMLImpl extends QuestionDAO {
     questionList.toList
   }
 
-  override def listQuestions(questionIDs: List[Integer]): List[Question] = {
-    null
-  }
-
   override def findQuestion(questionId: Integer): Question = {
+    val questionNode = scala.xml.XML.loadFile("conf/question.xml")
+    questionNode match {
+      case <questions>{questions @ _*}</questions> => {
+        for (question <- questions) {
+          if ((question \ "questionId").text.trim.length > 0 && (question \ "questionId").text.trim.toInt > 0 && (question \ "questionId").text.trim.toInt == questionId) {
+            return new Question((question \ "questionId").text.toInt,
+            (question \ "categoryId").text.toInt,
+            (question \ "questionText").text,
+            (question \ "questionAnswer").text,
+            {
+              if((question \"answerOptions") != null){
+                var answerOptionsList = new ListBuffer[AnswerOption]()
+                for (answerOption <- (question \"answerOptions" \ "answerOption")) {
+                  if((answerOption \"name").text.trim.length > 0 && (answerOption \"correct").text.trim.length > 0 ){
+                    answerOptionsList += new AnswerOption(
+                      (answerOption \"name").text.trim,
+                      (answerOption \"correct").text.trim.toBoolean
+                    )
+                  }
+                }
+                new AnswerOptions(answerOptionsList.toList,{(question \"answerOptions"\@"multipleCorrect").toBoolean})
+
+              }else{
+                null
+
+              }
+            }
+            )
+          }
+        }
+      }
+    }
     null
   }
 
-  override def listQuestionsByCategoryID(categoryIDs: List[Integer]): List[Question] = {
+  override def findQuestionsByCategoryID(categoryIDs: List[Integer]): List[Question] = {
     null
   }
-
-
-  override def findQuestionsByCategoryID(categoryID: Integer): List[Question] = {
-    null
-  }
-
 
   override def addQuestion(question: Question): Integer = {
     null
