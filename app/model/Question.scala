@@ -1,25 +1,21 @@
 package model
 
 class Question(questionId: Integer,
-               questionName: String,
-               questionDescription: String,
+               categoryId: Integer,
                questionText: String,
                questionAnswer: String,
                answerOptions: AnswerOptions) {
 
   def this(questionId: Integer,
-           questionName: String,
-           questionDescription: String,
+           categoryId: Integer,
            questionText: String,
            questionAnswer: String) {
-    this(questionId,questionName,questionDescription,questionText,questionAnswer,null)
+    this(questionId,categoryId,questionText,questionAnswer,null)
   }
 
   def id = questionId
 
-  def name = questionName
-
-  def description = questionDescription
+  def category = categoryId
 
   def question = questionText
 

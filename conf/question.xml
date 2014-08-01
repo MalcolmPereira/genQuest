@@ -1,20 +1,23 @@
 <questions>
     <question>
-        <questionId></questionId>
-        <questionName></questionName>
-        <questionDescription></questionDescription>
-        <questionText></questionText>
-        <questionAnswer></questionAnswer>
-        <answerOptions multipeCorrect="true">
+        <questionId>1</questionId>
+        <categoryId>1</categoryId>
+        <questionText>How many different types of constructors are available in the parent java.lang.Object class?</questionText>
+        <questionAnswer>There is only one default no argument constructor.</questionAnswer>
+        <answerOptions multipleCorrect="true">
             <answerOption>
-                <name></name>
-                <correct></correct>
+                <name>2</name>
+                <correct>false</correct>
             </answerOption>
             <answerOption>
-                <name></name>
-                <correct></correct>
+                <name>1</name>
+                <correct>true</correct>
             </answerOption>
-        </answerOptions >
+            <answerOption>
+                <name>4</name>
+                <correct>false</correct>
+            </answerOption>
+        </answerOptions>
     </question>
 </questions>
 
