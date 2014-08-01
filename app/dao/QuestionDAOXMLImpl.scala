@@ -136,26 +136,25 @@ object QuestionDAOXMLImpl extends QuestionDAO {
 
   override def addQuestion(question: Question): Integer = {
     val questionID     = idGenerator.getAndIncrement.toInt
-    val nodeString     = "<question><questionId>"+questionID +
-                         "</questionId><categoryId>"+question.category+
-                         "</categoryId><questionText>"+question.question+
-                         "</questionText><questionAnswer>"+question.answer+
-                         {
+    val checkCategory  = CategoryDAOXMLImpl.findCategory(question.category)
+    if(checkCategory != null){
+      val nodeString     = "<question><questionId>"+questionID +
+        "</questionId><categoryId>"+question.category+
+        "</categoryId><questionText>"+question.question+
+        "</questionText><questionAnswer>"+question.answer+
+        {
+          val nodeBuffer = "<abc></abc>"
+          if(question.options != null){
 
-                           if(question.options != null){
-                             "</questionAnswer><answerOptions "+question.options.multipleCorrect.toString+">"
-                             for(answerOptions <- question.options.answerOptions){
-                               "<answerOption><name>"+answerOptions.optionName+
-                               "</name><correct>"+answerOptions.optionCorrect+
-                               "</correct></answerOption>"
-                             }
-                             "</answerOptions><question>"
-                           }else{
-                             "</questionAnswer></question>"
-                           }
-                         }
-    println(nodeString)
-    null
+          }
+          nodeBuffer
+        }
+        println(nodeString)
+    }else{
+        0
+    }
+
+    0
   }
 
   override def updateQuestion(question: Question): Question = {
@@ -166,3 +165,20 @@ object QuestionDAOXMLImpl extends QuestionDAO {
     0
   }
 }
+
+/*
+
+if(question.options != null){
+            "</questionAnswer><answerOptions "+question.options.multipleCorrect.toString+">"
+            for(answerOptions <- question.options.answerOptions){
+              "<answerOption><name>"+answerOptions.optionName+
+                "</name><correct>"+answerOptions.optionCorrect+
+                "</correct></answerOption>"
+            }
+            "</answerOptions><question>"
+          }else{
+            "</questionAnswer></question>"
+          }
+
+
+ */
