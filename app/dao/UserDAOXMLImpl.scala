@@ -12,8 +12,7 @@ object UserDAOXMLImpl extends UserDAO {
   private val idGenerator = new AtomicLong(
       {
           var idList  = new ListBuffer[Int]()
-          val loginNode = scala.xml.XML.loadFile("conf/login.xml")
-          loginNode match {
+          scala.xml.XML.loadFile("conf/login.xml") match {
               case <users>{users @ _*}</users> => {
                   for (user <- users) {
                       if((user \"userID").text.trim.length > 0 &&  (user \"userID").text.trim.toInt > 0 ){
@@ -28,16 +27,11 @@ object UserDAOXMLImpl extends UserDAO {
 
   override def listUsers : List[User] = {
       var userList  = new ListBuffer[User]()
-      val loginNode = scala.xml.XML.loadFile("conf/login.xml")
-      loginNode match {
+      scala.xml.XML.loadFile("conf/login.xml") match {
           case <users>{users @ _*}</users> => {
               for (user <- users) {
                   if ((user \ "userID").text.trim.length > 0 && (user \ "userID").text.trim.toInt > 0) {
-                    userList += new User((user \ "userID").text.toInt,
-                                         (user \ "userName").text,
-                                         (user \ "userFirstName").text,
-                                         (user \ "userLastName").text
-                                        )
+                    userList += getUser(user)
                   }
               }
           }
@@ -46,16 +40,11 @@ object UserDAOXMLImpl extends UserDAO {
   }
 
   override def findUser(userName: String, userPassword: String): User = {
-      val loginNode = scala.xml.XML.loadFile("conf/login.xml")
-      loginNode match {
+          scala.xml.XML.loadFile("conf/login.xml") match {
           case <users>{users @ _*}</users> => {
               for (user <- users) {
                    if((user \"userName").text == userName && BCryptUtil.check(userPassword,(user \"userPassword").text)){
-                       return new User((user \"userID").text.toInt,
-                                       (user \"userName").text,
-                                       (user \"userFirstName").text,
-                                       (user \"userLastName").text
-                                       )
+                       return getUser(user)
                     }
               }
           }
@@ -64,16 +53,11 @@ object UserDAOXMLImpl extends UserDAO {
   }
 
   override def findUser(userName: String): User = {
-      val loginNode = scala.xml.XML.loadFile("conf/login.xml")
-      loginNode match {
+     scala.xml.XML.loadFile("conf/login.xml") match {
           case <users>{users @ _*}</users> => {
               for (user <- users) {
                   if((user \"userName").text == userName){
-                       return new User((user \"userID").text.toInt,
-                                       (user \"userName").text,
-                                       (user \"userFirstName").text,
-                                       (user \"userLastName").text
-                                      )
+                       return getUser(user)
                   }
               }
           }
@@ -82,16 +66,11 @@ object UserDAOXMLImpl extends UserDAO {
   }
 
   override def findUser(userId: Integer): User = {
-      val loginNode = scala.xml.XML.loadFile("conf/login.xml")
-      loginNode match {
+    scala.xml.XML.loadFile("conf/login.xml") match {
           case <users>{users @ _*}</users> => {
               for (user <- users) {
                 if((user \"userID").text.trim.length > 0 &&  (user \"userID").text.trim.toInt == userId){
-                        return new User((user \"userID").text.toInt,
-                                        (user \"userName").text,
-                                        (user \"userFirstName").text,
-                                        (user \"userLastName").text
-                                        )
+                        return getUser(user)
                    }
               }
           }
@@ -100,18 +79,10 @@ object UserDAOXMLImpl extends UserDAO {
   }
 
   override def addUser(user: User): Integer = {
-      val userID       = idGenerator.getAndIncrement.toInt
-      val nodeString   = "<user><userID>"+userID+
-                         "</userID><userName>"+user.name+
-                         "</userName><userPassword>"+BCryptUtil.create(user.password)+
-                         "</userPassword><userFirstName>"+user.firstName+
-                         "</userFirstName><userLastName>"+user.lastName+
-                         "</userLastName></user>"
-      val nodeXML           = scala.xml.XML.loadString(nodeString)
-      val loginNode         = scala.xml.XML.loadFile("conf/login.xml")
-      val loginNodeUpdated  = loginNode match {
+      val userID            = idGenerator.getAndIncrement.toInt
+      val loginNodeUpdated  = scala.xml.XML.loadFile("conf/login.xml") match {
         case Elem(prefix, label, attribs, scope, child @ _*) => {
-          Elem(prefix, label, attribs, scope, true, child ++ nodeXML: _*)
+          Elem(prefix, label, attribs, scope, true, child ++ getUserNode(user,userID): _*)
         }
       }
       scala.xml.XML.save("conf/login.xml", loginNodeUpdated, "UTF-8", false, null)
@@ -119,37 +90,26 @@ object UserDAOXMLImpl extends UserDAO {
   }
 
   override def updateUser(user: User): User = {
-      val loginNode = scala.xml.XML.loadFile("conf/login.xml")
       var userList  = new ListBuffer[Node]()
-      loginNode match {
+      scala.xml.XML.loadFile("conf/login.xml") match {
           case <users>{users @ _*}</users> => {
                 for (user_ <- users) {
                     if((user_ \"userID").text.trim.length > 0 &&  (user_ \"userID").text.trim.toInt > 0 && (user_ \"userID").text.trim.toInt == user.id){
-                      userList  += {
-                                    scala.xml.XML.loadString(
-                                      "<user><userID>" + (user_ \"userID").text +
-                                      "</userID><userName>" + (user_ \"userName").text +
-                                      "</userName><userPassword>" + (user_ \"userPassword").text +
-                                      "</userPassword><userFirstName>" + user.firstName +
-                                      "</userFirstName><userLastName>" + user.lastName +
-                                      "</userLastName></user>")
-                                   }
+                      userList  += getUserNode(user, user_)
                     }else{
-                        userList  += user_
+                      userList  += user_
                     }
                 }
           }
       }
-      val loginNodeUpdated = <users>{for(user <- userList) yield user}</users>
-      scala.xml.XML.save("conf/login.xml", loginNodeUpdated, "UTF-8", false, null)
+      scala.xml.XML.save("conf/login.xml", <users>{for(user <- userList) yield user}</users>, "UTF-8", false, null)
       user
   }
 
   override def deleteUser(user: User): Integer = {
-      val loginNode    = scala.xml.XML.loadFile("conf/login.xml")
       var userList     = new ListBuffer[Node]()
       var nodeCounter  = 0
-      loginNode match {
+      scala.xml.XML.loadFile("conf/login.xml") match {
         case <users>{users @ _*}</users> => {
           for (user_ <- users) {
               if((user_ \"userID").text.trim.length > 0 &&  (user_ \"userID").text.trim.toInt > 0 && (user_ \"userID").text.trim.toInt != user.id){
@@ -160,10 +120,35 @@ object UserDAOXMLImpl extends UserDAO {
           }
         }
       }
-      val loginNodeUpdated = <users>{for(user <- userList) yield user}</users>
-      scala.xml.XML.save("conf/login.xml", loginNodeUpdated, "UTF-8", false, null)
+      scala.xml.XML.save("conf/login.xml", <users>{for(user <- userList) yield user}</users>, "UTF-8", false, null)
       nodeCounter
   }
 
+  private def getUser(user: Node) :User = {
+    new User((user \ "userID").text.toInt,
+      (user \ "userName").text,
+      (user \ "userFirstName").text,
+      (user \ "userLastName").text
+    )
+  }
 
+  private def getUserNode(user: User, userID: Int) :Node = {
+    scala.xml.XML.loadString("<user><userID>"+userID+
+      "</userID><userName>"+user.name+
+      "</userName><userPassword>"+BCryptUtil.create(user.password)+
+      "</userPassword><userFirstName>"+user.firstName+
+      "</userFirstName><userLastName>"+user.lastName+
+      "</userLastName></user>"
+    )
+  }
+
+  private def getUserNode(user: User, userNode: Node) :Node = {
+    scala.xml.XML.loadString("<user><userID>" + (userNode \"userID").text +
+      "</userID><userName>" + (userNode \"userName").text +
+      "</userName><userPassword>" + (userNode \"userPassword").text +
+      "</userPassword><userFirstName>" + user.firstName +
+      "</userFirstName><userLastName>" + user.lastName +
+      "</userLastName></user>"
+    )
+  }
 }

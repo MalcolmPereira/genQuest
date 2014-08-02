@@ -9,7 +9,7 @@ class Category(categoryId: Integer,
   }
 
   def this(categoryId: Integer, categoryDescription: String) {
-    this(0,"",categoryDescription)
+    this(categoryId,"",categoryDescription)
   }
 
   def id           = categoryId 
