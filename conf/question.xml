@@ -2,7 +2,8 @@
     <question>
         <questionId>1</questionId>
         <categoryId>1</categoryId>
-        <questionText>How many different types of constructors are available in the parent java.lang.Object class?</questionText>
+        <questionText>How many different types of constructors are available in the parent java.lang.Object class?
+        </questionText>
         <questionAnswer>There is only one default no argument constructor.</questionAnswer>
         <answerOptions multipleCorrect="true">
             <answerOption>
@@ -20,4 +21,3 @@
         </answerOptions>
     </question>
 </questions>
-

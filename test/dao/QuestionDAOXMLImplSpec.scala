@@ -74,6 +74,7 @@ class QuestionDAOXMLImplSpec extends FlatSpec {
     val answerOptionList = List(new AnswerOption("option1",false),new AnswerOption("option2",false),new AnswerOption("option3",false),new AnswerOption("option4",true))
     val answerOption     = new AnswerOptions(answerOptionList,false)
     val question         = new Question(1,"Some Question","Some Answer",answerOption)
-    QuestionDAOXMLImpl.addQuestion(question)
+    val questionId       = QuestionDAOXMLImpl.addQuestion(question)
+    assert( questionId > 0)
   }
 }

@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicLong
 import model.{Question,AnswerOptions, AnswerOption}
 
 import scala.collection.mutable.ListBuffer
+import scala.xml.Elem
 
 object QuestionDAOXMLImpl extends QuestionDAO {
 
@@ -141,19 +142,31 @@ object QuestionDAOXMLImpl extends QuestionDAO {
       val nodeString     = "<question><questionId>"+questionID +
         "</questionId><categoryId>"+question.category+
         "</categoryId><questionText>"+question.question+
-        "</questionText><questionAnswer>"+question.answer+
+        "</questionText><questionAnswer>"+question.answer+"</questionAnswer>"+
         {
-          val nodeBuffer = "<abc></abc>"
           if(question.options != null){
-
+                var optionString = "<answerOptions multipleCorrect=\"" + question.options.multipleCorrect.toString + "\">"
+                for (answerOptions <- question.options.answerOptions) {
+                  optionString   += "<answerOption><name>"+answerOptions.optionName
+                  optionString   += "</name><correct>"+answerOptions.optionCorrect
+                  optionString   += "</correct></answerOption>"
+                }
+                optionString     += "</answerOptions></question>"
+                optionString
+          }else{
+            "</question>"
           }
-          nodeBuffer
         }
-        println(nodeString)
-    }else{
-        0
+      val nodeXML           = scala.xml.XML.loadString(nodeString)
+      val loginNode         = scala.xml.XML.loadFile("conf/question.xml")
+      val loginNodeUpdated  = loginNode match {
+        case Elem(prefix, label, attribs, scope, child @ _*) => {
+          Elem(prefix, label, attribs, scope, true, child ++ nodeXML: _*)
+        }
+      }
+      scala.xml.XML.save("conf/question.xml", loginNodeUpdated, "UTF-8", false, null)
+      return questionID
     }
-
     0
   }
 
