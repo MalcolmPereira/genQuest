@@ -12,8 +12,7 @@ object QuestionDAOXMLImpl extends QuestionDAO {
   private val idGenerator = new AtomicLong(
   {
     var idList       = new ListBuffer[Int]()
-    val questionNode = scala.xml.XML.loadFile("conf/question.xml")
-    questionNode match {
+    scala.xml.XML.loadFile("conf/question.xml") match {
       case <questions>{questions @ _*}</questions> => {
         for (question <- questions) {
           if((question \"questionId").text.trim.length > 0 &&  (question \"questionId").text.trim.toInt > 0 ){
@@ -27,34 +26,11 @@ object QuestionDAOXMLImpl extends QuestionDAO {
 
   override def listQuestions(): List[Question] = {
     var questionList  = new ListBuffer[Question]()
-    val questionNode = scala.xml.XML.loadFile("conf/question.xml")
-    questionNode match {
+    scala.xml.XML.loadFile("conf/question.xml") match {
       case <questions>{questions @ _*}</questions> => {
         for (question <- questions) {
           if ((question \ "questionId").text.trim.length > 0 && (question \ "questionId").text.trim.toInt > 0) {
-              questionList += new Question((question \ "questionId").text.toInt,
-                (question \ "categoryId").text.toInt,
-                (question \ "questionText").text,
-                (question \ "questionAnswer").text,
-                {
-                  if((question \"answerOptions") != null){
-                    var answerOptionsList = new ListBuffer[AnswerOption]()
-                    for (answerOption <- (question \"answerOptions" \ "answerOption")) {
-                      if((answerOption \"name").text.trim.length > 0 && (answerOption \"correct").text.trim.length > 0 ){
-                        answerOptionsList += new AnswerOption(
-                                                              (answerOption \"name").text.trim,
-                                                              (answerOption \"correct").text.trim.toBoolean
-                                              )
-                      }
-                    }
-                    new AnswerOptions(answerOptionsList.toList,{(question \"answerOptions"\@"multipleCorrect").toBoolean})
-
-                  }else{
-                    null
-
-                  }
-                }
-              )
+              questionList += getQuestion(question)
           }
         }
       }
@@ -68,29 +44,7 @@ object QuestionDAOXMLImpl extends QuestionDAO {
       case <questions>{questions @ _*}</questions> => {
         for (question <- questions) {
           if ((question \ "questionId").text.trim.length > 0 && (question \ "questionId").text.trim.toInt > 0 && (question \ "questionId").text.trim.toInt == questionId) {
-            return new Question((question \ "questionId").text.toInt,
-            (question \ "categoryId").text.toInt,
-            (question \ "questionText").text,
-            (question \ "questionAnswer").text,
-            {
-              if((question \"answerOptions") != null){
-                var answerOptionsList = new ListBuffer[AnswerOption]()
-                for (answerOption <- (question \"answerOptions" \ "answerOption")) {
-                  if((answerOption \"name").text.trim.length > 0 && (answerOption \"correct").text.trim.length > 0 ){
-                    answerOptionsList += new AnswerOption(
-                      (answerOption \"name").text.trim,
-                      (answerOption \"correct").text.trim.toBoolean
-                    )
-                  }
-                }
-                new AnswerOptions(answerOptionsList.toList,{(question \"answerOptions"\@"multipleCorrect").toBoolean})
-
-              }else{
-                null
-
-              }
-            }
-            )
+            return getQuestion(question)
           }
         }
       }
@@ -105,29 +59,7 @@ object QuestionDAOXMLImpl extends QuestionDAO {
       case <questions>{questions @ _*}</questions> => {
         for (question <- questions) {
           if ((question \ "questionId").text.trim.length > 0 && (question \ "questionId").text.trim.toInt > 0 && (question \ "categoryId").text.trim.length > 0  && categoryIDs.contains((question \ "categoryId").text.trim.toInt)) {
-            questionList += new Question((question \ "questionId").text.toInt,
-            (question \ "categoryId").text.toInt,
-            (question \ "questionText").text,
-            (question \ "questionAnswer").text,
-            {
-              if((question \"answerOptions") != null){
-                var answerOptionsList = new ListBuffer[AnswerOption]()
-                for (answerOption <- (question \"answerOptions" \ "answerOption")) {
-                  if((answerOption \"name").text.trim.length > 0 && (answerOption \"correct").text.trim.length > 0 ){
-                    answerOptionsList += new AnswerOption(
-                      (answerOption \"name").text.trim,
-                      (answerOption \"correct").text.trim.toBoolean
-                    )
-                  }
-                }
-                new AnswerOptions(answerOptionsList.toList,{(question \"answerOptions"\@"multipleCorrect").toBoolean})
-
-              }else{
-                null
-
-              }
-            }
-            )
+            questionList += getQuestion(question)
           }
         }
       }
@@ -139,29 +71,9 @@ object QuestionDAOXMLImpl extends QuestionDAO {
     val questionID     = idGenerator.getAndIncrement.toInt
     val checkCategory  = CategoryDAOXMLImpl.findCategory(question.category)
     if(checkCategory != null){
-      val nodeString     = "<question><questionId>"+questionID +
-        "</questionId><categoryId>"+question.category+
-        "</categoryId><questionText>"+question.question+
-        "</questionText><questionAnswer>"+question.answer+"</questionAnswer>"+
-        {
-          if(question.options != null){
-                var optionString = "<answerOptions multipleCorrect=\"" + question.options.multipleCorrect.toString + "\">"
-                for (answerOptions <- question.options.answerOptions) {
-                  optionString   += "<answerOption><name>"+answerOptions.optionName
-                  optionString   += "</name><correct>"+answerOptions.optionCorrect
-                  optionString   += "</correct></answerOption>"
-                }
-                optionString     += "</answerOptions></question>"
-                optionString
-          }else{
-            "</question>"
-          }
-        }
-      val nodeXML           = scala.xml.XML.loadString(nodeString)
-      val loginNode         = scala.xml.XML.loadFile("conf/question.xml")
-      val loginNodeUpdated  = loginNode match {
+        val loginNodeUpdated  = scala.xml.XML.loadFile("conf/question.xml") match {
         case Elem(prefix, label, attribs, scope, child @ _*) => {
-          Elem(prefix, label, attribs, scope, true, child ++ nodeXML: _*)
+          Elem(prefix, label, attribs, scope, true, child ++ getQuestionNode(question, questionID): _*)
         }
       }
       scala.xml.XML.save("conf/question.xml", loginNodeUpdated, "UTF-8", false, null)
@@ -171,62 +83,109 @@ object QuestionDAOXMLImpl extends QuestionDAO {
   }
 
   override def updateQuestion(question: Question): Question = {
-    val questionNode  = scala.xml.XML.loadFile("conf/question.xml")
     var questionList  = new ListBuffer[Node]()
-    questionNode match {
+    scala.xml.XML.loadFile("conf/question.xml") match {
       case <questions>{questions @ _*}</questions> => {
         for (question_ <- questions) {
           if ((question_ \ "questionId").text.trim.length > 0 && (question_ \ "questionId").text.trim.toInt > 0 && (question_ \ "questionId").text.trim.toInt == question.id) {
-               questionList  += {
-                 scala.xml.XML.loadString(
-                   "<question><questionId>"+ (question_ \ "questionId").text.toInt +
-                   "</questionId><categoryId>"+(question_ \ "categoryId").text.toInt+
-                   "</categoryId><questionText>"+question.question+
-                   "</questionText><questionAnswer>"+question.answer+"</questionAnswer>"+
-                   {
-                       if(question.options != null){
-                         var optionString = "<answerOptions multipleCorrect=\"" + question.options.multipleCorrect.toString + "\">"
-                         for (answerOptions <- question.options.answerOptions) {
-                           optionString   += "<answerOption><name>"+answerOptions.optionName
-                           optionString   += "</name><correct>"+answerOptions.optionCorrect
-                           optionString   += "</correct></answerOption>"
-                         }
-                         optionString     += "</answerOptions></question>"
-                         optionString
-                       }else{
-                         "</question>"
-                       }
-                   }
-                 )
-               }
+               questionList  += getQuestionNode(question, question_)
           }else{
-            questionList  += question_
+               questionList  += question_
           }
         }
       }
     }
-    val loginNodeUpdated = <questions>{for(question <- questionList) yield question}</questions>
-    scala.xml.XML.save("conf/question.xml", loginNodeUpdated, "UTF-8", false, null)
+    scala.xml.XML.save("conf/question.xml", <questions>{for(question <- questionList) yield question}</questions>, "UTF-8", false, null)
     question
   }
 
   override def deleteQuestion(question: Question): Integer = {
-    val questionNode  = scala.xml.XML.loadFile("conf/question.xml")
     var questionList  = new ListBuffer[Node]()
     var nodeCounter  = 0
-    questionNode match {
+    scala.xml.XML.loadFile("conf/question.xml") match {
       case <questions>{questions @ _*}</questions> => {
         for (question_ <- questions) {
           if ((question_ \ "questionId").text.trim.length > 0 && (question_ \ "questionId").text.trim.toInt > 0 && (question_ \ "questionId").text.trim.toInt != question.id) {
-            questionList  += question_
+              questionList  += question_
           }else{
-            nodeCounter  = nodeCounter  + 1
+              nodeCounter  = nodeCounter  + 1
           }
         }
       }
     }
-    val loginNodeUpdated = <questions>{for(question <- questionList) yield question}</questions>
-    scala.xml.XML.save("conf/question.xml", loginNodeUpdated, "UTF-8", false, null)
+    scala.xml.XML.save("conf/question.xml", <questions>{for(question <- questionList) yield question}</questions>, "UTF-8", false, null)
     nodeCounter
+  }
+
+  private def getQuestion(question: Node) :Question = {
+    new Question((question \ "questionId").text.toInt,
+    (question \ "categoryId").text.toInt,
+    (question \ "questionText").text,
+    (question \ "questionAnswer").text,
+    {
+      if((question \"answerOptions") != null){
+        var answerOptionsList = new ListBuffer[AnswerOption]()
+        for (answerOption <- (question \"answerOptions" \ "answerOption")) {
+          if((answerOption \"name").text.trim.length > 0 && (answerOption \"correct").text.trim.length > 0 ){
+            answerOptionsList += new AnswerOption(
+              (answerOption \"name").text.trim,
+              (answerOption \"correct").text.trim.toBoolean
+            )
+          }
+        }
+        new AnswerOptions(answerOptionsList.toList,{(question \"answerOptions"\@"multipleCorrect").toBoolean})
+
+      }else{
+        null
+
+      }
+    }
+    )
+  }
+
+  private def getQuestionNode(question: Question, questionID: Int) :Node = {
+    scala.xml.XML.loadString(
+      "<question><questionId>"+questionID +
+        "</questionId><categoryId>"+question.category+
+        "</categoryId><questionText>"+question.question+
+        "</questionText><questionAnswer>"+question.answer+"</questionAnswer>"+
+        {
+          if(question.options != null){
+            var optionString = "<answerOptions multipleCorrect=\"" + question.options.multipleCorrect.toString + "\">"
+            for (answerOptions <- question.options.answerOptions) {
+              optionString   += "<answerOption><name>"+answerOptions.optionName
+              optionString   += "</name><correct>"+answerOptions.optionCorrect
+              optionString   += "</correct></answerOption>"
+            }
+            optionString     += "</answerOptions></question>"
+            optionString
+          }else{
+            "</question>"
+          }
+        }
+    )
+  }
+
+  private def getQuestionNode(question: Question, questionNode: Node)  :Node = {
+    scala.xml.XML.loadString(
+          "<question><questionId>"+ (questionNode \ "questionId").text.toInt +
+          "</questionId><categoryId>"+(questionNode \ "categoryId").text.toInt+
+          "</categoryId><questionText>"+question.question+
+          "</questionText><questionAnswer>"+question.answer+"</questionAnswer>"+
+          {
+            if(question.options != null){
+              var optionString = "<answerOptions multipleCorrect=\"" + question.options.multipleCorrect.toString + "\">"
+              for (answerOptions <- question.options.answerOptions) {
+                optionString   += "<answerOption><name>"+answerOptions.optionName
+                optionString   += "</name><correct>"+answerOptions.optionCorrect
+                optionString   += "</correct></answerOption>"
+              }
+              optionString     += "</answerOptions></question>"
+              optionString
+            }else{
+              "</question>"
+            }
+          }
+      )
   }
 }

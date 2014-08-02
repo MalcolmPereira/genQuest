@@ -1,7 +1,5 @@
-<categories>
-    <category>
+<categories><category>
         <categoryId>1</categoryId>
         <categoryName>Java</categoryName>
         <categoryDescription>Core Java Questions</categoryDescription>
-    </category>
-</categories>
+    </category></categories>
