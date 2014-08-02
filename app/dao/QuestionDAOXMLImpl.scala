@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicLong
 import model.{Question,AnswerOptions, AnswerOption}
 
 import scala.collection.mutable.ListBuffer
-import scala.xml.Elem
+import scala.xml.{Node, Elem}
 
 object QuestionDAOXMLImpl extends QuestionDAO {
 
@@ -171,27 +171,62 @@ object QuestionDAOXMLImpl extends QuestionDAO {
   }
 
   override def updateQuestion(question: Question): Question = {
-    null
+    val questionNode  = scala.xml.XML.loadFile("conf/question.xml")
+    var questionList  = new ListBuffer[Node]()
+    questionNode match {
+      case <questions>{questions @ _*}</questions> => {
+        for (question_ <- questions) {
+          if ((question_ \ "questionId").text.trim.length > 0 && (question_ \ "questionId").text.trim.toInt > 0 && (question_ \ "questionId").text.trim.toInt == question.id) {
+               questionList  += {
+                 scala.xml.XML.loadString(
+                   "<question><questionId>"+ (question_ \ "questionId").text.toInt +
+                   "</questionId><categoryId>"+(question_ \ "categoryId").text.toInt+
+                   "</categoryId><questionText>"+question.question+
+                   "</questionText><questionAnswer>"+question.answer+"</questionAnswer>"+
+                   {
+                       if(question.options != null){
+                         var optionString = "<answerOptions multipleCorrect=\"" + question.options.multipleCorrect.toString + "\">"
+                         for (answerOptions <- question.options.answerOptions) {
+                           optionString   += "<answerOption><name>"+answerOptions.optionName
+                           optionString   += "</name><correct>"+answerOptions.optionCorrect
+                           optionString   += "</correct></answerOption>"
+                         }
+                         optionString     += "</answerOptions></question>"
+                         optionString
+                       }else{
+                         "</question>"
+                       }
+                   }
+                 )
+               }
+          }else{
+            questionList  += question_
+          }
+        }
+      }
+    }
+    val loginNodeUpdated = <questions>{for(question <- questionList) yield question}</questions>
+    scala.xml.XML.save("conf/question.xml", loginNodeUpdated, "UTF-8", false, null)
+    question
   }
 
   override def deleteQuestion(question: Question): Integer = {
-    0
+    val questionNode  = scala.xml.XML.loadFile("conf/question.xml")
+    var questionList  = new ListBuffer[Node]()
+    var nodeCounter  = 0
+    questionNode match {
+      case <questions>{questions @ _*}</questions> => {
+        for (question_ <- questions) {
+          if ((question_ \ "questionId").text.trim.length > 0 && (question_ \ "questionId").text.trim.toInt > 0 && (question_ \ "questionId").text.trim.toInt != question.id) {
+            questionList  += question_
+          }else{
+            nodeCounter  = nodeCounter  + 1
+          }
+        }
+      }
+    }
+    val loginNodeUpdated = <questions>{for(question <- questionList) yield question}</questions>
+    scala.xml.XML.save("conf/question.xml", loginNodeUpdated, "UTF-8", false, null)
+    nodeCounter
   }
 }
-
-/*
-
-if(question.options != null){
-            "</questionAnswer><answerOptions "+question.options.multipleCorrect.toString+">"
-            for(answerOptions <- question.options.answerOptions){
-              "<answerOption><name>"+answerOptions.optionName+
-                "</name><correct>"+answerOptions.optionCorrect+
-                "</correct></answerOption>"
-            }
-            "</answerOptions><question>"
-          }else{
-            "</questionAnswer></question>"
-          }
-
-
- */

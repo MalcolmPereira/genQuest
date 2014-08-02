@@ -70,11 +70,18 @@ class QuestionDAOXMLImplSpec extends FlatSpec {
      assert(QuestionDAOXMLImpl.findQuestionsByCategoryID(List(0)).size == 0)
   }
 
-  "QuestionDAO " should " Return add valid question " in {
+  "QuestionDAO " should " add/update and delete new question " in {
     val answerOptionList = List(new AnswerOption("option1",false),new AnswerOption("option2",false),new AnswerOption("option3",false),new AnswerOption("option4",true))
     val answerOption     = new AnswerOptions(answerOptionList,false)
     val question         = new Question(1,"Some Question","Some Answer",answerOption)
     val questionId       = QuestionDAOXMLImpl.addQuestion(question)
     assert( questionId > 0)
+    val updatedAnswerOptionList = List(new AnswerOption("option1_Update",false),new AnswerOption("option2_Update",false),new AnswerOption("option3_Update",false),new AnswerOption("option4_Update",true))
+    val updatedanswerOption     = new AnswerOptions(updatedAnswerOptionList,false)
+    val updatequestion          = new Question(questionId,1,"New Updates Some Question","New Updates Some Answer",updatedanswerOption)
+    val updatedQuestion         = QuestionDAOXMLImpl.updateQuestion(updatequestion)
+    assert( updatedQuestion != null)
+    val rowid = QuestionDAOXMLImpl.deleteQuestion(updatedQuestion)
+    assert( rowid != 0 )
   }
 }
