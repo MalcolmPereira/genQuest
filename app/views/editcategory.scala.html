@@ -36,16 +36,16 @@
                     <h4 class="modal-title" id="newCategoryLabel">Add New Category</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <input type="text" name="categoryname" placeholder="Category Name" class="form-control" autofocus required/>
-                    </div>
-                    <div class="form-group">
-                        <textarea class="form-control" name="categorydesc" placeholder="Category Description" class="form-control" autofocus required></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <form>
+                        <div class="form-group">
+                            <input type="text" id="newCategoryNameId" name="newCategoryName" placeholder="Category Name" class="form-control" autofocus required/>
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" id="newCategoryDescId" name="newCategoryDesc" placeholder="Category Description" required></textarea>
+                        </div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" id="saveNewCategoryButton" class="btn btn-primary">Save changes</button>
+                    </form>
                 </div>
             </div>
         </div>
