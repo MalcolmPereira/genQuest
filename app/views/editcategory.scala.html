@@ -6,12 +6,14 @@
     </div>
     <div class="table-responsive">
             @for(category <- categories) {
-            <table class="table table-hover">
+            <table id="categoryEditTable" class="table table-hover">
                 <tr class="active">
-                    <td>@category.name</td>
+                    <td id="categoryName_@category.id">@category.name</td>
+                    <td align="right"><a href="#"><span id="categoryReset_@category.id" class="badge">Revert Updates</span></a></td>
                 </tr>
                 <tr class="active">
-                    <td>@category.description</td>
+                    <td colspan="2" id="categoryDesc_@category.id">@category.description</td>
+                    <input type="hidden" name="categoryDescHidden_@category.id" value="@category.description"/>
                 </tr>
             </table>
             }

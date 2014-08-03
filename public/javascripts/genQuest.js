@@ -19,4 +19,23 @@ $(document).ready(function() {
         	});
        } 	
     });
+
+    $('#categoryEditTable td').click(function(event){
+        if(event.target.id.indexOf("categoryName_") > -1){
+           return
+
+        }else if(event.target.id.indexOf("categoryDesc_") > -1){
+           $(event.target).attr("contentEditable",true);
+        }
+    });
+
+    $('#categoryEditTable td span').click(function(event){
+         if(event.target.id.indexOf("categoryReset_") > -1){
+            var value = $("input[name='categoryDescHidden_"+event.target.id.substring(14,event.target.id.length)+"']").val();
+            $("#categoryDesc_"+event.target.id.substring(14,event.target.id.length)).text(value)
+            $("#categoryDesc_"+event.target.id.substring(14,event.target.id.length)).attr("contentEditable",false);
+         }
+    });
+
 });
+
