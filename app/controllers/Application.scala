@@ -131,6 +131,40 @@ object Application extends Controller {
     )
   }
 
+  def editcategory = Action {  implicit request =>
+    if(request.session.get("userID").isDefined ){
+      Ok(views.html.editcategory(getHeader))
+    }else{
+      Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
+    }
+  }
+
+  def editquestion = Action {  implicit request =>
+    if(request.session.get("userID").isDefined ){
+      Ok(views.html.editquestion(getHeader))
+    }else{
+      Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
+    }
+  }
+
+  /*
+  def editcategory(){  implicit request =>
+    if(request.session.get("userID").isDefined ){
+      Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
+    }else{
+      Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
+    }
+  }
+
+  def editquestion(){  implicit request =>
+    if(request.session.get("userID").isDefined ){
+      Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
+    }else{
+      Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
+    }
+  }
+  */
+
   //Get User ID from session
   def getUserID()(implicit request: RequestHeader) : Int = {
     if(request.session.get("userID").isDefined ){
