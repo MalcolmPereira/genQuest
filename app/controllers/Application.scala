@@ -133,7 +133,7 @@ object Application extends Controller {
 
   def editcategory = Action {  implicit request =>
     if(request.session.get("userID").isDefined ){
-      Ok(views.html.editcategory(getHeader))
+      Ok(views.html.editcategory(categoryDAO.listCategories(),getHeader))
     }else{
       Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
     }
