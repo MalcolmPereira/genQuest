@@ -3,24 +3,26 @@
 @main(header) {
 	<div class="page-header">
 		<h1>Generate Questions</h1>
-	</div>	
-	<form class="form-horizontal" role="form" method="POST" action="@routes.Application.genquest">
-		<div class="form-group form-group-sm">
-			<label class="control-label">Select Categories:</label> 
-			<span class="help-block">Select categories below and click on the submit button to generate questions.</span>
-			<input type="checkbox" id="selectall"/><label>Select All</label>
-			<br/><br/>
-			@for(categoriesSubList <- categories.grouped(5).toList) {
-				<div class="row">
-					 @for(category <- categoriesSubList) {
-					  <div class="col-md-2">
-					 	 <input  class="checkbox1" type="checkbox" name="categoryCheckBox[@category.id]" id="category@category.id" value="@category.id"/> <strong>@category.name</strong>
-					  </div>
-					 } 
-				</div>
-			}
-			<br/><br/>	
-			<button type="submit" class="btn btn-info btn-sm">Submit</button>	
-		</div>
-	</form>
+	</div>
+    <div class="container">
+	    <form class="form-horizontal" role="form" method="POST" action="@routes.Application.genquest">
+		    <div class="form-group form-group-sm">
+			    <label class="control-label">Select Categories:</label>
+			    <span class="help-block">Select categories below and click on the submit button to generate questions.</span>
+			    <input type="checkbox" id="selectall"/><label>Select All</label>
+			    <br/><br/>
+			    @for(categoriesSubList <- categories.grouped(5).toList) {
+				        <div class="row">
+					        @for(category <- categoriesSubList) {
+					            <div class="col-md-2">
+					 	            <input  class="checkbox1" type="checkbox" name="categoryCheckBox[@category.id]" id="category@category.id" value="@category.id"/> <strong>@category.name</strong>
+					            </div>
+					        }
+				        </div>
+			    }
+			    <br/><br/>
+			    <button type="submit" class="btn btn-info btn-sm">Submit</button>
+		    </div>
+	    </form>
+    </div>
 }
