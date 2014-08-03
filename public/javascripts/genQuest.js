@@ -32,8 +32,10 @@ $(document).ready(function() {
     $('#categoryEditTable td span').click(function(event){
          if(event.target.id.indexOf("categoryReset_") > -1){
             var value = $("input[name='categoryDescHidden_"+event.target.id.substring(14,event.target.id.length)+"']").val();
-            $("#categoryDesc_"+event.target.id.substring(14,event.target.id.length)).text(value)
-            $("#categoryDesc_"+event.target.id.substring(14,event.target.id.length)).attr("contentEditable",false);
+            if(confirm("are you sure!!!")){
+              $("#categoryDesc_"+event.target.id.substring(14,event.target.id.length)).text(value)
+              $("#categoryDesc_"+event.target.id.substring(14,event.target.id.length)).attr("contentEditable",false);
+            }
          }
     });
 
