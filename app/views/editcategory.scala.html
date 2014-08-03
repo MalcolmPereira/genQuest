@@ -5,10 +5,10 @@
         <h1>Edit Category</h1>
     </div>
     <div class="table-responsive">
-            @for(category <- categories) {
-            <table id="categoryEditTable" class="table table-hover">
+            <table id="categoryEditTable" class="table">
+                @for(category <- categories) {
                 <tr class="active">
-                    <td id="categoryName_@category.id">@category.name</td>
+                    <td id="categoryName_@category.id"><strong>@category.name</strong></td>
                     <td align="right">
                         <a href="#"><span id="categoryReset_@category.id" class="badge" style="display: none">Revert Updates</span></a>
                     </td>
@@ -16,8 +16,12 @@
                 <tr class="active">
                     <td colspan="2" id="categoryDesc_@category.id">@category.description</td>
                     <input type="hidden" name="categoryDescHidden_@category.id" value="@category.description"/>
+                    <input type="hidden" name="categoryIdHidden_@category.id" value="@category.id"/>
                 </tr>
+                <tr>
+                    <td colspan="2"></td>
+                </tr>
+                }
             </table>
-            }
     </div>
 }
