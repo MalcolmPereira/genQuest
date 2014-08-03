@@ -1,7 +1,6 @@
 package controllers
 
-import dao.UserDAO
-import dao.UserDAOXMLImpl
+import dao._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
@@ -18,6 +17,12 @@ object Application extends Controller {
 
   //User DAO
   val userDAO:UserDAO = UserDAOXMLImpl
+
+  //User DAO
+  val categoryDAO:CategoryDAO = CategoryDAOXMLImpl
+
+  //User DAO
+  val questionDAO:QuestionDAO = QuestionDAOXMLImpl
 
   //Login Form for Header Login Control
   val loginForm = Form(
@@ -55,7 +60,7 @@ object Application extends Controller {
 
   //Index Page
   def index = Action { implicit request =>
-    Ok(views.html.index(categoryList,selectCategoryForm,getHeader))
+    Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
   }
 
   //Generate Questions
@@ -63,11 +68,11 @@ object Application extends Controller {
     selectCategoryForm.bindFromRequest.fold(
       formWithErrors => {
         implicit val errorStr: String = formWithErrors.errors(0).message
-        BadRequest(views.html.index(categoryList, formWithErrors,getHeader))
+        BadRequest(views.html.index(categoryDAO.listCategories(), formWithErrors,getHeader))
       }
       ,
       success => {
-        Ok(views.html.genquest(questionList, getHeader))
+        Ok(views.html.genquest(questionDAO.listQuestions(), getHeader))
       }
     )
   }
@@ -78,13 +83,13 @@ object Application extends Controller {
       formWithErrors => {
           implicit val errorStr: String = formWithErrors.errors(0).message
           val header    =  views.html.header(formWithErrors,null,null,null)
-          BadRequest(views.html.index(categoryList,selectCategoryForm,header ))
+          BadRequest(views.html.index(categoryDAO.listCategories(),selectCategoryForm,header ))
       }
       ,
       user => {
           val userData  =  userDAO.findUser(user._1, user._2)
           val header    =  views.html.header(loginForm,userData.id.toString,userData.firstName,userData.lastName)
-          Ok(views.html.index(categoryList,selectCategoryForm,header)).withSession(
+          Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,header)).withSession(
               "userID"        -> userData.id.toString,
               "userFirstName" -> userData.firstName,
               "userLastName"  -> userData.lastName
@@ -96,7 +101,7 @@ object Application extends Controller {
   //Logout Action
   def logout = Action {  implicit request =>
     val header = views.html.header(loginForm,null,null,null)
-    Ok(views.html.index(categoryList,selectCategoryForm,header)).withNewSession
+    Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,header)).withNewSession
   }
 
   //Register User
@@ -117,7 +122,7 @@ object Application extends Controller {
       user => {
         val userID     = userDAO.addUser(new User(0,user._1,user._2,user._3,user._4))
         val header     = views.html.header(loginForm,userID.toString,user._3,user._4)
-        Ok(views.html.index(categoryList,selectCategoryForm,header)).withSession(
+        Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,header)).withSession(
           "userID" -> userID.toString,
           "userFirstName" -> user._3,
           "userLastName" -> user._4
@@ -152,33 +157,4 @@ object Application extends Controller {
     return views.html.header(loginForm,userID,userFirstName,userLastName)
   }
 
-  //Get Category TODO
-  def categoryList() : List[Category]  = {
-	  List(
-	  	    new Category(1, "Java","Java Cate"),
-	  		  new Category(2, "Spring","Spring Cate"),
-	  		  new Category(3, "Web Service","WS Cate"),
-	  		  new Category(4, "Test 4","WS Cate"),
-	  		  new Category(5, "Test 5","WS Cate"),
-	  		  new Category(6, "Test 6","WS Cate"),
-	  		  new Category(7, "Test 7","WS Cate"),
-	  		  new Category(8, "Test 8","WS Cate"),
-	  		  new Category(9, "Test 9","WS Cate"),
-	  		  new Category(10, "Test 10","WS Cate"),
-	  		  new Category(11, "Test 11","WS Cate"),
-	  		  new Category(12, "Test 12","WS Cate"),
-	  		  new Category(13, "Test 13","WS Cate"),
-	  		  new Category(14, "Test 14","WS Cate"),
-	  		  new Category(15, "Test 15","WS Cate"),
-	  		  new Category(16, "Test 16","WS Cate"),
-	  		  new Category(17, "Test 17","WS Cate"),
-	  		  new Category(18, "Test 18","WS Cate")
-	  	)
-  }
-  //Get Questions TODO
-  def questionList() : List[Question] = {
-	  List(
-	  		new Question(1,1,"question","answer")
-	  )
-  }
 }
