@@ -9,7 +9,9 @@
             <table id="categoryEditTable" class="table table-hover">
                 <tr class="active">
                     <td id="categoryName_@category.id">@category.name</td>
-                    <td align="right"><a href="#"><span id="categoryReset_@category.id" class="badge">Revert Updates</span></a></td>
+                    <td align="right">
+                        <a href="#"><span id="categoryReset_@category.id" class="badge" style="display: none">Revert Updates</span></a>
+                    </td>
                 </tr>
                 <tr class="active">
                     <td colspan="2" id="categoryDesc_@category.id">@category.description</td>

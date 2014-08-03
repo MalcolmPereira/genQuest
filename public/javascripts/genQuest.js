@@ -23,18 +23,32 @@ $(document).ready(function() {
     $('#categoryEditTable td').click(function(event){
         if(event.target.id.indexOf("categoryName_") > -1){
            return
-
         }else if(event.target.id.indexOf("categoryDesc_") > -1){
            $(event.target).attr("contentEditable",true);
+        }
+    });
+
+    $('#categoryEditTable td').blur(function(event){
+        if(event.target.id.indexOf("categoryName_") > -1){
+            return
+        }else if(event.target.id.indexOf("categoryDesc_") > -1){
+             if(
+                $.trim($("input[name='categoryDescHidden_"+event.target.id.substring(13,event.target.id.length)+"']").val())
+                !=
+                $.trim($("#categoryDesc_"+event.target.id.substring(13,event.target.id.length)).text())
+             ){
+                $("#categoryReset_"+event.target.id.substring(13,event.target.id.length)).show();
+             }
         }
     });
 
     $('#categoryEditTable td span').click(function(event){
          if(event.target.id.indexOf("categoryReset_") > -1){
             var value = $("input[name='categoryDescHidden_"+event.target.id.substring(14,event.target.id.length)+"']").val();
-            if(confirm("are you sure!!!")){
+            if(confirm("Are you sure you want to revert new updates ? ")){
               $("#categoryDesc_"+event.target.id.substring(14,event.target.id.length)).text(value)
               $("#categoryDesc_"+event.target.id.substring(14,event.target.id.length)).attr("contentEditable",false);
+              $("#categoryReset_"+event.target.id.substring(14,event.target.id.length)).hide();
             }
          }
     });
