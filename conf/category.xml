@@ -1,13 +1,17 @@
-<categories><category>
+<categories>
+    <category>
         <categoryId>1</categoryId>
         <categoryName>Java</categoryName>
         <categoryDescription>Core Java Questions</categoryDescription>
-    </category><category>
+    </category>
+    <category>
         <categoryId>2</categoryId>
         <categoryName>Spring</categoryName>
         <categoryDescription>Core Spring Questions</categoryDescription>
-    </category><category>
+    </category>
+    <category>
         <categoryId>3</categoryId>
         <categoryName>Scala</categoryName>
-        <categoryDescription>Scala Questions</categoryDescription>
-    </category><category><categoryId>4</categoryId><categoryName>Scala</categoryName><categoryDescription>Scala Questions Updates</categoryDescription></category><category><categoryId>5</categoryId><categoryName>Scala</categoryName><categoryDescription>Scala Questions Updates</categoryDescription></category><category><categoryId>6</categoryId><categoryName>Scala</categoryName><categoryDescription>Scala Questions Updates</categoryDescription></category><category><categoryId>7</categoryId><categoryName>Scala</categoryName><categoryDescription>Scala Questions New</categoryDescription></category></categories>
+        <categoryDescription>Scala Questions Updates</categoryDescription>
+    </category>
+</categories>
