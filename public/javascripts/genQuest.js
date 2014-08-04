@@ -16,3 +16,7 @@ function deleteCategory(categoryId){
     $("#deleteCategoryId").val(categoryId);
     $('#deleteForm').submit();
 }
+
+function updateCategory(categoryId){
+    $("#categoryModelUpdate").modal('show');
+}
