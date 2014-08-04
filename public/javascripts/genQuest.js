@@ -45,10 +45,5 @@ $(document).ready(function() {
          }
     });
 
-    $('#saveNewCategoryButton').click(function(event){
-         alert($("#newCategoryNameId").val())
-         alert($("#newCategoryDescId").val())
-
-    });
 });
 

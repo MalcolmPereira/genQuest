@@ -58,6 +58,17 @@ object Application extends Controller {
      )
   )
 
+  //Category Selection Form
+  val categoryForm = Form (
+    tuple(
+          "categoryName"  -> nonEmptyText,
+          "categoryDesc"  -> nonEmptyText
+         )verifying ("Category already exists please choose another category name.", result => result match {
+           case (categoryName,categoryDesc) => categoryDAO.findCategory(categoryName) == null
+         }
+    )
+  )
+
   //Index Page
   def index = Action { implicit request =>
     Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
@@ -133,10 +144,32 @@ object Application extends Controller {
 
   def editcategory = Action {  implicit request =>
     if(request.session.get("userID").isDefined ){
-      Ok(views.html.editcategory(categoryDAO.listCategories(),getHeader))
+      Ok(views.html.editcategory(categoryDAO.listCategories(),categoryForm,getHeader))
     }else{
       Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
     }
+  }
+
+  def addcategory = Action { implicit request =>
+    if(request.session.get("userID").isDefined ){
+      categoryForm.bindFromRequest.fold(
+        formWithErrors => {
+          implicit val errorStr: String = formWithErrors.errors(0).message
+          BadRequest(views.html.editcategory(categoryDAO.listCategories(), formWithErrors,getHeader))
+        }
+        ,
+        success => {
+          categoryDAO.addCategory(new Category(success._1,success._2))
+          Ok(views.html.editcategory(categoryDAO.listCategories(),categoryForm,getHeader))
+        }
+      )
+
+
+
+    }else{
+      Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
+    }
+
   }
 
   def editquestion = Action {  implicit request =>
@@ -147,23 +180,7 @@ object Application extends Controller {
     }
   }
 
-  /*
-  def editcategory(){  implicit request =>
-    if(request.session.get("userID").isDefined ){
-      Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
-    }else{
-      Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
-    }
-  }
 
-  def editquestion(){  implicit request =>
-    if(request.session.get("userID").isDefined ){
-      Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
-    }else{
-      Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
-    }
-  }
-  */
 
   //Get User ID from session
   def getUserID()(implicit request: RequestHeader) : Int = {

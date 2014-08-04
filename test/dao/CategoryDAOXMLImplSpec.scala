@@ -20,7 +20,6 @@ class CategoryDAOXMLImplSpec extends FlatSpec {
        }
    }
 
-
   "CategoryDAO " should " Return valid category for categoryid " in {
     val category = CategoryDAOXMLImpl.findCategory(1)
     assert(category.id != null)
@@ -29,6 +28,21 @@ class CategoryDAOXMLImplSpec extends FlatSpec {
     assert(category.name.length > 0)
     assert(category.description != null)
     assert(category.description.length > 0)
+  }
+
+  "CategoryDAO " should " Return valid category for category name " in {
+    val category = CategoryDAOXMLImpl.findCategory("java")
+    assert(category.id != null)
+    assert(category.id > 0)
+    assert(category.name != null)
+    assert(category.name.length > 0)
+    assert(category.description != null)
+    assert(category.description.length > 0)
+  }
+
+  "CategoryDAO " should " Return null category for invalid category name " in {
+    val category = CategoryDAOXMLImpl.findCategory("invalid")
+    assert(category == null)
   }
 
   "CategoryDAO " should " Return null for invalid categoryid " in {

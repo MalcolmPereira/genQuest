@@ -10,6 +10,7 @@ POST    /logout                     controllers.Application.logout
 GET     /register                   controllers.Application.register
 POST    /adduser                    controllers.Application.adduser
 GET     /editcategory               controllers.Application.editcategory
+POST    /addcategory                controllers.Application.addcategory
 GET     /editquestion               controllers.Application.editquestion
 
 
