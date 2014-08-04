@@ -7,5 +7,5 @@ trait CategoryDAO {
   def findCategory(categoryName: String): Category
   def addCategory(category: Category): Integer
   def updateCategory(category: Category): Category
-  def deleteCategory(category: Category): Integer
+  def deleteCategory(categoryId: Integer): Integer
 }

@@ -1,5 +1,5 @@
 @import model._
-@(categories: List[Category],categoryForm: Form[(String,String)],header:Html)(implicit errorStr: String)
+@(categories: List[Category],header:Html)(implicit errorStr: String)
 @main(header) {
     <div class="page-header">
         <h1>Edit Category</h1>
@@ -11,13 +11,12 @@
                     <tr class="active">
                         <td id="categoryName_@category.id"><strong>@category.name</strong></td>
                         <td align="right">
-                            <a href="#"><span id="categoryReset_@category.id" class="badge" style="display: none">Revert Updates</span></a>
+                            <button id="updateCategory" type="button" class="btn btn-warning btn-xs">Update</button>
+                            <button onclick="deleteCategory(@category.id)" id="deleteCategory" type="button" class="btn btn-danger btn-xs">Remove</button>
                         </td>
                     </tr>
                     <tr class="active">
                         <td colspan="2" id="categoryDesc_@category.id">@category.description</td>
-                        <input type="hidden" name="categoryDescHidden_@category.id" value="@category.description"/>
-                        <input type="hidden" name="categoryIdHidden_@category.id" value="@category.id"/>
                     </tr>
                     <tr>
                         <td colspan="2"></td>
@@ -26,7 +25,9 @@
                 </tbody>
             </table>
             <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#newCategoryModel">Add New</button>
-            <button type="button" class="btn btn-info btn-xs">Submit</button>
+            <form id="deleteForm" name="deleteForm" method="POST" action="@routes.Application.deletecategory">
+                <input type="hidden" id="deleteCategoryId" name="categoryId[]" value=""/>
+            </form>
     </div>
     <div class="modal fade" id="newCategoryModel" tabindex="-1" role="dialog" aria-labelledby="newCategoryLabel" aria-hidden="true">
         <div class="modal-dialog">

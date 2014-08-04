@@ -100,13 +100,13 @@ object CategoryDAOXMLImpl extends CategoryDAO {
     category
   }
 
-  override def deleteCategory(category: Category): Integer = {
+  override def deleteCategory(categoryId: Integer): Integer = {
     var categoryList  = new ListBuffer[Node]()
     var nodeCounter  = 0
     scala.xml.XML.loadFile("conf/category.xml") match {
       case <categories>{categories @ _*}</categories> => {
         for (category_ <- categories) {
-          if ((category_ \ "categoryId").text.trim.length > 0 && (category_ \ "categoryId").text.trim.toInt > 0 && (category_ \ "categoryId").text.trim.toInt != category.id) {
+          if ((category_ \ "categoryId").text.trim.length > 0 && (category_ \ "categoryId").text.trim.toInt > 0 && (category_ \ "categoryId").text.trim.toInt != categoryId) {
             categoryList  += category_
           }else{
             nodeCounter  = nodeCounter  + 1

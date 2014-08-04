@@ -6,4 +6,8 @@
         <categoryId>2</categoryId>
         <categoryName>Spring</categoryName>
         <categoryDescription>Core Spring Questions</categoryDescription>
-    </category><category><categoryId>3</categoryId><categoryName>Scala</categoryName><categoryDescription>Scala Questions</categoryDescription></category></categories>
+    </category><category>
+        <categoryId>3</categoryId>
+        <categoryName>Scala</categoryName>
+        <categoryDescription>Scala Questions</categoryDescription>
+    </category></categories>

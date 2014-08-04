@@ -42,7 +42,7 @@ object Application extends Controller {
   	       "password"  -> nonEmptyText,
 		       "firstname" -> nonEmptyText,
 		       "lastName"  -> nonEmptyText
-  	  )verifying ("User Name already exists please choose another user name.", result => result match {
+  	   )verifying ("User Name already exists please choose another user name.", result => result match {
            case (username, password,firstname,lastName) => userDAO.findUser(username) == null
        }
       )
@@ -51,9 +51,9 @@ object Application extends Controller {
   //Category Selection Form
   val selectCategoryForm = Form(
      single(
-           "categoryCheckBox" -> list(number)
+           "categoryId" -> list(number)
      )verifying ("Please select at least one category before submitting.", result => result match {
-           case (categoryCheckBox) => categoryCheckBox != null && categoryCheckBox.length > 0
+           case (categoryId) => categoryId != null && categoryId.length > 0
       }
      )
   )
@@ -62,9 +62,10 @@ object Application extends Controller {
   val categoryForm = Form (
     tuple(
           "categoryName"  -> nonEmptyText,
-          "categoryDesc"  -> nonEmptyText
+          "categoryDesc"  -> nonEmptyText,
+          "categoryId"    -> optional(number)
          )verifying ("Category already exists please choose another category name.", result => result match {
-           case (categoryName,categoryDesc) => categoryDAO.findCategory(categoryName) == null
+           case (categoryName,categoryDesc,categoryId) => categoryDAO.findCategory(categoryName) == null
          }
     )
   )
@@ -144,7 +145,7 @@ object Application extends Controller {
 
   def editcategory = Action {  implicit request =>
     if(request.session.get("userID").isDefined ){
-      Ok(views.html.editcategory(categoryDAO.listCategories(),categoryForm,getHeader))
+      Ok(views.html.editcategory(categoryDAO.listCategories(),getHeader))
     }else{
       Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
     }
@@ -155,21 +156,38 @@ object Application extends Controller {
       categoryForm.bindFromRequest.fold(
         formWithErrors => {
           implicit val errorStr: String = formWithErrors.errors(0).message
-          BadRequest(views.html.editcategory(categoryDAO.listCategories(), formWithErrors,getHeader))
+          BadRequest(views.html.editcategory(categoryDAO.listCategories(), getHeader))
         }
         ,
         success => {
           categoryDAO.addCategory(new Category(success._1,success._2))
-          Ok(views.html.editcategory(categoryDAO.listCategories(),categoryForm,getHeader))
+          Ok(views.html.editcategory(categoryDAO.listCategories(),getHeader))
         }
       )
-
-
-
     }else{
       Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
     }
+  }
 
+  def deletecategory = Action { implicit request =>
+    if(request.session.get("userID").isDefined ){
+      selectCategoryForm.bindFromRequest.fold(
+        formWithErrors => {
+          implicit val errorStr: String = formWithErrors.errors(0).message
+          BadRequest(views.html.editcategory(categoryDAO.listCategories(),getHeader))
+        }
+        ,
+        success => {
+          val rowDeleted = categoryDAO.deleteCategory(success(0).toInt)
+          if(rowDeleted ==  0 ){
+            implicit val errorStr: String = "Category delete unsuccessful"
+          }
+          Ok(views.html.editcategory(categoryDAO.listCategories(),getHeader))
+        }
+      )
+    }else{
+      Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
+    }
   }
 
   def editquestion = Action {  implicit request =>
