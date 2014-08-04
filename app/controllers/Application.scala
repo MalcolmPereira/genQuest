@@ -213,11 +213,17 @@ object Application extends Controller {
         }
         ,
         success => {
-          val rowDeleted = categoryDAO.deleteCategory(success(0).toInt)
-          if(rowDeleted ==  0 ){
-            implicit val errorStr: String = "Category delete unsuccessful"
+          if(questionDAO.findQuestionsByCategoryID(List(success(0).toInt)) != null){
+            implicit val errorStr: String = "Category cannot be deleted since there are questions associated to it."
+            Ok(views.html.editcategory(categoryDAO.listCategories(),getHeader))
+
+          }else{
+            val rowDeleted = categoryDAO.deleteCategory(success(0).toInt)
+            if(rowDeleted ==  0 ){
+              implicit val errorStr: String = "Category delete unsuccessful"
+            }
+            Ok(views.html.editcategory(categoryDAO.listCategories(),getHeader))
           }
-          Ok(views.html.editcategory(categoryDAO.listCategories(),getHeader))
         }
       )
     }else{
@@ -232,8 +238,6 @@ object Application extends Controller {
       Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
     }
   }
-
-
 
   //Get User ID from session
   def getUserID()(implicit request: RequestHeader) : Int = {
