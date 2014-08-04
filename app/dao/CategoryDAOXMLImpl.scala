@@ -119,16 +119,16 @@ object CategoryDAOXMLImpl extends CategoryDAO {
 
   private def getCategory(category: Node):Category = {
     new Category((category \ "categoryId").text.toInt,
-      (category \ "categoryName").text,
-      (category \ "categoryDescription").text
+      (category \ "categoryName").text.replace("&lt;","<").replace("&gt;",">").replace("&amp;","&").replace("quot;","\""),
+      (category \ "categoryDescription").text.replace("&lt;","<").replace("&gt;",">").replace("&amp;","&").replace("quot;","\"")
     )
   }
 
   private def getCategoryNode(category: Category, categoryID: Int) :Node = {
     scala.xml.XML.loadString(
-      "<category><categoryId>" + categoryID +
-        "</categoryId><categoryName>" + category.name +
-        "</categoryName><categoryDescription>" + category.description +
+        "<category><categoryId>" + categoryID +
+        "</categoryId><categoryName>" + category.name.replace("<","&lt;").replace(">","&gt;").replace("&","&amp;").replace("\"","quot;") +
+        "</categoryName><categoryDescription>" + category.description.replace("<","&lt;").replace(">","&gt;").replace("&","&amp;").replace("\"","quot;") +
         "</categoryDescription></category>"
     )
   }
@@ -137,7 +137,7 @@ object CategoryDAOXMLImpl extends CategoryDAO {
     scala.xml.XML.loadString(
       "<category><categoryId>" + (categoryNode \ "categoryId").text +
         "</categoryId><categoryName>" + (categoryNode \ "categoryName").text +
-        "</categoryName><categoryDescription>" + category.description +
+        "</categoryName><categoryDescription>" + category.description.replace("<","&lt;").replace(">","&gt;").replace("&","&amp;").replace("\"","quot;") +
         "</categoryDescription></category>"
     )
   }
