@@ -58,7 +58,6 @@ object CategoryDAOXMLImpl extends CategoryDAO {
       case <categories>{categories @ _*}</categories> => {
         for (category <- categories) {
           if ((category \ "categoryId").text.trim.length > 0 && (category \ "categoryId").text.trim.toInt > 0 && (category \ "categoryName").text.trim.equalsIgnoreCase(categoryName)) {
-            println("got valid category id for "+categoryName)
             return getCategory(category)
           }
         }

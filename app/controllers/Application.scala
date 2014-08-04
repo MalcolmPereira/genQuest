@@ -65,7 +65,13 @@ object Application extends Controller {
           "categoryDesc"  -> nonEmptyText,
           "categoryId"    -> optional(number)
          )verifying ("Category already exists please choose another category name.", result => result match {
-           case (categoryName,categoryDesc,categoryId) => categoryDAO.findCategory(categoryName) == null
+           case (categoryName,categoryDesc,categoryId) => {
+             if(categoryId.isEmpty) {
+               categoryDAO.findCategory(categoryName) == null
+             }else{
+               true
+             }
+           }
          }
     )
   )
@@ -161,6 +167,24 @@ object Application extends Controller {
         ,
         success => {
           categoryDAO.addCategory(new Category(success._1,success._2))
+          Ok(views.html.editcategory(categoryDAO.listCategories(),getHeader))
+        }
+      )
+    }else{
+      Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
+    }
+  }
+
+  def updatecategory = Action { implicit request =>
+    if(request.session.get("userID").isDefined ){
+      categoryForm.bindFromRequest.fold(
+        formWithErrors => {
+          implicit val errorStr: String = formWithErrors.errors(0).message
+          BadRequest(views.html.editcategory(categoryDAO.listCategories(), getHeader))
+        }
+        ,
+        success => {
+          categoryDAO.updateCategory(new Category(success._3.get.toInt,success._1,success._2))
           Ok(views.html.editcategory(categoryDAO.listCategories(),getHeader))
         }
       )

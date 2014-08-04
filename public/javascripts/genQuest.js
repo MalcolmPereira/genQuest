@@ -18,5 +18,9 @@ function deleteCategory(categoryId){
 }
 
 function updateCategory(categoryId){
+    $("#updateCategoryHeader").text($("#categoryNameHidden_"+categoryId).val());
+    $("#updatecategoryId").val($("#categoryIdHidden_"+categoryId).val());
+    $("#updateCategoryNameId").val($("#categoryNameHidden_"+categoryId).val());
+    $("#updateCategoryDescId").val($("#categoryDescHidden_"+categoryId).val());
     $("#categoryModelUpdate").modal('show');
 }
