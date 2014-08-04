@@ -42,9 +42,20 @@ object Application extends Controller {
   	       "password"  -> nonEmptyText,
 		       "firstname" -> nonEmptyText,
 		       "lastName"  -> nonEmptyText
-  	   )verifying ("User Name already exists please choose another user name.", result => result match {
+      )
+      verifying ("Invalid Password, Password should not contain > < and \" characters.", result => result match {
+        case (username, password,firstname,lastName) => {
+            if(password.contains(">") || password.contains(">") || password.contains("\"") ){
+              false
+            }else {
+              true
+            }
+          }
+        }
+      )
+      verifying ("User Name already exists please choose another user name.", result => result match {
            case (username, password,firstname,lastName) => userDAO.findUser(username) == null
-       }
+        }
       )
   )
 

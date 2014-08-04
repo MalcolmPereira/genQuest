@@ -126,18 +126,18 @@ object UserDAOXMLImpl extends UserDAO {
 
   private def getUser(user: Node) :User = {
     new User((user \ "userID").text.toInt,
-      (user \ "userName").text,
-      (user \ "userFirstName").text,
-      (user \ "userLastName").text
+      (user \ "userName").text.replace("&lt;","<").replace("&gt;",">").replace("&amp;","&").replace("quot;","\""),
+      (user \ "userFirstName").text.replace("&lt;","<").replace("&gt;",">").replace("&amp;","&").replace("quot;","\""),
+      (user \ "userLastName").text.replace("&lt;","<").replace("&gt;",">").replace("&amp;","&").replace("quot;","\"")
     )
   }
 
   private def getUserNode(user: User, userID: Int) :Node = {
     scala.xml.XML.loadString("<user><userID>"+userID+
-      "</userID><userName>"+user.name+
+      "</userID><userName>"+user.name.replace("<","&lt;").replace(">","&gt;").replace("&","&amp;").replace("\"","quot;")+
       "</userName><userPassword>"+BCryptUtil.create(user.password)+
-      "</userPassword><userFirstName>"+user.firstName+
-      "</userFirstName><userLastName>"+user.lastName+
+      "</userPassword><userFirstName>"+user.firstName.replace("<","&lt;").replace(">","&gt;").replace("&","&amp;").replace("\"","quot;")+
+      "</userFirstName><userLastName>"+user.lastName.replace("<","&lt;").replace(">","&gt;").replace("&","&amp;").replace("\"","quot;")+
       "</userLastName></user>"
     )
   }
@@ -146,8 +146,8 @@ object UserDAOXMLImpl extends UserDAO {
     scala.xml.XML.loadString("<user><userID>" + (userNode \"userID").text +
       "</userID><userName>" + (userNode \"userName").text +
       "</userName><userPassword>" + (userNode \"userPassword").text +
-      "</userPassword><userFirstName>" + user.firstName +
-      "</userFirstName><userLastName>" + user.lastName +
+      "</userPassword><userFirstName>" + user.firstName.replace("<","&lt;").replace(">","&gt;").replace("&","&amp;").replace("\"","quot;") +
+      "</userFirstName><userLastName>" + user.lastName.replace("<","&lt;").replace(">","&gt;").replace("&","&amp;").replace("\"","quot;") +
       "</userLastName></user>"
     )
   }
