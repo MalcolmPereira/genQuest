@@ -213,7 +213,7 @@ object Application extends Controller {
         }
         ,
         success => {
-          if(questionDAO.findQuestionsByCategoryID(List(success(0).toInt)) != null){
+          if(questionDAO.findQuestionsByCategoryID(List(success(0).toInt)).nonEmpty){
             implicit val errorStr: String = "Category cannot be deleted since there are questions associated to it."
             Ok(views.html.editcategory(categoryDAO.listCategories(),getHeader))
 
