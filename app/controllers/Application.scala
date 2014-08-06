@@ -100,7 +100,8 @@ object Application extends Controller {
       "question"         -> nonEmptyText,
       "answer"           -> nonEmptyText,
       "answerOptions"    -> optional(text),
-      "options"          -> optional(list(tuple("optionName" -> list(text),"optionCorrect" -> list(text))))
+      "optionName"       -> optional(list(text)),
+      "optionCorrect"    -> optional(list(boolean))
     )
   )
 
@@ -261,6 +262,16 @@ object Application extends Controller {
       }else{
         Ok(views.html.editquestion(0,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
       }
+    }else{
+      Ok(views.html.index(categoryDAO.listCategories(),getHeader))
+    }
+  }
+
+  def addquestion = Action { implicit request =>
+    if(request.session.get("userID").isDefined ){
+      val questionForm = addQuestionForm.bindFromRequest.value
+      println(questionForm)
+      Ok(views.html.editquestion(0,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
     }else{
       Ok(views.html.index(categoryDAO.listCategories(),getHeader))
     }

@@ -14,6 +14,7 @@ POST    /addcategory                controllers.Application.addcategory
 POST    /updatecategory             controllers.Application.updatecategory
 POST    /deletecategory             controllers.Application.deletecategory
 GET     /editquestion               controllers.Application.editquestion
+POST    /addquestion                controllers.Application.addquestion
 
 
 # Map static resources from the /public folder to the /assets URL path
