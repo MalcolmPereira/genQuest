@@ -91,29 +91,7 @@
                         <div class="form-group">
                             <textarea class="form-control" id="answerId" name="answer" placeholder="Answer" required></textarea>
                         </div>
-                        <div id="answerOptionDIV" style="display: none;">
-                            <div class="form-group">
-                                <label for="answerOptions">Select Option Type</label>
-                                <select class="form-control" id="answerOptions" name="answerOptions">
-                                    <option value="false">Single Correct</option>
-                                    <option value="true">Multiple Correct</option>
-                                </select>
-                            </div>
-                            <div id="optionsDIV">
-                                <div id="option1">
-                                    <div class="form-group">
-                                        <input type='text' name="optionName[1]" required/>
-                                        &nbsp;
-                                        <select id="optionCorrect[1]" name="optionCorrect[1]">
-                                            <option value="true">Correct</option>
-                                            <option value="false">Wrong</option>
-                                        </select>
-                                        &nbsp;
-                                        <span class="glyphicon glyphicon-plus" onclick="addNewOptionGroup(1)"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <br/><br/><br/>
+                        <div id="answerOptions">
                         </div>
                         <div id="showAnswerOptionButtonDIV">
                             <button onclick="showAnswerOptionDiv();" type="button" class="btn btn-warning">Add Answer Options</button>

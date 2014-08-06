@@ -31,13 +31,28 @@ function updateCategory(categoryId){
 }
 
 function showAnswerOptionDiv(){
-     $("#answerOptionDIV").show()
+     var answerOptionDiv = $(document.createElement('div')).attr("id", 'answerOptionDIV');
+     answerOptionDiv.html(
+              '<div class="form-group">'+
+              '<label for="answerOptions">Select Option Type</label>'+
+              '<select class="form-control" id="answerOptions" name="answerOptions">'+
+              '<option value="false">Single Correct</option><option value="true">Multiple Correct</option>'+
+              '</select></div>'+
+              '<div id="optionsDIV"><div id="option1"><div class="form-group">'+
+              '<input type="text" name="optionName[1]" required/>&nbsp;'+
+              '<select id="optionCorrect[1]" name="optionCorrect[1]">'+
+              '<option value="true">Correct</option>'+
+              '<option value="false">Wrong</option></select>&nbsp;'+
+              '<span class="glyphicon glyphicon-plus" onclick="addNewOptionGroup(1)"></span></div></div></div>'+
+              '<br/></div>'
+          );
+     answerOptionDiv.appendTo("#answerOptions");
      $("#showAnswerOptionButtonDIV").hide()
      $("#hideAnswerOptionButtonDIV").show()
 }
 
 function hideAnswerOptionDiv(){
-    $("#answerOptionDIV").hide()
+    $("#answerOptionDIV").remove()
     $("#showAnswerOptionButtonDIV").show()
     $("#hideAnswerOptionButtonDIV").hide()
 }
