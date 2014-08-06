@@ -75,6 +75,9 @@
             </tbody>
         </table>
         <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#questionModel">Add New</button>
+        <form id="deleteForm" name="deleteForm" method="POST" action="@routes.Application.deletequestion">
+            <input type="hidden" id="deleteQuestionId" name="questionId" value=""/>
+        </form>
     </div>
     <div class="modal fade" id="questionModel" tabindex="-1" role="dialog" aria-labelledby="questionModelLabel" aria-hidden="true">
         <div class="modal-dialog">

@@ -1,5 +1,4 @@
-<questions>
-    <question>
+<questions><question>
         <questionId>1</questionId>
         <categoryId>1</categoryId>
         <questionText>How many different types of constructors are available in the parent java.lang.Object class?
@@ -19,8 +18,7 @@
                 <correct>false</correct>
             </answerOption>
         </answerOptions>
-    </question>
-    <question>
+    </question><question>
         <questionId>2</questionId>
         <categoryId>3</categoryId>
         <questionText>Some scal question...</questionText>
@@ -39,5 +37,4 @@
                 <correct>false</correct>
             </answerOption>
         </answerOptions>
-    </question>
-</questions>
+    </question></questions>

@@ -92,6 +92,13 @@ object Application extends Controller {
     )
   )
 
+  //Category Selection Form
+  val selectQuestionForm = Form(
+    single(
+      "questionId" -> number
+    )
+  )
+
   //Question Form
   val addQuestionForm = Form(
     tuple(
@@ -292,6 +299,27 @@ object Application extends Controller {
             questionDAO.addQuestion(new Question(catId,question,answer))
             Ok(views.html.editquestion(0,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
           }
+        }
+      )
+    }else{
+      Ok(views.html.index(categoryDAO.listCategories(),getHeader))
+    }
+  }
+
+  def deletequestion = Action { implicit request =>
+    if(request.session.get("userID").isDefined ){
+      selectQuestionForm.bindFromRequest.fold(
+        formWithErrors => {
+          implicit val errorStr: String = formWithErrors.errors(0).message
+          BadRequest(views.html.editquestion(0,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
+        }
+        ,
+        success => {
+          val rowDeleted = questionDAO.deleteQuestion(success)
+          if(rowDeleted ==  0 ){
+            implicit val errorStr: String = "Question delete unsuccessful"
+          }
+          Ok(views.html.editquestion(0,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
         }
       )
     }else{

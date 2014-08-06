@@ -8,5 +8,5 @@ trait QuestionDAO {
   def findQuestionsByCategoryID(categoryIDs: List[Integer]): List[Question]
   def addQuestion(question: Question): Integer
   def updateQuestion(question: Question): Question
-  def deleteQuestion(question: Question): Integer
+  def deleteQuestion(questionId: Integer): Integer
 }

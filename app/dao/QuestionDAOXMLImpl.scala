@@ -99,13 +99,13 @@ object QuestionDAOXMLImpl extends QuestionDAO {
     question
   }
 
-  override def deleteQuestion(question: Question): Integer = {
+  override def deleteQuestion(questionId: Integer): Integer = {
     var questionList  = new ListBuffer[Node]()
     var nodeCounter  = 0
     scala.xml.XML.loadFile("conf/question.xml") match {
       case <questions>{questions @ _*}</questions> => {
         for (question_ <- questions) {
-          if ((question_ \ "questionId").text.trim.length > 0 && (question_ \ "questionId").text.trim.toInt > 0 && (question_ \ "questionId").text.trim.toInt != question.id) {
+          if ((question_ \ "questionId").text.trim.length > 0 && (question_ \ "questionId").text.trim.toInt > 0 && (question_ \ "questionId").text.trim.toInt != questionId) {
               questionList  += question_
           }else{
               nodeCounter  = nodeCounter  + 1

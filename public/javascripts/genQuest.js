@@ -82,3 +82,8 @@ function removeOptionGroup(counter){
     }
     $("#option"+counter).remove()
 }
+
+function deleteQuestion(questionId){
+    $("#deleteQuestionId").val(questionId);
+    $('#deleteForm').submit();
+}

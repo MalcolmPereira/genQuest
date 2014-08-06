@@ -81,7 +81,7 @@ class QuestionDAOXMLImplSpec extends FlatSpec {
     val updatequestion          = new Question(questionId,1,"New Updates Some Question","New Updates Some Answer",updatedanswerOption)
     val updatedQuestion         = QuestionDAOXMLImpl.updateQuestion(updatequestion)
     assert( updatedQuestion != null)
-    val rowid = QuestionDAOXMLImpl.deleteQuestion(updatedQuestion)
+    val rowid = QuestionDAOXMLImpl.deleteQuestion(questionId)
     assert( rowid != 0 )
   }
 }
