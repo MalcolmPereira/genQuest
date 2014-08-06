@@ -94,6 +94,14 @@ object Application extends Controller {
     )
   )
 
+  //Question Form
+  val addQuestionForm = Form(
+    tuple(
+      "question"  -> nonEmptyText,
+      "answer"    -> nonEmptyText
+    )
+  )
+
   //Index Page
   def index = Action { implicit request =>
     Ok(views.html.index(categoryDAO.listCategories(),getHeader))
