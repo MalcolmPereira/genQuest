@@ -70,6 +70,13 @@ object Application extends Controller {
   )
 
   //Category Selection Form
+  val matchCategoryForm = Form(
+    single(
+      "categoryId" -> number
+    )
+  )
+
+  //Category Selection Form
   val categoryForm = Form (
     tuple(
           "categoryName"  -> nonEmptyText,
@@ -160,6 +167,7 @@ object Application extends Controller {
     )
   }
 
+  //Edit Category
   def editcategory = Action {  implicit request =>
     if(request.session.get("userID").isDefined ){
       Ok(views.html.editcategory(categoryDAO.listCategories(),getHeader))
@@ -168,6 +176,7 @@ object Application extends Controller {
     }
   }
 
+  //Add Category
   def addcategory = Action { implicit request =>
     if(request.session.get("userID").isDefined ){
       categoryForm.bindFromRequest.fold(
@@ -186,6 +195,7 @@ object Application extends Controller {
     }
   }
 
+  //Update Category
   def updatecategory = Action { implicit request =>
     if(request.session.get("userID").isDefined ){
       categoryForm.bindFromRequest.fold(
@@ -204,6 +214,7 @@ object Application extends Controller {
     }
   }
 
+  //Delete Category
   def deletecategory = Action { implicit request =>
     if(request.session.get("userID").isDefined ){
       selectCategoryForm.bindFromRequest.fold(
@@ -233,7 +244,13 @@ object Application extends Controller {
 
   def editquestion = Action {  implicit request =>
     if(request.session.get("userID").isDefined ){
-      Ok(views.html.editquestion(getHeader))
+      val selectedCategory = matchCategoryForm.bindFromRequest.value
+      if(selectedCategory.nonEmpty){
+        println(selectedCategory.get)
+        Ok(views.html.editquestion(selectedCategory.get,matchCategoryForm,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
+      }else{
+        Ok(views.html.editquestion(0,matchCategoryForm,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
+      }
     }else{
       Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
     }
