@@ -263,9 +263,8 @@ object Application extends Controller {
   def editquestion = Action {  implicit request =>
     if(request.session.get("userID").isDefined ){
       val selectedCategory = matchCategoryForm.bindFromRequest.value
-      if(selectedCategory.nonEmpty){
-        println(selectedCategory.get)
-        Ok(views.html.editquestion(selectedCategory.get,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
+      if(selectedCategory.nonEmpty && selectedCategory.get > 0){
+        Ok(views.html.editquestion(selectedCategory.get,categoryDAO.listCategories(),questionDAO.findQuestionsByCategoryID(List(selectedCategory.get)), getHeader))
       }else{
         Ok(views.html.editquestion(0,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
       }
