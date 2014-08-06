@@ -4,18 +4,75 @@
     <div class="page-header">
         <h1>Edit Questions</h1>
     </div>
-    <div class="container">
-        <form class="form-horizontal" role="form" method="GET" action="@routes.Application.editquestion">
-            <div class="form-group col-lg-4">
-                <label  for="categorySelect">Select Category</label>
-                <select id="categorySelect" name="categoryId" class="form-control" onchange="this.form.submit()">
-                    <option value="0">All</option>
-                    @for(category <- categories) {
-                       <option value="@category.id">@category.name</option>
-                    }
-                </select>
-                <script>$('#categorySelect').val("@selectedCategory")</script>
-            </div>
-        </form>
+    <form class="form-horizontal" role="form" method="GET" action="@routes.Application.editquestion">
+        <div class="form-group col-lg-4">
+           <label  for="categorySelect">Select Category</label>
+           <select id="categorySelect" name="categoryId" class="form-control" onchange="this.form.submit()">
+               <option value="0">All</option>
+               @for(category <- categories) {
+                  <option value="@category.id">@category.name</option>
+               }
+           </select>
+           <script>$('#categorySelect').val("@selectedCategory")</script>
+        </div>
+    </form>
+    <div class="table-responsive">
+        <table id="questionEditTable" class="table">
+            <tbody>
+                 @for(question <- questions) {
+                     <tr class="active">
+                        <td><strong>@question.question</strong></td>
+                        <td align="right">
+                            <button onclick="updateQuestion(@question.id)" id="updateQuestion" type="button" class="btn btn-warning btn-xs">Update</button>
+                            <button onclick="deleteQuestion(@question.id)" id="deleteQuestion" type="button" class="btn btn-danger btn-xs">Remove</button>
+                        </td>
+                     </tr>
+                     <tr class="active">
+                         <td colspan="2">@question.answer</td>
+                     </tr>
+                     @if(question.options != null){
+                     <tr class="active">
+                         <td colspan="2">
+                             <table class="table table-condensed" border="1">
+                                 <tbody>
+                                       <tr class="active">
+                                           @if(question.options.multipleCorrect){
+                                                <td>Multiple Correct Options:</td>
+                                           }else{
+                                                <td>Single Correct Option: </td>
+                                           }
+                                       </tr>
+                                       <tr class="active">
+                                           <td>
+                                               @for(answerOption <- question.options.answerOptions) {
+                                                    &nbsp; &nbsp;
+                                                    @if(question.options.multipleCorrect){
+                                                        @if(answerOption.optionCorrect){
+                                                            <input disabled type="checkbox" checked/>&nbsp;<label>@answerOption.optionName</label>
+                                                        }else{
+                                                            <input disabled type="checkbox"/>&nbsp;<label>@answerOption.optionName</label>
+                                                        }
+                                                    }else{
+                                                        @if(answerOption.optionCorrect){
+                                                            <input disabled type="radio" checked/>&nbsp;<label>@answerOption.optionName</label>
+                                                        }else{
+                                                           <input disabled type="radio"/>&nbsp;<label>@answerOption.optionName</label>
+                                                        }
+                                                    }
+                                                    &nbsp; &nbsp;
+                                               }
+                                           </td>
+                                       </tr>
+                                 </tbody>
+                             </table>
+                         </td>
+                     </tr>
+                     }
+                     <tr>
+                        <td colspan="2"></td>
+                     </tr>
+                 }
+            </tbody>
+        </table>
     </div>
 }
