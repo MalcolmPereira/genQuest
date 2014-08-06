@@ -96,7 +96,7 @@ object Application extends Controller {
 
   //Index Page
   def index = Action { implicit request =>
-    Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
+    Ok(views.html.index(categoryDAO.listCategories(),getHeader))
   }
 
   //Generate Questions
@@ -104,7 +104,7 @@ object Application extends Controller {
     selectCategoryForm.bindFromRequest.fold(
       formWithErrors => {
         implicit val errorStr: String = formWithErrors.errors(0).message
-        BadRequest(views.html.index(categoryDAO.listCategories(), formWithErrors,getHeader))
+        BadRequest(views.html.index(categoryDAO.listCategories(), getHeader))
       }
       ,
       success => {
@@ -119,13 +119,13 @@ object Application extends Controller {
       formWithErrors => {
           implicit val errorStr: String = formWithErrors.errors(0).message
           val header    =  views.html.header(formWithErrors,null,null,null)
-          BadRequest(views.html.index(categoryDAO.listCategories(),selectCategoryForm,header ))
+          BadRequest(views.html.index(categoryDAO.listCategories(),header ))
       }
       ,
       user => {
           val userData  =  userDAO.findUser(user._1, user._2)
           val header    =  views.html.header(loginForm,userData.id.toString,userData.firstName,userData.lastName)
-          Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,header)).withSession(
+          Ok(views.html.index(categoryDAO.listCategories(),header)).withSession(
               "userID"        -> userData.id.toString,
               "userFirstName" -> userData.firstName,
               "userLastName"  -> userData.lastName
@@ -137,7 +137,7 @@ object Application extends Controller {
   //Logout Action
   def logout = Action {  implicit request =>
     val header = views.html.header(loginForm,null,null,null)
-    Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,header)).withNewSession
+    Ok(views.html.index(categoryDAO.listCategories(),header)).withNewSession
   }
 
   //Register User
@@ -158,7 +158,7 @@ object Application extends Controller {
       user => {
         val userID     = userDAO.addUser(new User(0,user._1,user._2,user._3,user._4))
         val header     = views.html.header(loginForm,userID.toString,user._3,user._4)
-        Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,header)).withSession(
+        Ok(views.html.index(categoryDAO.listCategories(),header)).withSession(
           "userID" -> userID.toString,
           "userFirstName" -> user._3,
           "userLastName" -> user._4
@@ -172,7 +172,7 @@ object Application extends Controller {
     if(request.session.get("userID").isDefined ){
       Ok(views.html.editcategory(categoryDAO.listCategories(),getHeader))
     }else{
-      Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
+      Ok(views.html.index(categoryDAO.listCategories(),getHeader))
     }
   }
 
@@ -191,7 +191,7 @@ object Application extends Controller {
         }
       )
     }else{
-      Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
+      Ok(views.html.index(categoryDAO.listCategories(),getHeader))
     }
   }
 
@@ -210,7 +210,7 @@ object Application extends Controller {
         }
       )
     }else{
-      Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
+      Ok(views.html.index(categoryDAO.listCategories(),getHeader))
     }
   }
 
@@ -238,7 +238,7 @@ object Application extends Controller {
         }
       )
     }else{
-      Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
+      Ok(views.html.index(categoryDAO.listCategories(),getHeader))
     }
   }
 
@@ -247,12 +247,12 @@ object Application extends Controller {
       val selectedCategory = matchCategoryForm.bindFromRequest.value
       if(selectedCategory.nonEmpty){
         println(selectedCategory.get)
-        Ok(views.html.editquestion(selectedCategory.get,matchCategoryForm,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
+        Ok(views.html.editquestion(selectedCategory.get,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
       }else{
-        Ok(views.html.editquestion(0,matchCategoryForm,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
+        Ok(views.html.editquestion(0,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
       }
     }else{
-      Ok(views.html.index(categoryDAO.listCategories(),selectCategoryForm,getHeader))
+      Ok(views.html.index(categoryDAO.listCategories(),getHeader))
     }
   }
 
