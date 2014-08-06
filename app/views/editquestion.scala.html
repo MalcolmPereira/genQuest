@@ -54,7 +54,7 @@
                                                         }
                                                     }else{
                                                         @if(answerOption.optionCorrect){
-                                                            <input disabled type="radio" checked/>&nbsp;<label>@answerOption.optionName</label>
+                                                           <input disabled type="radio" checked/>&nbsp;<label>@answerOption.optionName</label>
                                                         }else{
                                                            <input disabled type="radio"/>&nbsp;<label>@answerOption.optionName</label>
                                                         }
@@ -91,9 +91,37 @@
                         <div class="form-group">
                             <textarea class="form-control" id="answerId" name="answer" placeholder="Answer" required></textarea>
                         </div>
-                        <div class="form-group">
-                            <button type="button" class="btn btn-default">Add Answer Option</button>
+                        <div id="answerOptionDIV" style="display: none;">
+                            <div class="form-group">
+                                <label for="answerOptions">Select Option Type</label>
+                                <select class="form-control" id="answerOptions" name="answerOptions">
+                                    <option value="false">Single Correct</option>
+                                    <option value="true">Multiple Correct</option>
+                                </select>
+                            </div>
+                            <div id="optionsDIV">
+                                <div id="option1">
+                                    <div class="form-group">
+                                        <input type='text' name="optionName[1]" required/>
+                                        &nbsp;
+                                        <select id="optionCorrect[1]" name="optionCorrect[1]">
+                                            <option value="true">Correct</option>
+                                            <option value="false">Wrong</option>
+                                        </select>
+                                        &nbsp;
+                                        <span class="glyphicon glyphicon-plus" onclick="addNewOptionGroup(1)"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/><br/><br/>
                         </div>
+                        <div id="showAnswerOptionButtonDIV">
+                            <button onclick="showAnswerOptionDiv();" type="button" class="btn btn-warning">Add Answer Options</button>
+                        </div>
+                        <div id="hideAnswerOptionButtonDIV" style="display: none;">
+                            <button onclick="hideAnswerOptionDiv();" type="button" class="btn btn-danger">Remove Answer Options</button>
+                        </div>
+                        <br/><br/>
                         <input  type="hidden" id="questionId" name="questionId" value=""/>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         <button type="submit" id="saveChangesButton" class="btn btn-primary">Save changes</button>

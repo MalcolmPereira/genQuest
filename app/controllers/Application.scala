@@ -97,8 +97,10 @@ object Application extends Controller {
   //Question Form
   val addQuestionForm = Form(
     tuple(
-      "question"  -> nonEmptyText,
-      "answer"    -> nonEmptyText
+      "question"         -> nonEmptyText,
+      "answer"           -> nonEmptyText,
+      "answerOptions"    -> optional(text),
+      "options"          -> optional(list(tuple("optionName" -> list(text),"optionCorrect" -> list(text))))
     )
   )
 
