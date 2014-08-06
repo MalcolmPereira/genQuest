@@ -6,9 +6,7 @@ import play.api.data._
 import play.api.data.Forms._
 import play.twirl.api.Html
 import model._
-import scala.xml.Elem
-import scala.xml.Node
-import util.BCryptUtil
+import scala.collection.mutable.ListBuffer
 
 object Application extends Controller {
 
@@ -97,9 +95,11 @@ object Application extends Controller {
   //Question Form
   val addQuestionForm = Form(
     tuple(
+      "categoryId"       -> number,
       "question"         -> nonEmptyText,
       "answer"           -> nonEmptyText,
-      "answerOptions"    -> optional(text),
+      "questionId"       -> optional(number),
+      "answerOptions"    -> optional(boolean),
       "optionName"       -> optional(list(text)),
       "optionCorrect"    -> optional(list(boolean))
     )
@@ -269,9 +269,31 @@ object Application extends Controller {
 
   def addquestion = Action { implicit request =>
     if(request.session.get("userID").isDefined ){
-      val questionForm = addQuestionForm.bindFromRequest.value
-      println(questionForm)
-      Ok(views.html.editquestion(0,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
+      addQuestionForm.bindFromRequest.fold(
+        formWithErrors => {
+          implicit val errorStr: String = formWithErrors.errors(0).message
+          BadRequest(views.html.editquestion(0,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
+        }
+        ,
+        success => {
+          val catId       = success._1
+          val question    = success._2
+          val answer      = success._3
+          val questionId  = success._4
+          if(success._5.nonEmpty && success._6.nonEmpty && success._7.nonEmpty){
+            var optionList = new ListBuffer[AnswerOption]()
+            for( (optionName,i) <- success._6.get.zipWithIndex){
+              optionList += new AnswerOption(optionName,success._7.get(i))
+            }
+            val answerOption = new AnswerOptions(optionList.toList,success._5.get)
+            questionDAO.addQuestion(new Question(catId,question,answer,answerOption))
+            Ok(views.html.editquestion(0,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
+          }else{
+            questionDAO.addQuestion(new Question(catId,question,answer))
+            Ok(views.html.editquestion(0,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
+          }
+        }
+      )
     }else{
       Ok(views.html.index(categoryDAO.listCategories(),getHeader))
     }

@@ -54,7 +54,7 @@ class CategoryDAOXMLImplSpec extends FlatSpec {
     assert( categoryID > 0)
     val category = CategoryDAOXMLImpl.updateCategory(new Category(categoryID,"updated category desc"))
     assert( category != null)
-    val rowid = CategoryDAOXMLImpl.deleteCategory(category)
+    val rowid = CategoryDAOXMLImpl.deleteCategory(categoryID)
     assert( rowid != 0 )
   }
 }

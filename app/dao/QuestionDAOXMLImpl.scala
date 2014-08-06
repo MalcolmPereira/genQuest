@@ -123,7 +123,7 @@ object QuestionDAOXMLImpl extends QuestionDAO {
     (question \ "questionText").text,
     (question \ "questionAnswer").text,
     {
-      if((question \"answerOptions") != null){
+      if((question \"answerOptions") != null && (question \"answerOptions").text != null && (question \"answerOptions").text.trim().length > 0){
         var answerOptionsList = new ListBuffer[AnswerOption]()
         for (answerOption <- (question \"answerOptions" \ "answerOption")) {
           if((answerOption \"name").text.trim.length > 0 && (answerOption \"correct").text.trim.length > 0 ){

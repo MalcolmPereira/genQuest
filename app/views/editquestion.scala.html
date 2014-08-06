@@ -86,10 +86,19 @@
                 <div class="modal-body">
                     <form method="POST" action="@routes.Application.addquestion">
                         <div class="form-group">
-                            <textarea id="questionNameId" name="question" placeholder="Question" class="form-control" autofocus required></textarea>
+                            <label  for="categorySelect">Select Category</label>
+                            <select name="categoryId" class="form-control" required="true">
+                                <option value="">Select</option>
+                                @for(category <- categories) {
+                                <option value="@category.id">@category.name</option>
+                                }
+                            </select>
                         </div>
                         <div class="form-group">
-                            <textarea class="form-control" id="answerId" name="answer" placeholder="Answer" required></textarea>
+                            <textarea id="questionNameId" name="question" placeholder="Question" class="form-control" autofocus="true" required="true"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" id="answerId" name="answer" placeholder="Answer" required="true"></textarea>
                         </div>
                         <div id="answerOptions">
                         </div>
