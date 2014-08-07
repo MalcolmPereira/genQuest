@@ -29,6 +29,10 @@
                      </tr>
                      <tr class="active">
                          <td colspan="2">@question.answer</td>
+                         <input  type="hidden" id="categoryIdHidden_@question.id" name="categoryId_@question.id" value="@question.category"/>
+                         <input  type="hidden" id="questionIdHidden_@question.id" name="questionId_@question.id" value="@question.id"/>
+                         <input  type="hidden" id="questionNameHidden_@question.id" name="questionName_@question.id" value="@question.question"/>
+                         <input  type="hidden" id="questionAnswerHidden_@question.id" name="questionAnswer_@question.id" value="@question.answer"/>
                      </tr>
                      @if(question.options != null){
                      <tr class="active">
@@ -115,6 +119,28 @@
                         <input  type="hidden" id="questionId" name="questionId" value=""/>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         <button type="submit" id="saveChangesButton" class="btn btn-primary">Save changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="questionModelUpdate" tabindex="-1" role="dialog" aria-labelledby="questionModelUpdateLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="questionModelUpdateLabel">Update Question</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="POST">
+                        <div class="form-group">
+                            <h4 id="updateQuestionHeader"></h4>
+                        </div>
+                        <br/><br/>
+                        <input  type="hidden" id="categoryIdUpdateHidden" name="categoryId" value=""/>
+                        <input  type="hidden" id="questionIdUpdateHidden" name="questionId" value=""/>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" id="saveUpdatesButton" class="btn btn-primary">Save changes</button>
                     </form>
                 </div>
             </div>

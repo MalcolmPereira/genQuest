@@ -83,6 +83,13 @@ function removeOptionGroup(counter){
     $("#option"+counter).remove()
 }
 
+function updateQuestion(questionId){
+    $("#updateQuestionHeader").text($("#questionNameHidden_"+questionId).val());
+    $("#categoryIdUpdateHidden").val($("#categoryIdHidden_"+questionId).val());
+    $("#questionIdUpdateHidden").val($("#questionIdHidden_"+questionId).val());
+    $("#questionModelUpdate").modal('show');
+}
+
 function deleteQuestion(questionId){
     $("#deleteQuestionId").val(questionId);
     $('#deleteForm').submit();
