@@ -87,6 +87,8 @@ function updateQuestion(questionId){
     $("#updateQuestionHeader").text($("#questionNameHidden_"+questionId).val());
     $("#categoryIdUpdateHidden").val($("#categoryIdHidden_"+questionId).val());
     $("#questionIdUpdateHidden").val($("#questionIdHidden_"+questionId).val());
+    $("#questionNameUpdateHidden").val($("questionNameHidden_"+questionId).val());
+    $("#answerUpdateId").val($("#questionAnswerHidden_"+questionId).val());
     $("#questionModelUpdate").modal('show');
 }
 
