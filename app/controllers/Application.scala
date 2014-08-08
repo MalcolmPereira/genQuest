@@ -305,6 +305,39 @@ object Application extends Controller {
     }
   }
 
+  def updatequestion = Action { implicit request =>
+    if(request.session.get("userID").isDefined ){
+      addQuestionForm.bindFromRequest.fold(
+        formWithErrors => {
+          implicit val errorStr: String = formWithErrors.errors(0).message
+          BadRequest(views.html.editquestion(0,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
+        }
+        ,
+        success => {
+          val catId       = success._1
+          val question    = success._2
+          val answer      = success._3
+          val questionId  = success._4.get.toInt
+          if(success._5.nonEmpty && success._6.nonEmpty && success._7.nonEmpty){
+            var optionList = new ListBuffer[AnswerOption]()
+            for( (optionName,i) <- success._6.get.zipWithIndex){
+              optionList += new AnswerOption(optionName,success._7.get(i))
+            }
+            val answerOption = new AnswerOptions(optionList.toList,success._5.get)
+            questionDAO.updateQuestion(new Question(questionId,catId,question,answer,answerOption))
+            Ok(views.html.editquestion(0,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
+          }else{
+            questionDAO.updateQuestion(new Question(questionId,catId,question,answer))
+            Ok(views.html.editquestion(0,categoryDAO.listCategories(),questionDAO.listQuestions(), getHeader))
+          }
+        }
+      )
+    }else{
+      Ok(views.html.index(categoryDAO.listCategories(),getHeader))
+    }
+  }
+
+
   def deletequestion = Action { implicit request =>
     if(request.session.get("userID").isDefined ){
       selectQuestionForm.bindFromRequest.fold(

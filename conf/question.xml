@@ -18,23 +18,4 @@
                 <correct>false</correct>
             </answerOption>
         </answerOptions>
-    </question><question>
-        <questionId>2</questionId>
-        <categoryId>3</categoryId>
-        <questionText>Some scal question...</questionText>
-        <questionAnswer>some answere!!!!.</questionAnswer>
-        <answerOptions multipleCorrect="true">
-            <answerOption>
-                <name>2</name>
-                <correct>false</correct>
-            </answerOption>
-            <answerOption>
-                <name>1</name>
-                <correct>true</correct>
-            </answerOption>
-            <answerOption>
-                <name>4</name>
-                <correct>false</correct>
-            </answerOption>
-        </answerOptions>
-    </question></questions>
+    </question><question><questionId>2</questionId><categoryId>3</categoryId><questionText>Some scal question...</questionText><questionAnswer>some answere!!!!. some new updates make some new updates</questionAnswer><answerOptions multipleCorrect="true"><answerOption><name>2</name><correct>false</correct></answerOption><answerOption><name>1</name><correct>true</correct></answerOption><answerOption><name>4</name><correct>false</correct></answerOption></answerOptions></question></questions>

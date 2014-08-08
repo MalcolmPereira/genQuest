@@ -15,6 +15,7 @@ POST    /updatecategory             controllers.Application.updatecategory
 POST    /deletecategory             controllers.Application.deletecategory
 GET     /editquestion               controllers.Application.editquestion
 POST    /addquestion                controllers.Application.addquestion
+POST    /updatequestion             controllers.Application.updatequestion
 POST    /deletequestion             controllers.Application.deletequestion
 
 
