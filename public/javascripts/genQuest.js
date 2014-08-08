@@ -122,7 +122,7 @@ function updateQuestion(questionId){
     $("#questionNameUpdateHidden").val($("#questionNameHidden_"+questionId).val());
     $("#answerUpdateId").val($("#questionAnswerHidden_"+questionId).val());
 
-    if (!!$('#answerOptionsHidden_'+questionId)) {
+    if (!!$('#answerOptionsHidden_'+questionId).length) {
        var answerOptionLength       = parseInt($("#answerOptionsSizeHidden_"+questionId).val())
        var answerOptionType         = $("#answerOptionsHidden_"+questionId).val()
        var answerOptionDIVString    = '';
@@ -164,9 +164,13 @@ function updateQuestion(questionId){
                          answerOptionDiv.appendTo("#answerUpdateOptions");
                          $("#updateAnswerOptionLengthHidden").val(answerOptionLength);
        }
+       $("#showAnswerUpdateOptionButtonDIV").hide();
+       $("#hideAnswerUpdateOptionButtonDIVUpdate").show();
+    }else{
+      $("#showAnswerUpdateOptionButtonDIV").show();
+      $("#hideAnswerUpdateOptionButtonDIVUpdate").hide();
     }
-    $("#showAnswerUpdateOptionButtonDIV").hide()
-    $("#hideAnswerUpdateOptionButtonDIVUpdate").show()
+
     $("#questionModelUpdate").modal('show');
 }
 
