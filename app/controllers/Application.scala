@@ -307,6 +307,9 @@ object Application extends Controller {
 
   def updatequestion = Action { implicit request =>
     if(request.session.get("userID").isDefined ){
+
+      println("categoryid " +request.getQueryString("categoryId"))
+
       addQuestionForm.bindFromRequest.fold(
         formWithErrors => {
           implicit val errorStr: String = formWithErrors.errors(0).message

@@ -23,7 +23,7 @@
                      <tr class="active">
                         <td><strong>@question.question</strong></td>
                         <td align="right">
-                            <button onclick="updateQuestion(@question.id)" id="updateQuestion" type="button" class="btn btn-warning btn-xs">Update</button>
+                            <button onclick="getUpdateQuestionModal(@question.id)" id="updateQuestion" type="button" class="btn btn-warning btn-xs">Update</button>
                             <button onclick="deleteQuestion(@question.id)" id="deleteQuestion" type="button" class="btn btn-danger btn-xs">Remove</button>
                         </td>
                      </tr>
@@ -82,7 +82,7 @@
                  }
             </tbody>
         </table>
-        <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#questionModel">Add New</button>
+        <button type="button" class="btn btn-info btn-xs" onclick="getAddQuestionModal()">Add New</button>
         <form id="deleteForm" name="deleteForm" method="POST" action="@routes.Application.deletequestion">
             <input type="hidden" id="deleteQuestionId" name="questionId" value=""/>
         </form>
@@ -92,24 +92,22 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title" id="questionModelLabel">Add New Question</h4>
+                    <h4 class="modal-title" id="questionModelLabel"></h4>
                 </div>
-                <div class="modal-body">
-                    <form method="POST" action="@routes.Application.addquestion">
-                        <div class="form-group">
+                <div id="modelBodyDiv" class="modal-body">
+                    <form id="questionForm" name="questionForm" method="POST">
+                        <div id="addCategoryDiv" class="form-group">
                             <label  for="categorySelect">Select Category</label>
-                            <select name="categoryId" class="form-control" required="true">
+                            <select id="categoryId" name="categoryId" class="form-control">
                                 <option value="">Select</option>
                                 @for(category <- categories) {
                                 <option value="@category.id">@category.name</option>
                                 }
                             </select>
                         </div>
-                        <div class="form-group">
-                            <textarea id="questionNameId" name="question" placeholder="Question" class="form-control" autofocus="true" required="true"></textarea>
+                        <div id="questionNameDiv"  class="form-group">
                         </div>
-                        <div class="form-group">
-                            <textarea class="form-control" id="answerId" name="answer" placeholder="Answer" required="true"></textarea>
+                        <div id="questionAnswerDiv" class="form-group">
                         </div>
                         <div id="answerOptions">
                         </div>
@@ -128,38 +126,5 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="questionModelUpdate" tabindex="-1" role="dialog" aria-labelledby="questionModelUpdateLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title" id="questionModelUpdateLabel">Update Question</h4>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" action="@routes.Application.updatequestion">
-                        <div class="form-group">
-                            <h4 id="updateQuestionHeader"></h4>
-                        </div>
-                        <div class="form-group">
-                            <textarea class="form-control" id="answerUpdateId" name="answer" placeholder="Answer" required="true" value=""></textarea>
-                        </div>
-                        <div id="answerUpdateOptions">
-                        </div>
-                        <div id="showAnswerUpdateOptionButtonDIV">
-                            <button onclick="showAnswerOptionDivUpdate();" type="button" class="btn btn-warning">Add Answer Options</button>
-                        </div>
-                        <div id="hideAnswerUpdateOptionButtonDIVUpdate">
-                            <button onclick="hideAnswerOptionDivUpdate();" type="button" class="btn btn-danger">Remove Answer Options</button>
-                        </div>
-                        <br/><br/>
-                        <input  type="hidden" id="categoryIdUpdateHidden" name="categoryId" value=""/>
-                        <input  type="hidden" id="questionIdUpdateHidden" name="questionId" value=""/>
-                        <input  type="hidden" id="questionNameUpdateHidden" name="question" value=""/>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="submit" id="saveUpdatesButton" class="btn btn-primary">Save changes</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+
 }
