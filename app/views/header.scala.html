@@ -2,10 +2,10 @@
 @if(userID == null || userID.trim.length == 0){
 	<form class="navbar-form navbar-right" role="form" method="POST" action="@routes.Application.login">
 	  	<div class="form-group">
-	  		<input type="text"  name="username" placeholder="Username" value="@(loginForm("username").value)"  class="form-control" autofocus required>
+	  		<input type="text"  name="username" placeholder="Username" value='@(loginForm("username").value)'  class="form-control" autofocus required>
 	  	</div>
 	  	<div class="form-group">
-	  		<input type="password" name="password" placeholder="Password" value="@(loginForm("password").value)"  class="form-control" required>
+	  		<input type="password" name="password" placeholder="Password" value='@(loginForm("password").value)'  class="form-control" required>
 	  	</div>
 	  	<button type="submit" class="btn btn-success btn-xs">Sign in</button>
 	  	<button type="button" onclick="location.href='@routes.Application.register'" class="btn btn-warning btn-xs">Register</button>
