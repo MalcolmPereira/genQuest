@@ -126,7 +126,11 @@ object Application extends Controller {
       }
       ,
       success => {
-        Ok(views.html.genquest(questionDAO.listQuestions(), getHeader))
+        var catIDList  = new ListBuffer[Integer]()
+        for(catid <- success){
+          catIDList += catid.toInt
+        }
+        Ok(views.html.genquest(questionDAO.findQuestionsByCategoryID(catIDList.toList), getHeader))
       }
     )
   }
@@ -307,9 +311,6 @@ object Application extends Controller {
 
   def updatequestion = Action { implicit request =>
     if(request.session.get("userID").isDefined ){
-
-      println("categoryid " +request.getQueryString("categoryId"))
-
       addQuestionForm.bindFromRequest.fold(
         formWithErrors => {
           implicit val errorStr: String = formWithErrors.errors(0).message

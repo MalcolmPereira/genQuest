@@ -13,6 +13,48 @@
 				  <tr class="active">
 					  <td>@question.answer</td>
 				  </tr>
+                 @if(question.options != null){
+                 <tr class="active">
+                     <td colspan="2">
+                         <input type="hidden" id="answerOptionsHidden_@question.id" name="answerOptionsHidden_@question.id" value="@question.options.multipleCorrect"/>
+                         <input type="hidden" id="answerOptionsSizeHidden_@question.id" name="answerOptionsSizeHidden_@question.id" value="@question.options.answerOptions.size"/>
+                         <table class="table table-condensed" border="1">
+                             <tbody>
+                             <tr class="active">
+                                 @if(question.options.multipleCorrect){
+                                 <td>Multiple Correct Options:</td>
+                                 }else{
+                                 <td>Single Correct Option: </td>
+                                 }
+                             </tr>
+                             <tr class="active">
+                                 <td>
+                                     @for( (answerOption,index) <- question.options.answerOptions.zipWithIndex) {
+                                     &nbsp; &nbsp;
+                                     @if(question.options.multipleCorrect){
+                                     @if(answerOption.optionCorrect){
+                                     <input disabled type="checkbox" checked/>&nbsp;<label>@answerOption.optionName</label>
+                                     }else{
+                                     <input disabled type="checkbox"/>&nbsp;<label>@answerOption.optionName</label>
+                                     }
+                                     }else{
+                                     @if(answerOption.optionCorrect){
+                                     <input disabled type="radio" checked/>&nbsp;<label>@answerOption.optionName</label>
+                                     }else{
+                                     <input disabled type="radio"/>&nbsp;<label>@answerOption.optionName</label>
+                                     }
+                                     }
+                                     &nbsp; &nbsp;
+                                     <input type="hidden" id="answerOptionName_@index@question.id" name="answerOptionName_@index@question.id" value="@answerOption.optionName"/>
+                                     <input type="hidden"  id="answerOptionCorrect_@index@question.id" name="answerOptionCorrect_@index@question.id" value="@answerOption.optionCorrect"/>
+                                     }
+                                 </td>
+                             </tr>
+                             </tbody>
+                         </table>
+                     </td>
+                 </tr>
+                 }
 			 </table>
 		     }
         </div>
