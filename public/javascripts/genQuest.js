@@ -33,7 +33,7 @@ function getAddCategoryModal(){
                           '<input  type="hidden" id="categoryId" name="categoryId" value=""/>'+
                           '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>'+
                           '<button type="submit" id="saveNewCategoryButton" class="btn btn-primary">Save changes</button>'+
-                          '</form>'
+                          '</form>';
     $("#modelBodyDiv").html(addModelDIVHtml);
     $("#categoryModel").modal('show');
 }
@@ -51,7 +51,7 @@ function getUpdateCategoryModal(categoryId){
                             '<input  type="hidden" id="updateCategoryNameId" name="categoryName" value="'+$("#categoryNameHidden_"+categoryId).val()+'"/>'+
                             '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>'+
                             '<button type="submit" id="saveUpdateCategoryButton" class="btn btn-primary">Save changes</button>'+
-                            '</form>'
+                            '</form>';
    $("#modelBodyDiv").html(updateModelDIVHtml);
    $("#updateCategoryDescId").val($("#categoryDescHidden_"+categoryId).val());
    $("#categoryModel").modal('show');
@@ -90,16 +90,16 @@ function showAnswerOptionDiv(){
                            '<option value="true">Correct</option>'+
                            '<option value="false">Wrong</option></select>&nbsp;'+
                            '<span class="glyphicon glyphicon-plus" onclick="addNewOptionGroup(1)"></span></div></div></div>'+
-                           '<br/><input type="hidden" id="addAnswerOptionLengthHidden" name="answerOptionLengthHidden" value="1"/></div>'
+                           '<br/><input type="hidden" id="addAnswerOptionLengthHidden" name="answerOptionLengthHidden" value="1"/></div>';
      $("#answerOptions").html(answerOptionDiv);
-     $("#showAnswerOptionButtonDIV").hide()
-     $("#hideAnswerOptionButtonDIV").show()
+     $("#showAnswerOptionButtonDIV").hide();
+     $("#hideAnswerOptionButtonDIV").show();
 }
 
 function hideAnswerOptionDiv(){
-    $("#answerOptionDIV").remove()
-    $("#showAnswerOptionButtonDIV").show()
-    $("#hideAnswerOptionButtonDIV").hide()
+    $("#answerOptionDIV").remove();
+    $("#showAnswerOptionButtonDIV").show();
+    $("#hideAnswerOptionButtonDIV").hide();
 }
 
 function addNewOptionGroup(groupId){
@@ -126,7 +126,7 @@ function removeOptionGroup(counter){
     	alert("No more options to remove");
     	return false;
     }
-    $("#option"+counter).remove()
+    $("#option"+counter).remove();
     $("#addAnswerOptionLengthHidden").val(counter-1);
 }
 
