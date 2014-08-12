@@ -341,7 +341,6 @@ object Application extends Controller {
     }
   }
 
-
   def deletequestion = Action { implicit request =>
     if(request.session.get("userID").isDefined ){
       selectQuestionForm.bindFromRequest.fold(
@@ -388,5 +387,4 @@ object Application extends Controller {
     }
     return views.html.header(loginForm,userID,userFirstName,userLastName)
   }
-
 }
