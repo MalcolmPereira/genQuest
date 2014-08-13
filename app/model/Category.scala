@@ -1,8 +1,6 @@
 package model
 
-class Category(categoryId: Integer,
-           categoryName: String,
-           categoryDescription: String){
+case class Category(val categoryId: Integer,val categoryName: String,val categoryDescription: String){
 
   def this(categoryName: String, categoryDescription: String) {
     this(0,categoryName,categoryDescription)

@@ -1,10 +1,10 @@
 package model
 
-class User(userID: Integer,
-           userName: String,
-           userPassword: String,
-           userFirstName: String,
-           userLastName: String){
+class User(val userID: Integer,
+           val userName: String,
+           val userPassword: String,
+           val userFirstName: String,
+           val userLastName: String){
 
   def this(userName: String,userPassword: String,userFirstName: String,userLastName: String) {
     this(0,userName,userPassword,userFirstName,userLastName)

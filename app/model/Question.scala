@@ -1,10 +1,10 @@
 package model
 
-class Question(questionId: Integer,
-               categoryId: Integer,
-               questionText: String,
-               questionAnswer: String,
-               answerOptions: AnswerOptions) {
+class Question(val questionId: Integer,
+               val categoryId: Integer,
+               val questionText: String,
+               val questionAnswer: String,
+               val answerOptions: AnswerOptions) {
 
   def this(questionId: Integer,
            categoryId: Integer,
@@ -35,6 +35,7 @@ class Question(questionId: Integer,
   def answer  = questionAnswer
 
   def options = answerOptions
+
 }
 
 

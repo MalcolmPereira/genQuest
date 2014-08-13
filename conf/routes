@@ -5,6 +5,7 @@
 # Home page
 GET     /                           controllers.Application.index
 POST    /genquest                   controllers.Application.genquest
+POST    /submitanswers              controllers.Application.submitanswers
 POST    /login                      controllers.Application.login
 POST    /logout                     controllers.Application.logout
 GET     /register                   controllers.Application.register

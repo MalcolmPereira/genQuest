@@ -1,6 +1,6 @@
 package model
 
-class AnswerOptions(answerOptionList: List[AnswerOption],multiple: Boolean) {
+case class AnswerOptions(val answerOptionList: List[AnswerOption], val multiple: Boolean) {
   def answerOptions    = answerOptionList
 
   def multipleCorrect  = multiple

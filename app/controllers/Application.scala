@@ -7,6 +7,7 @@ import play.api.data.Forms._
 import play.twirl.api.Html
 import model._
 import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.MapBuilder
 
 object Application extends Controller {
 
@@ -112,6 +113,13 @@ object Application extends Controller {
     )
   )
 
+  //Submitted Question Id Form
+  val submitQuestionsForm = Form(
+    single(
+      "questionId" -> list(number)
+    )
+  )
+
   //Index Page
   def index = Action { implicit request =>
     Ok(views.html.index(categoryDAO.listCategories(),getHeader))
@@ -130,10 +138,44 @@ object Application extends Controller {
         for(catid <- success){
           catIDList += catid.toInt
         }
-        Ok(views.html.genquest(questionDAO.findQuestionsByCategoryID(catIDList.toList), getHeader))
+        Ok(views.html.genquest(questionDAO.findQuestionsByCategoryID(catIDList.toList),null, getHeader))
       }
     )
   }
+
+  def submitanswers = Action { implicit request =>
+    val requestVal      = request.body.asFormUrlEncoded
+    var questionList    = new ListBuffer[Question]()
+    var submittedMap    = Map.newBuilder[Integer, SubmittedAnswers]
+    //println(requestVal)
+    for (questionId <- submitQuestionsForm.bindFromRequest().get){
+      val question   = questionDAO.findQuestion(questionId)
+      questionList   += question
+      var answerDesc = "";
+      if(requestVal.get.contains("answerOptionDesc["+questionId+"]")){
+        answerDesc = requestVal.get("answerOptionDesc["+questionId+"]")(0)
+      }
+      if(requestVal.get.contains("answerOptionLength["+questionId+"]")){
+        var answerList     = new ListBuffer[AnswerOption]
+        val answerOptionLength = requestVal.get("answerOptionLength["+questionId+"]")(0).toInt
+        for (i <- 0 until answerOptionLength) {
+          if(requestVal.get.contains("answerOption["+questionId+" "+i+"]")){
+            answerList += AnswerOption(requestVal.get("answerOption["+questionId+" "+i+"]")(0),true)
+          }
+        }
+        if(requestVal.get.contains("answerOption["+questionId+"]")){
+          answerList += AnswerOption(requestVal.get("answerOption["+questionId+"]")(0),true)
+        }
+        submittedMap += ((question.id,new SubmittedAnswers(question.id,answerDesc,answerList.toList)))
+      }else{
+        submittedMap += ((question.id,new SubmittedAnswers(question.id,answerDesc,null)))
+
+      }
+    }
+    println("result "+submittedMap.result().get(1).get.answer)
+    Ok(views.html.genquest(questionList.toList,submittedMap.result(), getHeader))
+  }
+
 
   //Login Action
   def login = Action { implicit request =>

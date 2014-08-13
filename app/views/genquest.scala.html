@@ -1,67 +1,74 @@
 @import model._
-@(questions: List[Question],header:Html)(implicit errorStr: String)
+@(questions: List[Question],submittedAnswer: Map[Integer,SubmittedAnswers],header:Html)(implicit errorStr: String)
 @main(header) {
- <form class="form-horizontal" role="form" method="GET" action="@routes.Application.index">
-   	    <button type="submit" class="btn btn-info btn-xs">Generate Again</button>
-        <br/><br/>
-        <div class="table-responsive">
-             @if(questions.size == 0){
-               <div class="alert alert-danger">No Questions for selected category</div>
-             }else{
-	         @for(question <- questions) {
-   			 <table class="table table-hover">
-				  <tr class="active">
-					  <td>@question.question</td>
-				  </tr>
-				  <tr class="active">
-					  <td>@question.answer</td>
-				  </tr>
-                 @if(question.options != null){
-                 <tr class="active">
-                     <td colspan="2">
-                         <input type="hidden" id="answerOptionsHidden_@question.id" name="answerOptionsHidden_@question.id" value="@question.options.multipleCorrect"/>
-                         <input type="hidden" id="answerOptionsSizeHidden_@question.id" name="answerOptionsSizeHidden_@question.id" value="@question.options.answerOptions.size"/>
-                         <table class="table table-condensed" border="1">
-                             <tbody>
-                             <tr class="active">
-                                 @if(question.options.multipleCorrect){
-                                 <td>Multiple Correct Options:</td>
-                                 }else{
-                                 <td>Single Correct Option: </td>
-                                 }
-                             </tr>
-                             <tr class="active">
-                                 <td>
-                                     @for( (answerOption,index) <- question.options.answerOptions.zipWithIndex) {
-                                     &nbsp; &nbsp;
-                                     @if(question.options.multipleCorrect){
-                                     @if(answerOption.optionCorrect){
-                                     <input disabled type="checkbox" checked/>&nbsp;<label>@answerOption.optionName</label>
-                                     }else{
-                                     <input disabled type="checkbox"/>&nbsp;<label>@answerOption.optionName</label>
-                                     }
-                                     }else{
-                                     @if(answerOption.optionCorrect){
-                                     <input disabled type="radio" checked/>&nbsp;<label>@answerOption.optionName</label>
-                                     }else{
-                                     <input disabled type="radio"/>&nbsp;<label>@answerOption.optionName</label>
-                                     }
-                                     }
-                                     &nbsp; &nbsp;
-                                     <input type="hidden" id="answerOptionName_@index@question.id" name="answerOptionName_@index@question.id" value="@answerOption.optionName"/>
-                                     <input type="hidden"  id="answerOptionCorrect_@index@question.id" name="answerOptionCorrect_@index@question.id" value="@answerOption.optionCorrect"/>
-                                     }
-                                 </td>
-                             </tr>
-                             </tbody>
-                         </table>
-                     </td>
-                 </tr>
-                 }
-			 </table>
-		     }
-             }
-        </div>
-        <button type="submit" class="btn btn-info btn-xs">Generate Again</button>
- </form>
+<form class="form-horizontal" role="form" method="GET" action="@routes.Application.index">
+   	 <button type="submit" class="btn btn-info btn-xs">Generate Again</button>
+</form>
+<br/><br/>
+
+@if(questions.size == 0){
+    <div class="alert alert-danger">No Questions for selected category</div>
+
+}else{
+    <form class="form-horizontal" role="form" method="POST" action="@routes.Application.submitanswers">
+    <div class="table-responsive">
+         @for(question <- questions) {
+              <input  type="hidden" name="questionId[@question.id]" value="@question.id"/>
+              @if(question.options != null){
+                  <input  type="hidden" name="answerOptionLength[@question.id]" value="@question.options.answerOptions.size"/>
+   		          <table class="table table-hover">
+			          <tr class="active">
+				          <td>@question.question</td>
+			          </tr>
+                      @if(submittedAnswer != null){
+                      <tr class="active">
+                          <td><label>Answer: </label> @question.answer</td>
+                      </tr>
+                      }
+			          <tr class="active">
+                          <td>
+                              @for( (answerOption,index) <- question.options.answerOptions.zipWithIndex) {
+                                  &nbsp; &nbsp;
+                                  @if(question.options.multipleCorrect){
+                                      <input value="@answerOption.optionName" name="answerOption[@question.id @index]" type="checkbox"/>&nbsp;<label>@answerOption.optionName</label>
+                                  }else{
+                                      <input value="@answerOption.optionName" name="answerOption[@question.id]" type="radio" required/>&nbsp;<label>@answerOption.optionName</label>
+                                  }
+                                  &nbsp; &nbsp;
+                              }
+                          </td>
+                      </tr>
+                  </table>
+
+              }else{
+                  <table class="table table-hover">
+                      <tr class="active">
+                          <td>@question.question</td>
+                      </tr>
+                      @if(submittedAnswer != null){
+                        <tr class="active">
+                          <td><label>Answer: </label> @question.answer</td>
+                        </tr>
+                        @if(submittedAnswer != null && submittedAnswer.get(question.id).get.answer != null && submittedAnswer.get(question.id).get.answer.length > 0 ){
+                        <tr class="active">
+                            <td><label>Your Answer: </label> @submittedAnswer.get(question.id).get.answer</td>
+                        </tr>
+                      }
+                      }else{
+                        <tr class="active">
+                          <td>
+                              <textarea class="form-control" name="answerOptionDesc[@question.id]" placeholder="Answer Text" autofocus required></textarea>
+                          </td>
+                        </tr>
+                      }
+                  </table>
+              }
+		 }
+    </div>
+        @if(submittedAnswer == null){
+            <button type="submit" class="btn btn-success btn-xs">Submit Answers</button>
+            <button type="reset" class="btn btn-success btn-xs">Clear</button>
+        }
+    </form>
+    }
 }
