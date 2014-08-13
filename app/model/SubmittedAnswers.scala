@@ -1,8 +1,6 @@
 package model
 
-case class SubmittedAnswers(val questionId: Integer, val answerStr: String, val answerOptionList: List[AnswerOption]) {
-  def question     = questionId
-
+case class SubmittedAnswers(val answerStr: String, val answerOptionList: List[String]) {
   def answer       = answerStr
 
   def answerOption = answerOptionList

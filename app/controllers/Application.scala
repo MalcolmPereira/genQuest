@@ -156,23 +156,21 @@ object Application extends Controller {
         answerDesc = requestVal.get("answerOptionDesc["+questionId+"]")(0)
       }
       if(requestVal.get.contains("answerOptionLength["+questionId+"]")){
-        var answerList     = new ListBuffer[AnswerOption]
+        var answerList     = new ListBuffer[String]
         val answerOptionLength = requestVal.get("answerOptionLength["+questionId+"]")(0).toInt
         for (i <- 0 until answerOptionLength) {
           if(requestVal.get.contains("answerOption["+questionId+" "+i+"]")){
-            answerList += AnswerOption(requestVal.get("answerOption["+questionId+" "+i+"]")(0),true)
+            answerList += requestVal.get("answerOption["+questionId+" "+i+"]")(0)
           }
         }
         if(requestVal.get.contains("answerOption["+questionId+"]")){
-          answerList += AnswerOption(requestVal.get("answerOption["+questionId+"]")(0),true)
+            answerList += requestVal.get("answerOption["+questionId+"]")(0)
         }
-        submittedMap += ((question.id,new SubmittedAnswers(question.id,answerDesc,answerList.toList)))
+        submittedMap += ((question.id,new SubmittedAnswers(answerDesc,answerList.toList)))
       }else{
-        submittedMap += ((question.id,new SubmittedAnswers(question.id,answerDesc,null)))
-
+        submittedMap += ((question.id,new SubmittedAnswers(answerDesc,null)))
       }
     }
-    println("result "+submittedMap.result().get(1).get.answer)
     Ok(views.html.genquest(questionList.toList,submittedMap.result(), getHeader))
   }
 
