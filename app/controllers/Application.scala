@@ -7,7 +7,6 @@ import play.api.data.Forms._
 import play.twirl.api.Html
 import model._
 import scala.collection.mutable.ListBuffer
-import scala.collection.mutable.MapBuilder
 
 object Application extends Controller {
 
@@ -218,7 +217,12 @@ object Application extends Controller {
       }
       ,
       user => {
-        val userID     = userDAO.addUser(new User(0,user._1,user._2,user._3,user._4))
+        val userID     = userDAO.addUser(new User(0,
+            user._1.replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\"","&quot;").replaceAll("'","&#39;"),
+            user._2.replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\"","&quot;").replaceAll("'","&#39;"),
+            user._3.replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\"","&quot;").replaceAll("'","&#39;"),
+            user._4.replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\"","&quot;").replaceAll("'","&#39;"))
+        )
         val header     = views.html.header(loginForm,userID.toString,user._3,user._4)
         Ok(views.html.index(categoryDAO.listCategories(),header)).withSession(
           "userID" -> userID.toString,
@@ -248,7 +252,9 @@ object Application extends Controller {
         }
         ,
         success => {
-          categoryDAO.addCategory(new Category(success._1,success._2))
+          categoryDAO.addCategory(new Category(success._1.replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\"","&quot;").replaceAll("'","&#39;"),
+                                               success._2.replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\"","&quot;").replaceAll("'","&#39;"))
+                                 )
           Ok(views.html.editcategory(categoryDAO.listCategories(),getHeader))
         }
       )
@@ -267,7 +273,10 @@ object Application extends Controller {
         }
         ,
         success => {
-          categoryDAO.updateCategory(new Category(success._3.get.toInt,success._1,success._2))
+          categoryDAO.updateCategory(new Category(success._3.get.toInt,
+                                          success._1.replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\"","&quot;").replaceAll("'","&#39;"),
+                                          success._2.replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\"","&quot;").replaceAll("'","&#39;"))
+                                    )
           Ok(views.html.editcategory(categoryDAO.listCategories(),getHeader))
         }
       )
@@ -327,13 +336,13 @@ object Application extends Controller {
         ,
         success => {
           val catId       = success._1
-          val question    = success._2
-          val answer      = success._3
+          val question    = success._2.replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\"","&quot;").replaceAll("'","&#39;")
+          val answer      = success._3.replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\"","&quot;").replaceAll("'","&#39;")
           val questionId  = success._4
           if(success._5.nonEmpty && success._6.nonEmpty && success._7.nonEmpty){
             var optionList = new ListBuffer[AnswerOption]()
             for( (optionName,i) <- success._6.get.zipWithIndex){
-              optionList += new AnswerOption(optionName,success._7.get(i))
+              optionList += new AnswerOption(optionName.replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\"","&quot;").replaceAll("'","&#39;"),success._7.get(i))
             }
             val answerOption = new AnswerOptions(optionList.toList,success._5.get)
             questionDAO.addQuestion(new Question(catId,question,answer,answerOption))
@@ -359,13 +368,13 @@ object Application extends Controller {
         ,
         success => {
           val catId       = success._1
-          val question    = success._2
-          val answer      = success._3
+          val question    = success._2.replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\"","&quot;").replaceAll("'","&#39;")
+          val answer      = success._3.replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\"","&quot;").replaceAll("'","&#39;")
           val questionId  = success._4.get.toInt
           if(success._5.nonEmpty && success._6.nonEmpty && success._7.nonEmpty){
             var optionList = new ListBuffer[AnswerOption]()
             for( (optionName,i) <- success._6.get.zipWithIndex){
-              optionList += new AnswerOption(optionName,success._7.get(i))
+              optionList += new AnswerOption(optionName.replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\"","&quot;").replaceAll("'","&#39;"),success._7.get(i))
             }
             val answerOption = new AnswerOptions(optionList.toList,success._5.get)
             questionDAO.updateQuestion(new Question(questionId,catId,question,answer,answerOption))

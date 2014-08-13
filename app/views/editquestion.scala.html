@@ -10,7 +10,7 @@
            <select id="categorySelect" name="categoryId" class="form-control" onchange="this.form.submit()">
                <option value="0">All</option>
                @for(category <- categories) {
-                  <option value="@category.id">@category.name</option>
+                  <option value="@category.id">@Html(category.name)</option>
                }
            </select>
            <script>$('#categorySelect').val("@selectedCategory")</script>
@@ -21,18 +21,18 @@
             <tbody>
                  @for(question <- questions) {
                      <tr class="active">
-                        <td><strong>@question.question</strong></td>
+                        <td><strong>@Html(question.question)</strong></td>
                         <td align="right">
                             <button onclick="getUpdateQuestionModal(@question.id)" id="updateQuestion" type="button" class="btn btn-warning btn-xs">Update</button>
                             <button onclick="deleteQuestion(@question.id)" id="deleteQuestion" type="button" class="btn btn-danger btn-xs">Remove</button>
                         </td>
                      </tr>
                      <tr class="active">
-                         <td colspan="2">@question.answer</td>
+                         <td colspan="2">@Html(question.answer)</td>
                          <input  type="hidden" id="categoryIdHidden_@question.id" name="categoryId_@question.id" value="@question.category"/>
                          <input  type="hidden" id="questionIdHidden_@question.id" name="questionId_@question.id" value="@question.id"/>
-                         <input  type="hidden" id="questionNameHidden_@question.id" name="questionName_@question.id" value="@question.question"/>
-                         <input  type="hidden" id="questionAnswerHidden_@question.id" name="questionAnswer_@question.id" value="@question.answer"/>
+                         <input  type="hidden" id="questionNameHidden_@question.id" name="questionName_@question.id" value="@Html(question.question)"/>
+                         <input  type="hidden" id="questionAnswerHidden_@question.id" name="questionAnswer_@question.id" value="@Html(question.answer)"/>
                      </tr>
                      @if(question.options != null){
                      <tr class="active">
@@ -54,19 +54,19 @@
                                                     &nbsp; &nbsp;
                                                     @if(question.options.multipleCorrect){
                                                         @if(answerOption.optionCorrect){
-                                                            <input disabled type="checkbox" checked/>&nbsp;<label>@answerOption.optionName</label>
+                                                            <input disabled type="checkbox" checked/>&nbsp;<label>@Html(answerOption.optionName)</label>
                                                         }else{
-                                                            <input disabled type="checkbox"/>&nbsp;<label>@answerOption.optionName</label>
+                                                            <input disabled type="checkbox"/>&nbsp;<label>@Html(answerOption.optionName)</label>
                                                         }
                                                     }else{
                                                         @if(answerOption.optionCorrect){
-                                                           <input disabled type="radio" checked/>&nbsp;<label>@answerOption.optionName</label>
+                                                           <input disabled type="radio" checked/>&nbsp;<label>@Html(answerOption.optionName)</label>
                                                         }else{
-                                                           <input disabled type="radio"/>&nbsp;<label>@answerOption.optionName</label>
+                                                           <input disabled type="radio"/>&nbsp;<label>@Html(answerOption.optionName)</label>
                                                         }
                                                     }
                                                     &nbsp; &nbsp;
-                                                    <input type="hidden" id="answerOptionName_@index@question.id" name="answerOptionName_@index@question.id" value="@answerOption.optionName"/>
+                                                    <input type="hidden" id="answerOptionName_@index@question.id" name="answerOptionName_@index@question.id" value="@Html(answerOption.optionName)"/>
                                                     <input type="hidden"  id="answerOptionCorrect_@index@question.id" name="answerOptionCorrect_@index@question.id" value="@answerOption.optionCorrect"/>
                                                }
                                            </td>
@@ -101,7 +101,7 @@
                             <select id="categoryId" name="categoryId" class="form-control">
                                 <option value="">Select</option>
                                 @for(category <- categories) {
-                                <option value="@category.id">@category.name</option>
+                                <option value="@category.id">@Html(category.name)</option>
                                 }
                             </select>
                         </div>

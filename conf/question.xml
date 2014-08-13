@@ -25,4 +25,14 @@
             </answerOption>
         </answerOptions>
     </question>
-</questions>
+<question><questionId>2</questionId><categoryId>1</categoryId><questionText>What is an Object Model and what are important tenants or building blocks in an Object Model.</questionText><questionAnswer>In OOAD the purpose of analysis activity is to create a model of the system's functional requirements that is independent of implementation constraints. The primary tasks in object-oriented analysis (OOA) are:
+&lt;ol&gt;
+  &lt;li&gt;Find the objects&lt;/li&gt;
+  &lt;li&gt;Organize the objects&lt;/li&gt;
+&lt;li&gt;Describe how the objects interact&lt;/li&gt;
+&lt;li&gt;Define the behavior of the objects&lt;/li&gt;
+&lt;li&gt;Define the internals of the objects&lt;/li&gt;
+&lt;/ol&gt;
+
+Common models used in OOA are use cases and object models. Use cases describe scenarios for standard domain functions that the system must accomplish. Object models describe the names, class relations (e.g. Circle is a subclass of Shape), operations, and properties of the main objects. User-interface mockups or prototypes can also be created to help understanding.
+</questionAnswer><answerOptions multipleCorrect="true"><answerOption><name>Abstraction</name><correct>true</correct></answerOption><answerOption><name>Encapsulation</name><correct>true</correct></answerOption><answerOption><name>Modularity</name><correct>true</correct></answerOption><answerOption><name>Hierarchy</name><correct>true</correct></answerOption><answerOption><name>Sequences</name><correct>true</correct></answerOption></answerOptions></question></questions>

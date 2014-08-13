@@ -18,11 +18,11 @@
                   <input  type="hidden" name="answerOptionLength[@question.id]" value="@question.options.answerOptions.size"/>
    		          <table class="table table-hover">
 			          <tr class="active">
-				          <td>@question.question</td>
+				          <td>@Html(question.question)</td>
 			          </tr>
                       @if(submittedAnswer != null){
                       <tr class="active">
-                          <td><label>Answer: </label> @question.answer</td>
+                          <td><label>Answer: </label> @Html(question.answer)</td>
                       </tr>
                       }
 			          <tr class="active">
@@ -31,9 +31,9 @@
                                     @for( (answerOption,index) <- question.options.answerOptions.zipWithIndex) {
                                     &nbsp; &nbsp;
                                         @if(question.options.multipleCorrect){
-                                            <input value="@answerOption.optionName" name="answerOption[@question.id @index]" type="checkbox"/>&nbsp;<label>@answerOption.optionName</label>
+                                            <input value="@answerOption.optionName" name="answerOption[@question.id @index]" type="checkbox"/>&nbsp;<label>@Html(answerOption.optionName)</label>
                                         }else{
-                                            <input value="@answerOption.optionName" name="answerOption[@question.id]" type="radio" required/>&nbsp;<label>@answerOption.optionName</label>
+                                            <input value="@answerOption.optionName" name="answerOption[@question.id]" type="radio" required/>&nbsp;<label>@Html(answerOption.optionName)</label>
                                         }
                                     &nbsp; &nbsp;
                                 }
@@ -44,29 +44,29 @@
                                     @for( answerOption <- question.options.answerOptions) {
                                         @if(question.options.multipleCorrect){
                                               @if(submittedAnswer.get(question.id).get.answerOption.contains(answerOption.optionName) && answerOption.optionCorrect){
-                                                    <input disabled checked type="checkbox"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/tick.png")">&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <input disabled checked type="checkbox"/>&nbsp;<label>@Html(answerOption.optionName)</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/tick.png")">&nbsp;&nbsp;&nbsp;&nbsp;
                                               }
                                               @if(submittedAnswer.get(question.id).get.answerOption.contains(answerOption.optionName) && !answerOption.optionCorrect){
-                                                    <input disabled checked type="checkbox"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/cross.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <input disabled checked type="checkbox"/>&nbsp;<label>@Html(answerOption.optionName)</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/cross.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
                                               }
                                               @if(!submittedAnswer.get(question.id).get.answerOption.contains(answerOption.optionName) && answerOption.optionCorrect){
-                                                    <input disabled type="checkbox"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/cross.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <input disabled type="checkbox"/>&nbsp;<label>@Html(answerOption.optionName)</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/cross.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
                                               }
                                               @if(!submittedAnswer.get(question.id).get.answerOption.contains(answerOption.optionName) && !answerOption.optionCorrect){
-                                                    <input disabled type="checkbox"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/tick.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <input disabled type="checkbox"/>&nbsp;<label>@Html(answerOption.optionName)</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/tick.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
                                               }
                                         }else{
                                               @if(submittedAnswer.get(question.id).get.answerOption.contains(answerOption.optionName) && answerOption.optionCorrect){
-                                                    <input disabled checked type="radio"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/tick.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <input disabled checked type="radio"/>&nbsp;<label>@Html(answerOption.optionName)</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/tick.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
                                               }
                                               @if(submittedAnswer.get(question.id).get.answerOption.contains(answerOption.optionName) && !answerOption.optionCorrect){
-                                                    <input disabled checked type="radio"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/cross.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <input disabled checked type="radio"/>&nbsp;<label>@Html(answerOption.optionName)</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/cross.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
                                               }
                                               @if(!submittedAnswer.get(question.id).get.answerOption.contains(answerOption.optionName) && answerOption.optionCorrect){
-                                                    <input disabled type="radio"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/cross.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <input disabled type="radio"/>&nbsp;<label>@Html(answerOption.optionName)</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/cross.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
                                               }
                                               @if(!submittedAnswer.get(question.id).get.answerOption.contains(answerOption.optionName) && !answerOption.optionCorrect){
-                                                    <input disabled type="radio"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/tick.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <input disabled type="radio"/>&nbsp;<label>@Html(answerOption.optionName)</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/tick.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
                                                }
                                         }
                                     }
@@ -78,15 +78,15 @@
               }else{
                   <table class="table table-hover">
                       <tr class="active">
-                          <td>@question.question</td>
+                          <td>@Html(question.question)</td>
                       </tr>
                       @if(submittedAnswer != null){
                             <tr class="active">
-                                <td><label>Answer: </label> @question.answer</td>
+                                <td><label>Answer: </label> @Html(question.answer)</td>
                             </tr>
                             @if(submittedAnswer != null && submittedAnswer.get(question.id).get.answer != null && submittedAnswer.get(question.id).get.answer.length > 0 ){
                                 <tr class="active">
-                                    <td><label>Your Answer: </label> @submittedAnswer.get(question.id).get.answer</td>
+                                    <td><label>Your Answer: </label> @Html(submittedAnswer.get(question.id).get.answer)</td>
                                 </tr>
                             }
                       }else{
