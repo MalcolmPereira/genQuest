@@ -44,35 +44,29 @@
                                     @for( answerOption <- question.options.answerOptions) {
                                         @if(question.options.multipleCorrect){
                                               @if(submittedAnswer.get(question.id).get.answerOption.contains(answerOption.optionName) && answerOption.optionCorrect){
-                                                   <input disabled checked type="checkbox"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/tick.png")" >
-
+                                                    <input disabled checked type="checkbox"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/tick.png")">&nbsp;&nbsp;&nbsp;&nbsp;
                                               }
                                               @if(submittedAnswer.get(question.id).get.answerOption.contains(answerOption.optionName) && !answerOption.optionCorrect){
-                                                   <input disabled checked type="checkbox"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;
-                                                   Incorrect
+                                                    <input disabled checked type="checkbox"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/cross.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
                                               }
                                               @if(!submittedAnswer.get(question.id).get.answerOption.contains(answerOption.optionName) && answerOption.optionCorrect){
-                                                   <input disabled type="checkbox"/>&nbsp;<label>@answerOption.optionName</label>
-                                                   Incorrect
+                                                    <input disabled type="checkbox"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/cross.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
                                               }
                                               @if(!submittedAnswer.get(question.id).get.answerOption.contains(answerOption.optionName) && !answerOption.optionCorrect){
-                                                   <input disabled type="checkbox"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/tick.png")" >
+                                                    <input disabled type="checkbox"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/tick.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
                                               }
                                         }else{
                                               @if(submittedAnswer.get(question.id).get.answerOption.contains(answerOption.optionName) && answerOption.optionCorrect){
-                                                    <input disabled checked type="radio"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/tick.png")" >
-                                                    Correct
+                                                    <input disabled checked type="radio"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/tick.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
                                               }
                                               @if(submittedAnswer.get(question.id).get.answerOption.contains(answerOption.optionName) && !answerOption.optionCorrect){
-                                                    <input disabled checked type="radio"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;
-                                                    Incorrect
+                                                    <input disabled checked type="radio"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/cross.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
                                               }
                                               @if(!submittedAnswer.get(question.id).get.answerOption.contains(answerOption.optionName) && answerOption.optionCorrect){
-                                                    <input disabled type="radio"/>&nbsp;<label>@answerOption.optionName</label>
-                                                    Incorrect
+                                                    <input disabled type="radio"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/cross.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
                                               }
                                               @if(!submittedAnswer.get(question.id).get.answerOption.contains(answerOption.optionName) && !answerOption.optionCorrect){
-                                                    <input disabled type="radio"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/tick.png")" >
+                                                    <input disabled type="radio"/>&nbsp;<label>@answerOption.optionName</label>&nbsp;&nbsp;<img src="@routes.Assets.at("images/tick.png")" >&nbsp;&nbsp;&nbsp;&nbsp;
                                                }
                                         }
                                     }
@@ -81,7 +75,6 @@
 
                       </tr>
                   </table>
-
               }else{
                   <table class="table table-hover">
                       <tr class="active">
