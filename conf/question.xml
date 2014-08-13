@@ -1,21 +1,28 @@
-<questions><question>
+<questions>
+        <question>
         <questionId>1</questionId>
         <categoryId>1</categoryId>
-        <questionText>How many different types of constructors are available in the parent java.lang.Object class?
-        </questionText>
-        <questionAnswer>There is only one default no argument constructor.</questionAnswer>
+        <questionText>What is Object Oriented Design / OOAD why do you think is important</questionText>
+        <questionAnswer>
+            Object-oriented design is the process of planning a system of interacting objects for the purpose of solving a software problem.
+        </questionAnswer>
         <answerOptions multipleCorrect="true">
             <answerOption>
-                <name>2</name>
-                <correct>false</correct>
-            </answerOption>
-            <answerOption>
-                <name>1</name>
+                <name>Object/Class</name>
                 <correct>true</correct>
             </answerOption>
             <answerOption>
-                <name>4</name>
+                <name>Information hiding</name>
+                <correct>true</correct>
+            </answerOption>
+            <answerOption>
+                <name>Inheritance</name>
+                <correct>true</correct>
+            </answerOption>
+            <answerOption>
+                <name>Unit Testing</name>
                 <correct>false</correct>
             </answerOption>
         </answerOptions>
-    </question><question><questionId>2</questionId><categoryId>3</categoryId><questionText>Some scal question...</questionText><questionAnswer>some answere!!!!. some new updates make some new updates</questionAnswer><answerOptions multipleCorrect="true"><answerOption><name>Admin</name><correct>true</correct></answerOption><answerOption><name>Admin TEst</name><correct>true</correct></answerOption></answerOptions></question><question><questionId>3</questionId><categoryId>1</categoryId><questionText>New Java Queston</questionText><questionAnswer>New Java Answer not Options</questionAnswer></question><question><questionId>4</questionId><categoryId>2</categoryId><questionText>Simple Spring Question</questionText><questionAnswer>Testint 1 2 3</questionAnswer><answerOptions multipleCorrect="false"><answerOption><name>option1</name><correct>true</correct></answerOption><answerOption><name>option2</name><correct>false</correct></answerOption><answerOption><name>option3</name><correct>false</correct></answerOption></answerOptions></question></questions>
+    </question>
+</questions>
