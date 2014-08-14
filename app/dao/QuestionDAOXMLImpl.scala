@@ -2,12 +2,17 @@ package dao
 
 import java.util.concurrent.atomic.AtomicLong
 
+import akka.actor.Props
 import model.{Question,AnswerOptions, AnswerOption}
 
 import scala.collection.mutable.ListBuffer
 import scala.xml.{Node, Elem}
+import play.api.libs.concurrent.Akka
+import play.api.Play.current
 
 object QuestionDAOXMLImpl extends QuestionDAO {
+
+  val fileManagerActor = Akka.system.actorOf(Props[FileManagerActor])
 
   private val idGenerator = new AtomicLong(
   {
@@ -71,12 +76,12 @@ object QuestionDAOXMLImpl extends QuestionDAO {
     val questionID     = idGenerator.getAndIncrement.toInt
     val checkCategory  = CategoryDAOXMLImpl.findCategory(question.category)
     if(checkCategory != null){
-        val loginNodeUpdated  = scala.xml.XML.loadFile("conf/question.xml") match {
+        val questionNodeUpdated  = scala.xml.XML.loadFile("conf/question.xml") match {
         case Elem(prefix, label, attribs, scope, child @ _*) => {
           Elem(prefix, label, attribs, scope, true, child ++ getQuestionNode(question, questionID): _*)
         }
       }
-      scala.xml.XML.save("conf/question.xml", loginNodeUpdated, "UTF-8", false, null)
+      fileManagerActor ! QuestionAddNode(questionNodeUpdated)
       return questionID
     }
     0
@@ -95,7 +100,7 @@ object QuestionDAOXMLImpl extends QuestionDAO {
         }
       }
     }
-    scala.xml.XML.save("conf/question.xml", <questions>{for(question <- questionList) yield question}</questions>, "UTF-8", false, null)
+    fileManagerActor ! QuestionNode(questionList.toList)
     question
   }
 
@@ -113,7 +118,7 @@ object QuestionDAOXMLImpl extends QuestionDAO {
         }
       }
     }
-    scala.xml.XML.save("conf/question.xml", <questions>{for(question <- questionList) yield question}</questions>, "UTF-8", false, null)
+    fileManagerActor ! QuestionNode(questionList.toList)
     nodeCounter
   }
 

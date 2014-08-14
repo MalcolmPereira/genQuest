@@ -1,13 +1,18 @@
 package dao
 
+import akka.actor.Props
 import model.User
 import util._
 import scala.collection.mutable.ListBuffer
 import java.util.concurrent.atomic.AtomicLong
 import scala.xml.Elem
 import scala.xml.Node
+import play.api.libs.concurrent.Akka
+import play.api.Play.current
 
 object UserDAOXMLImpl extends UserDAO {
+
+  val fileManagerActor = Akka.system.actorOf(Props[FileManagerActor])
 
   private val idGenerator = new AtomicLong(
       {
@@ -85,7 +90,7 @@ object UserDAOXMLImpl extends UserDAO {
           Elem(prefix, label, attribs, scope, true, child ++ getUserNode(user,userID): _*)
         }
       }
-      scala.xml.XML.save("conf/login.xml", loginNodeUpdated, "UTF-8", false, null)
+      fileManagerActor ! UserAddNode(loginNodeUpdated)
       userID
   }
 
@@ -102,7 +107,7 @@ object UserDAOXMLImpl extends UserDAO {
                 }
           }
       }
-      scala.xml.XML.save("conf/login.xml", <users>{for(user <- userList) yield user}</users>, "UTF-8", false, null)
+      fileManagerActor ! UserNode(userList.toList)
       user
   }
 
@@ -120,7 +125,8 @@ object UserDAOXMLImpl extends UserDAO {
           }
         }
       }
-      scala.xml.XML.save("conf/login.xml", <users>{for(user <- userList) yield user}</users>, "UTF-8", false, null)
+      fileManagerActor ! UserNode(userList.toList)
+      //scala.xml.XML.save("conf/login.xml", <users>{for(user <- userList) yield user}</users>, "UTF-8", false, null)
       nodeCounter
   }
 

@@ -2,14 +2,19 @@ package dao
 
 import java.util.concurrent.atomic.AtomicLong
 
+import akka.actor.Props
 import model.Category
 
 import scala.collection.mutable.ListBuffer
 
 import scala.xml.Elem
 import scala.xml.Node
+import play.api.libs.concurrent.Akka
+import play.api.Play.current
 
 object CategoryDAOXMLImpl extends CategoryDAO {
+
+  val fileManagerActor = Akka.system.actorOf(Props[FileManagerActor])
 
   private val idGenerator = new AtomicLong(
   {
@@ -75,7 +80,7 @@ object CategoryDAOXMLImpl extends CategoryDAO {
         Elem(prefix, label, attribs, scope, true, child ++ getCategoryNode(category,categoryID): _*)
       }
     }
-    scala.xml.XML.save("conf/category.xml", categoryNodeUpdated, "UTF-8", false, null)
+    fileManagerActor ! CategoryAddNode(categoryNodeUpdated)
     categoryID
   }
 
@@ -95,7 +100,7 @@ object CategoryDAOXMLImpl extends CategoryDAO {
 
       }
     }
-    scala.xml.XML.save("conf/category.xml", <categories>{for(category <- categoryList) yield category}</categories>, "UTF-8", false, null)
+    fileManagerActor ! CategoryNode(categoryList.toList)
     category
   }
 
@@ -113,7 +118,7 @@ object CategoryDAOXMLImpl extends CategoryDAO {
         }
       }
     }
-    scala.xml.XML.save("conf/category.xml", <categories>{for(category <- categoryList) yield category}</categories>, "UTF-8", false, null)
+    fileManagerActor ! CategoryNode(categoryList.toList)
     nodeCounter
   }
 
