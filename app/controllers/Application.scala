@@ -1,6 +1,7 @@
 package controllers
 
 import dao._
+import dao.file.{UserDAOXMLImpl, QuestionDAOXMLImpl, CategoryDAOXMLImpl}
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._

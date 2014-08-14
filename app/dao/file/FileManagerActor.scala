@@ -1,6 +1,7 @@
-package dao
+package dao.file
 
-import akka.actor.{ActorLogging, Actor}
+import akka.actor.{Actor, ActorLogging}
+
 import scala.xml.Node
 
 case class UserAddNode(user: Node)

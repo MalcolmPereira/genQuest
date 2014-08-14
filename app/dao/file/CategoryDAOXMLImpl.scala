@@ -1,16 +1,15 @@
-package dao
+package dao.file
 
 import java.util.concurrent.atomic.AtomicLong
 
 import akka.actor.Props
+import dao.CategoryDAO
 import model.Category
+import play.api.Play.current
+import play.api.libs.concurrent.Akka
 
 import scala.collection.mutable.ListBuffer
-
-import scala.xml.Elem
-import scala.xml.Node
-import play.api.libs.concurrent.Akka
-import play.api.Play.current
+import scala.xml.{Elem, Node}
 
 object CategoryDAOXMLImpl extends CategoryDAO {
 

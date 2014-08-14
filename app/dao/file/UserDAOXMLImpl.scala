@@ -1,14 +1,16 @@
-package dao
+package dao.file
+
+import java.util.concurrent.atomic.AtomicLong
 
 import akka.actor.Props
+import dao.UserDAO
 import model.User
-import util._
-import scala.collection.mutable.ListBuffer
-import java.util.concurrent.atomic.AtomicLong
-import scala.xml.Elem
-import scala.xml.Node
-import play.api.libs.concurrent.Akka
 import play.api.Play.current
+import play.api.libs.concurrent.Akka
+import util._
+
+import scala.collection.mutable.ListBuffer
+import scala.xml.{Elem, Node}
 
 object UserDAOXMLImpl extends UserDAO {
 
