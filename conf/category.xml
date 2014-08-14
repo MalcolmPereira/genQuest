@@ -1,17 +1,13 @@
-<categories>
-    <category>
+<categories><category>
         <categoryId>1</categoryId>
         <categoryName>OOP</categoryName>
         <categoryDescription>Object Oriented Programming</categoryDescription>
-    </category>
-    <category>
+    </category><category>
         <categoryId>2</categoryId>
         <categoryName>Java</categoryName>
         <categoryDescription>Core Java Questions</categoryDescription>
-    </category>
-    <category>
+    </category><category>
         <categoryId>3</categoryId>
         <categoryName>Spring</categoryName>
         <categoryDescription>Core Spring Questions</categoryDescription>
-    </category>
-</categories>
+    </category></categories>
