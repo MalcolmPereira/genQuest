@@ -1,0 +1,182 @@
+<questions>
+    <question>
+        <questionId>1</questionId>
+        <categoryId>1</categoryId>
+        <questionText>In OOAD (Object Oriented Analysis and Design) can you elaborate on Analysis and Design ? What
+            Options Best Suited Analysis and Design ?
+        </questionText>
+        <questionAnswer>Analysis emphasizes an investigation of the problem and requirements, rather than a solution.
+            &quot;Analysis&quot; is a broad
+            term, best qualified, as in requirements analysis (a investigation of the requirements) or object analysis
+            (an investigation of the domain objects)
+
+            Design emphasizes a conceptual solution that fulfills the requirements, rather than its implementation.
+            Ultimately, it is designs that can be implemented Analysis and design have been summarized in the phrase
+            &quot;Do the right thing (Analysis), and do the thing right (Design).&quot;
+        </questionAnswer>
+        <answerOptions multipleCorrect="true">
+            <answerOption>
+                <name>Requirement Analysis</name>
+                <correct>true</correct>
+            </answerOption>
+            <answerOption>
+                <name>Component Analysis</name>
+                <correct>false</correct>
+            </answerOption>
+            <answerOption>
+                <name>Deployment Analysis</name>
+                <correct>false</correct>
+            </answerOption>
+            <answerOption>
+                <name>Functional Analysis</name>
+                <correct>false</correct>
+            </answerOption>
+        </answerOptions>
+    </question>
+    <question>
+        <questionId>2</questionId>
+        <categoryId>1</categoryId>
+        <questionText>What is Object-oriented Analysis and Object Oriented Design ? Select the correct options that fit
+            OOA and OOD.
+        </questionText>
+        <questionAnswer>&lt;strong&gt;Object-oriented Analysis&lt;/strong&gt; There is an emphasis on finding and
+            describing the objects or concepts in the problem domain
+            For example: In the case of a library information system, some of the concepts
+            include Book, Library, Members.
+
+            &lt;b&gt;Object Oriented Design&lt;/b&gt;. There is an emphasis on defining software objects and how they
+            collaborate to fulfill the requirements. For example, in the library system, a Book software object may have
+            a title attribute and a getChapter method.
+        </questionAnswer>
+        <answerOptions multipleCorrect="true">
+            <answerOption>
+                <name>Finding Object</name>
+                <correct>true</correct>
+            </answerOption>
+            <answerOption>
+                <name>Coding Object</name>
+                <correct>false</correct>
+            </answerOption>
+            <answerOption>
+                <name>Find Object Collaborations</name>
+                <correct>true</correct>
+            </answerOption>
+            <answerOption>
+                <name>Object State and Structure</name>
+                <correct>false</correct>
+            </answerOption>
+        </answerOptions>
+    </question>
+    <question>
+        <questionId>3</questionId>
+        <categoryId>1</categoryId>
+        <questionText>What is an Object Model and what are important tenants or building blocks in an Object Model.
+        </questionText>
+        <questionAnswer>In OOAD the purpose of analysis activity is to create a model of the system's functional
+            requirements that is independent of implementation constraints. The primary tasks in object-oriented
+            analysis (OOA) are:
+            &lt;ol&gt;
+            &lt;li&gt;Find the objects&lt;/li&gt;
+            &lt;li&gt;Organize the objects&lt;/li&gt;
+            &lt;li&gt;Describe how the objects interact&lt;/li&gt;
+            &lt;li&gt;Define the behavior of the objects&lt;/li&gt;
+            &lt;li&gt;Define the internals of the objects&lt;/li&gt;
+            &lt;/ol&gt;
+
+            Common models used in OOA are use cases and object models. Use cases describe scenarios for standard domain
+            functions that the system must accomplish. Object models describe the names, class relations (e.g. Circle is
+            a subclass of Shape), operations, and properties of the main objects. User-interface mockups or prototypes
+            can also be created to help understanding.
+        </questionAnswer>
+        <answerOptions multipleCorrect="true">
+            <answerOption>
+                <name>Abstraction</name>
+                <correct>true</correct>
+            </answerOption>
+            <answerOption>
+                <name>Encapsulation</name>
+                <correct>true</correct>
+            </answerOption>
+            <answerOption>
+                <name>Modularity</name>
+                <correct>true</correct>
+            </answerOption>
+            <answerOption>
+                <name>Hierarchy</name>
+                <correct>true</correct>
+            </answerOption>
+            <answerOption>
+                <name>Sequences</name>
+                <correct>false</correct>
+            </answerOption>
+        </answerOptions>
+    </question>
+    <question>
+        <questionId>4</questionId>
+        <categoryId>1</categoryId>
+        <questionText>What are the Two type of decompositions when trying to comprehend designing complex systems.
+        </questionText>
+        <questionAnswer>&lt;strong&gt;Algorithmic Decomposition&lt;/strong&gt; which is a top down approach of
+            structured design and we approach decomposition as a simple matter of algorithmic decomposition, wherein
+            each module in the system denotes a major step in some overall process. A structure chart that shows the
+            relationships among various functional elements of the solution.
+            &lt;br/&gt;&lt;br/&gt;
+            &lt;strong&gt;Object-Oriented Decomposition&lt;/strong&gt; Object Oriented Decomposition involves
+            Decomposing system according to the key abstractions in the problem domain. Rather than decomposing the
+            problem into steps , we need to identify objects such which derive directly from the vocabulary of the
+            problem domain.
+            &lt;br/&gt;&lt;br/&gt;
+            Although both designs solve the same problem, they do so in quite different ways. In this object oriented
+            decomposition, we view the world as a set of autonomous agents that collaborate to perform some higher-level
+            behavior.
+        </questionAnswer>
+        <answerOptions multipleCorrect="true">
+            <answerOption>
+                <name>Algorithmic Decomposition</name>
+                <correct>true</correct>
+            </answerOption>
+            <answerOption>
+                <name>Systematic Decomposition</name>
+                <correct>false</correct>
+            </answerOption>
+            <answerOption>
+                <name>Object-Oriented Decomposition</name>
+                <correct>true</correct>
+            </answerOption>
+            <answerOption>
+                <name>Object-Analysis Decomposition</name>
+                <correct>false</correct>
+            </answerOption>
+        </answerOptions>
+    </question>
+    <question>
+        <questionId>5</questionId>
+        <categoryId>1</categoryId>
+        <questionText>What is Abstraction in OOP?</questionText>
+        <questionAnswer>Abstraction denotes the essential characteristics of an object that distinguish it from all
+            other kinds of object and thus provide crisply defined conceptual boundaries, relative to the perspective of
+            the viewer. Abstraction is the process of generalization by reducing the information content of a concept or
+            an observable phenomenon, typically in order to retain only information which is relevant for a particular
+            purpose. Abstraction is the process of generalization by reducing the information content of a concept,
+            typically to retain only information which is relevant for a particular purpose.
+        </questionAnswer>
+        <answerOptions multipleCorrect="true">
+            <answerOption>
+                <name>inheritence</name>
+                <correct>false</correct>
+            </answerOption>
+            <answerOption>
+                <name>modularity</name>
+                <correct>false</correct>
+            </answerOption>
+            <answerOption>
+                <name>functionality</name>
+                <correct>false</correct>
+            </answerOption>
+            <answerOption>
+                <name>generalization</name>
+                <correct>true</correct>
+            </answerOption>
+        </answerOptions>
+    </question>
+</questions>
