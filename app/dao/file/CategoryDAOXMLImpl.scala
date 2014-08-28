@@ -3,15 +3,23 @@ package dao.file
 import java.util.concurrent.atomic.AtomicLong
 
 import akka.actor.Props
+import akka.pattern.ask
+import akka.util.Timeout
+
 import dao.CategoryDAO
 import model.Category
 import play.api.Play.current
+import scala.concurrent.duration._
 import play.api.libs.concurrent.Akka
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.collection.mutable.ListBuffer
 import scala.xml.{Elem, Node}
 
+
 object CategoryDAOXMLImpl extends CategoryDAO {
+
+  implicit val timeout = Timeout(2.second)
 
   val fileManagerActor = Akka.system.actorOf(Props[FileManagerActor])
 
@@ -70,54 +78,42 @@ object CategoryDAOXMLImpl extends CategoryDAO {
     null
   }
 
-
-
   override def addCategory(category: Category): Integer = {
-    val categoryID = idGenerator.getAndIncrement.toInt
-    val categoryNodeUpdated = scala.xml.XML.loadFile("conf/category.xml") match {
-      case Elem(prefix, label, attribs, scope, child @ _*) => {
-        Elem(prefix, label, attribs, scope, true, child ++ getCategoryNode(category,categoryID): _*)
+      val categoryID = idGenerator.getAndIncrement.toInt
+      val f = fileManagerActor ? ManageNode(getCategoryNode(category, categoryID), "CATEGORY", "ADD")
+      f.onSuccess{
+        case categoryID:Integer => println ("Added New Category "+categoryID)
       }
-    }
-    fileManagerActor ! CategoryAddNode(categoryNodeUpdated)
-    categoryID
+      categoryID
   }
 
   override def updateCategory(category: Category): Category = {
-    var categoryList  = new ListBuffer[Node]()
-    scala.xml.XML.loadFile("conf/category.xml") match {
-      case <categories>{categories @ _*}</categories> => {
-
-        for (category_ <- categories) {
-             if ((category_ \ "categoryId").text.trim.length > 0 && (category_ \ "categoryId").text.trim.toInt > 0 && (category_ \ "categoryId").text.trim.toInt == category.id) {
-                 categoryList  += getCategoryNode(category, category_)
-             }else{
-                 categoryList  += category_
-             }
-
+      scala.xml.XML.loadFile("conf/category.xml") match {
+          case <categories>{categories @ _*}</categories> => {
+              for (category_ <- categories) {
+                    if ((category_ \ "categoryId").text.trim.length > 0 && (category_ \ "categoryId").text.trim.toInt > 0 && (category_ \ "categoryId").text.trim.toInt == category.id) {
+                        fileManagerActor ? ManageNode(getCategoryNode(category, category_),"CATEGORY","UPDATE")
+                        return category
+                    }
+              }
           }
-
       }
-    }
-    fileManagerActor ! CategoryNode(categoryList.toList)
-    category
+      category
   }
 
   override def deleteCategory(categoryId: Integer): Integer = {
-    var categoryList  = new ListBuffer[Node]()
-    var nodeCounter  = 0
-    scala.xml.XML.loadFile("conf/category.xml") match {
-      case <categories>{categories @ _*}</categories> => {
-        for (category_ <- categories) {
-          if ((category_ \ "categoryId").text.trim.length > 0 && (category_ \ "categoryId").text.trim.toInt > 0 && (category_ \ "categoryId").text.trim.toInt != categoryId) {
-            categoryList  += category_
-          }else{
-            nodeCounter  = nodeCounter  + 1
+      var nodeCounter  = 0
+      scala.xml.XML.loadFile("conf/category.xml") match {
+          case <categories>{categories @ _*}</categories> => {
+                for (category_ <- categories) {
+                  if ((category_ \ "categoryId").text.trim.length > 0 && (category_ \ "categoryId").text.trim.toInt > 0 && (category_ \ "categoryId").text.trim.toInt == categoryId) {
+                    fileManagerActor ? ManageNode(category_,"CATEGORY","DELETE")
+                    nodeCounter  = nodeCounter  + 1
+                    return nodeCounter
+                }
+            }
           }
-        }
-      }
     }
-    fileManagerActor ! CategoryNode(categoryList.toList)
     nodeCounter
   }
 

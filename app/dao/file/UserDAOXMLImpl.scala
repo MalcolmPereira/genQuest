@@ -87,29 +87,21 @@ object UserDAOXMLImpl extends UserDAO {
 
   override def addUser(user: User): Integer = {
       val userID            = idGenerator.getAndIncrement.toInt
-      val loginNodeUpdated  = scala.xml.XML.loadFile("conf/login.xml") match {
-        case Elem(prefix, label, attribs, scope, child @ _*) => {
-          Elem(prefix, label, attribs, scope, true, child ++ getUserNode(user,userID): _*)
-        }
-      }
-      fileManagerActor ! UserAddNode(loginNodeUpdated)
+      fileManagerActor ! ManageNode(getUserNode(user,userID),"USER","ADD")
       userID
   }
 
   override def updateUser(user: User): User = {
-      var userList  = new ListBuffer[Node]()
       scala.xml.XML.loadFile("conf/login.xml") match {
           case <users>{users @ _*}</users> => {
                 for (user_ <- users) {
                     if((user_ \"userID").text.trim.length > 0 &&  (user_ \"userID").text.trim.toInt > 0 && (user_ \"userID").text.trim.toInt == user.id){
-                      userList  += getUserNode(user, user_)
-                    }else{
-                      userList  += user_
+                      fileManagerActor ! ManageNode(getUserNode(user, user_),"USER","UPDATE")
+                      return user
                     }
                 }
           }
       }
-      fileManagerActor ! UserNode(userList.toList)
       user
   }
 
@@ -119,16 +111,14 @@ object UserDAOXMLImpl extends UserDAO {
       scala.xml.XML.loadFile("conf/login.xml") match {
         case <users>{users @ _*}</users> => {
           for (user_ <- users) {
-              if((user_ \"userID").text.trim.length > 0 &&  (user_ \"userID").text.trim.toInt > 0 && (user_ \"userID").text.trim.toInt != user.id){
-                userList  += user_
-              }else{
-                nodeCounter  = nodeCounter  + 1
+              if((user_ \"userID").text.trim.length > 0 &&  (user_ \"userID").text.trim.toInt > 0 && (user_ \"userID").text.trim.toInt == user.id){
+                  fileManagerActor ! ManageNode(user_,"USER","DELETE")
+                  nodeCounter  = nodeCounter  + 1
+                  return nodeCounter
               }
           }
         }
       }
-      fileManagerActor ! UserNode(userList.toList)
-      //scala.xml.XML.save("conf/login.xml", <users>{for(user <- userList) yield user}</users>, "UTF-8", false, null)
       nodeCounter
   }
 

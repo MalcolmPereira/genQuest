@@ -74,52 +74,38 @@ object QuestionDAOXMLImpl extends QuestionDAO {
   }
 
   override def addQuestion(question: Question): Integer = {
-    val questionID     = idGenerator.getAndIncrement.toInt
-    val checkCategory  = CategoryDAOXMLImpl.findCategory(question.category)
-    if(checkCategory != null){
-        val questionNodeUpdated  = scala.xml.XML.loadFile("conf/question.xml") match {
-        case Elem(prefix, label, attribs, scope, child @ _*) => {
-          Elem(prefix, label, attribs, scope, true, child ++ getQuestionNode(question, questionID): _*)
-        }
-      }
-      fileManagerActor ! QuestionAddNode(questionNodeUpdated)
-      return questionID
-    }
-    0
+      val questionID     = idGenerator.getAndIncrement.toInt
+      fileManagerActor ! ManageNode(getQuestionNode(question, questionID),"QUESTION","ADD")
+      questionID
   }
 
   override def updateQuestion(question: Question): Question = {
-    var questionList  = new ListBuffer[Node]()
-    scala.xml.XML.loadFile("conf/question.xml") match {
-      case <questions>{questions @ _*}</questions> => {
-        for (question_ <- questions) {
-          if ((question_ \ "questionId").text.trim.length > 0 && (question_ \ "questionId").text.trim.toInt > 0 && (question_ \ "questionId").text.trim.toInt == question.id) {
-               questionList  += getQuestionNode(question, question_)
-          }else{
-               questionList  += question_
+      scala.xml.XML.loadFile("conf/question.xml") match {
+          case <questions>{questions @ _*}</questions> => {
+              for (question_ <- questions) {
+                  if ((question_ \ "questionId").text.trim.length > 0 && (question_ \ "questionId").text.trim.toInt > 0 && (question_ \ "questionId").text.trim.toInt == question.id) {
+                    fileManagerActor ! ManageNode(getQuestionNode(question, question_),"QUESTION","UPDATE")
+                    return question
+                  }
+              }
           }
-        }
       }
-    }
-    fileManagerActor ! QuestionNode(questionList.toList)
-    question
+      question
   }
 
   override def deleteQuestion(questionId: Integer): Integer = {
-    var questionList  = new ListBuffer[Node]()
     var nodeCounter  = 0
     scala.xml.XML.loadFile("conf/question.xml") match {
       case <questions>{questions @ _*}</questions> => {
         for (question_ <- questions) {
-          if ((question_ \ "questionId").text.trim.length > 0 && (question_ \ "questionId").text.trim.toInt > 0 && (question_ \ "questionId").text.trim.toInt != questionId) {
-              questionList  += question_
-          }else{
-              nodeCounter  = nodeCounter  + 1
+          if ((question_ \ "questionId").text.trim.length > 0 && (question_ \ "questionId").text.trim.toInt > 0 && (question_ \ "questionId").text.trim.toInt == questionId) {
+                fileManagerActor ! ManageNode(question_,"QUESTION","DELETE")
+                nodeCounter  = nodeCounter  + 1
+                return nodeCounter
           }
         }
       }
     }
-    fileManagerActor ! QuestionNode(questionList.toList)
     nodeCounter
   }
 

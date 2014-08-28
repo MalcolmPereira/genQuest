@@ -2,41 +2,172 @@ package dao.file
 
 import akka.actor.{Actor, ActorLogging}
 
+import scala.collection.mutable.ListBuffer
 import scala.xml.Node
 
-case class UserAddNode(user: Node)
-case class UserNode(userList: List[Node])
-case class CategoryAddNode(category: Node)
-case class CategoryNode(categoryList: List[Node])
-case class QuestionAddNode(question: Node)
-case class QuestionNode(questionList: List[Node])
+case class ManageNode(node: Node, nodeType:String, operation: String)
+
 
 class FileManagerActor extends Actor with ActorLogging {
 
     override def receive: Receive = {
-        case UserAddNode(user) => {
-          log.info("Saving new User "+user)
-          scala.xml.XML.save("conf/login.xml", user, "UTF-8", false, null)
+        case ManageNode(node,nodeType,operation) => {
+            nodeType match {
+                case "USER" => {
+                    manageUserData(node,operation)
+                }
+                case "CATEGORY" => {
+                    manageCategoryData(node,operation)
+                }
+                case "QUESTION" => {
+                    manageQuestionData(node,operation)
+                }
+            }
         }
-        case UserNode(userList) => {
-          log.info("Updating User List "+userList)
-          scala.xml.XML.save("conf/login.xml", <users>{for(user <- userList) yield user}</users>, "UTF-8", false, null)
+
+    }
+
+    private def manageUserData(userNode:Node,operation: String): Unit ={
+        log.info("User: "+userNode+ " Operation: "+operation)
+        var userList = new ListBuffer[Node]()
+        operation match {
+             case ("ADD" | "UPDATE")  =>{
+                  println("operation match "+operation)
+                  var newEntry = true
+                  scala.xml.XML.loadFile("conf/login.xml") match {
+                       case <users>{users @ _*}</users> => {
+                            for (user_ <- users) {
+                                println("UserNode valus is "+(userNode \"userID").text.trim.toInt)
+                                  if( (user_ \"userID").text.trim.length > 0 &&
+                                      (user_ \"userID").text.trim.toInt  > 0 &&
+                                      (userNode \"userID").text.trim.length > 0 &&
+                                      (userNode \"userID").text.trim.toInt  > 0 &&
+                                      (user_ \"userID").text.trim.toInt == (userNode \"userID").text.trim.toInt ){
+                                          userList  += userNode
+                                          newEntry = false;
+                                  }else{
+                                          userList  += user_
+                                  }
+                            }
+                            if(newEntry){
+                              userList  += userNode
+                            }
+                       }
+                  }
+                  sender ! (userNode \"userID").text.trim.toInt
+             }
+             case "DELETE" =>{
+                  scala.xml.XML.loadFile("conf/login.xml") match {
+                        case <users>{users @ _*}</users> => {
+                            for (user_ <- users) {
+                                  if( (user_ \"userID").text.trim.length > 0 &&
+                                      (user_ \"userID").text.trim.toInt  > 0 &&
+                                      (userNode \"userID").text.trim.length > 0 &&
+                                      (userNode \"userID").text.trim.toInt  > 0 &&
+                                      (user_ \"userID").text.trim.toInt != (userNode \"userID").text.trim.toInt ){
+                                      userList  += user_
+                                  }
+                            }
+                        }
+                  }
+                  sender ! 1
+             }
         }
-        case CategoryAddNode(category) => {
-          log.info("Saving new Category "+category)
-          scala.xml.XML.save("conf/category.xml", category, "UTF-8", false, null)
+        scala.xml.XML.save("conf/login.xml", <users>{for(user <- userList) yield user}</users>, "UTF-8", false, null)
+    }
+
+    private def manageCategoryData(categoryNode:Node,operation: String): Unit ={
+        log.info("Category: "+categoryNode+ " Operation: "+operation)
+        var categoryList = new ListBuffer[Node]()
+        operation match {
+              case ("ADD" | "UPDATE")  =>{
+                  var newEntry = true
+                  scala.xml.XML.loadFile("conf/category.xml") match {
+                      case <categories>{categories @ _*}</categories> => {
+                          for (category_ <- categories) {
+                              if ( (category_    \ "categoryId").text.trim.length > 0 &&
+                                   (category_    \ "categoryId").text.trim.toInt  > 0 &&
+                                   (categoryNode \ "categoryId").text.trim.length > 0 &&
+                                   (categoryNode \ "categoryId").text.trim.toInt  > 0 &&
+                                   (category_    \ "categoryId").text.trim.toInt == (categoryNode \ "categoryId").text.trim.toInt) {
+                                 categoryList  += categoryNode
+                                 newEntry = false;
+                              }else{
+                                 categoryList  += category_
+                              }
+                          }
+                          if(newEntry){
+                              categoryList  += categoryNode
+                          }
+                      }
+                  }
+                  sender ! (categoryNode \ "categoryId").text.trim.toInt
+              }
+              case "DELETE" =>{
+                  scala.xml.XML.loadFile("conf/category.xml") match {
+                       case <categories>{categories @ _*}</categories> => {
+                           for (category_ <- categories) {
+                                if ((category_    \ "categoryId").text.trim.length > 0 &&
+                                    (category_    \ "categoryId").text.trim.toInt  > 0 &&
+                                    (categoryNode \ "categoryId").text.trim.length > 0 &&
+                                    (categoryNode \ "categoryId").text.trim.toInt  > 0 &&
+                                    (category_    \ "categoryId").text.trim.toInt != (categoryNode \ "categoryId").text.trim.toInt) {
+                                    categoryList  += category_
+                                }
+                           }
+                       }
+                  }
+                  sender ! 1
+              }
         }
-        case CategoryNode(categoryList) => {
-          log.info("Updating Category List "+categoryList)
-          scala.xml.XML.save("conf/category.xml", <categories>{for(category <- categoryList) yield category}</categories>, "UTF-8", false, null)
+        scala.xml.XML.save("conf/category.xml", <categories>{for(category <- categoryList) yield category}</categories>, "UTF-8", false, null)
+
+    }
+
+    private def manageQuestionData(questionNode:Node,operation: String): Unit ={
+        log.info("QUESTION: "+questionNode+ " Operation: "+operation)
+        var questionList  = new ListBuffer[Node]()
+        operation match {
+              case ("ADD" | "UPDATE")  =>{
+                  var newEntry = true
+                  scala.xml.XML.loadFile("conf/question.xml") match {
+                       case <questions>{questions @ _*}</questions> => {
+                            for (question_ <- questions) {
+                                  if ( (question_ \ "questionId").text.trim.length > 0 &&
+                                       (question_ \ "questionId").text.trim.toInt > 0  &&
+                                       (questionNode \ "questionId").text.trim.length > 0 &&
+                                       (questionNode \ "questionId").text.trim.toInt > 0  &&
+                                       (question_ \ "questionId").text.trim.toInt == (questionNode \ "questionId").text.trim.toInt) {
+                                        questionList  += questionNode
+                                        newEntry = false;
+                                  }else{
+                                        questionList  += question_
+                                  }
+                            }
+                            if(newEntry){
+                              questionList  += questionNode
+                            }
+                       }
+                  }
+                  sender ! (questionNode \ "questionId").text.trim.toInt
+              }
+              case "DELETE" =>{
+                  scala.xml.XML.loadFile("conf/question.xml") match {
+                      case <questions>{questions @ _*}</questions> => {
+                            for (question_ <- questions) {
+                                  if ( (question_ \ "questionId").text.trim.length > 0 &&
+                                       (question_ \ "questionId").text.trim.toInt > 0  &&
+                                       (questionNode \ "questionId").text.trim.length > 0 &&
+                                       (questionNode \ "questionId").text.trim.toInt > 0  &&
+                                       (question_ \ "questionId").text.trim.toInt != (questionNode \ "questionId").text.trim.toInt) {
+                                    questionList  += question_
+                                  }
+                            }
+                       }
+                  }
+                  sender ! 0
+              }
         }
-        case QuestionAddNode(question) => {
-          log.info("Saving new Question "+question)
-          scala.xml.XML.save("conf/question.xml", question, "UTF-8", false, null)
-        }
-        case QuestionNode(questionList) => {
-          log.info("Updating Question List "+questionList)
-          scala.xml.XML.save("conf/question.xml", <questions>{for(question <- questionList) yield question}</questions>, "UTF-8", false, null)
-        }
+        scala.xml.XML.save("conf/question.xml", <questions>{for(question <- questionList) yield question}</questions>, "UTF-8", false, null)
     }
 }
