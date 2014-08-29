@@ -1,7 +1,6 @@
 package dao.file
 
 import model.Category
-import org.scalatest._
 import org.specs2.mutable.Specification
 import play.api.test.WithApplication
 
@@ -64,13 +63,10 @@ class CategoryDAOXMLImplSpec extends Specification {
        "add/update and delete new category " in new WithApplication {
         val categoryID = CategoryDAOXMLImpl.addCategory(new Category("newcategoryName","newcategoryDesc"))
         assert( categoryID > 0)
-        Thread.sleep(10000)
-        //val category = CategoryDAOXMLImpl.updateCategory(new Category(categoryID,"updated category desc"))
-        //assert( category != null)
-        //Thread.sleep(10000)
-        //val rowid = CategoryDAOXMLImpl.deleteCategory(categoryID)
-        //println("rowid  "+rowid)
-        //assert( rowid != 0 )
+        val category = CategoryDAOXMLImpl.updateCategory(new Category(categoryID,"updated category desc"))
+        assert( category != null)
+        val rowid = CategoryDAOXMLImpl.deleteCategory(categoryID)
+        assert( rowid != 0 )
       }
   }
 }

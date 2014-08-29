@@ -8,7 +8,6 @@ import play.api.data.Forms._
 import play.twirl.api.Html
 import model._
 import scala.collection.mutable.ListBuffer
-import play.api.Play.current
 
 object Application extends Controller {
 

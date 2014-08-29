@@ -2,11 +2,8 @@ package dao.file
 
 import java.util.concurrent.atomic.AtomicLong
 
-import akka.actor.Props
 import dao.UserDAO
 import model.User
-import play.api.Play.current
-import play.api.libs.concurrent.Akka
 import util._
 
 import scala.collection.mutable.ListBuffer
@@ -14,7 +11,7 @@ import scala.xml.{Elem, Node}
 
 object UserDAOXMLImpl extends UserDAO {
 
-  val fileManagerActor = Akka.system.actorOf(Props[FileManagerActor])
+
 
   private val idGenerator = new AtomicLong(
       {
@@ -87,7 +84,7 @@ object UserDAOXMLImpl extends UserDAO {
 
   override def addUser(user: User): Integer = {
       val userID            = idGenerator.getAndIncrement.toInt
-      fileManagerActor ! ManageNode(getUserNode(user,userID),"USER","ADD")
+      FileManager.receive(ManageNode(getUserNode(user,userID),"USER","ADD"))
       userID
   }
 
@@ -96,7 +93,7 @@ object UserDAOXMLImpl extends UserDAO {
           case <users>{users @ _*}</users> => {
                 for (user_ <- users) {
                     if((user_ \"userID").text.trim.length > 0 &&  (user_ \"userID").text.trim.toInt > 0 && (user_ \"userID").text.trim.toInt == user.id){
-                      fileManagerActor ! ManageNode(getUserNode(user, user_),"USER","UPDATE")
+                      FileManager.receive(ManageNode(getUserNode(user, user_),"USER","UPDATE"))
                       return user
                     }
                 }
@@ -112,7 +109,7 @@ object UserDAOXMLImpl extends UserDAO {
         case <users>{users @ _*}</users> => {
           for (user_ <- users) {
               if((user_ \"userID").text.trim.length > 0 &&  (user_ \"userID").text.trim.toInt > 0 && (user_ \"userID").text.trim.toInt == user.id){
-                  fileManagerActor ! ManageNode(user_,"USER","DELETE")
+                  FileManager.receive(ManageNode(user_,"USER","DELETE"))
                   nodeCounter  = nodeCounter  + 1
                   return nodeCounter
               }

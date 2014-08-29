@@ -1,34 +1,36 @@
 package dao.file
 
-import akka.actor.{Actor, ActorLogging}
+import play.Logger
 
 import scala.collection.mutable.ListBuffer
 import scala.xml.Node
 
 case class ManageNode(node: Node, nodeType:String, operation: String)
 
+object FileManager {
 
-class FileManagerActor extends Actor with ActorLogging {
-
-    override def receive: Receive = {
-        case ManageNode(node,nodeType,operation) => {
-            nodeType match {
+    def receive(node: ManageNode) :Unit  = {
+         node.nodeType match {
                 case "USER" => {
-                    manageUserData(node,operation)
+                    this.synchronized{
+                      manageUserData(node.node,node.operation)
+                    }
                 }
                 case "CATEGORY" => {
-                    manageCategoryData(node,operation)
+                    this.synchronized {
+                      manageCategoryData(node.node,node.operation)
+                    }
                 }
                 case "QUESTION" => {
-                    manageQuestionData(node,operation)
+                    this.synchronized {
+                      manageQuestionData(node.node,node.operation)
+                    }
                 }
-            }
         }
-
     }
 
     private def manageUserData(userNode:Node,operation: String): Unit ={
-        log.info("User: "+userNode+ " Operation: "+operation)
+        Logger.info("User: "+userNode+ " Operation: "+operation)
         var userList = new ListBuffer[Node]()
         operation match {
              case ("ADD" | "UPDATE")  =>{
@@ -54,7 +56,6 @@ class FileManagerActor extends Actor with ActorLogging {
                             }
                        }
                   }
-                  sender ! (userNode \"userID").text.trim.toInt
              }
              case "DELETE" =>{
                   scala.xml.XML.loadFile("conf/login.xml") match {
@@ -70,14 +71,13 @@ class FileManagerActor extends Actor with ActorLogging {
                             }
                         }
                   }
-                  sender ! 1
              }
         }
         scala.xml.XML.save("conf/login.xml", <users>{for(user <- userList) yield user}</users>, "UTF-8", false, null)
     }
 
     private def manageCategoryData(categoryNode:Node,operation: String): Unit ={
-        log.info("Category: "+categoryNode+ " Operation: "+operation)
+        Logger.info("Category: "+categoryNode+ " Operation: "+operation)
         var categoryList = new ListBuffer[Node]()
         operation match {
               case ("ADD" | "UPDATE")  =>{
@@ -101,7 +101,6 @@ class FileManagerActor extends Actor with ActorLogging {
                           }
                       }
                   }
-                  sender ! (categoryNode \ "categoryId").text.trim.toInt
               }
               case "DELETE" =>{
                   scala.xml.XML.loadFile("conf/category.xml") match {
@@ -117,7 +116,6 @@ class FileManagerActor extends Actor with ActorLogging {
                            }
                        }
                   }
-                  sender ! 1
               }
         }
         scala.xml.XML.save("conf/category.xml", <categories>{for(category <- categoryList) yield category}</categories>, "UTF-8", false, null)
@@ -125,7 +123,7 @@ class FileManagerActor extends Actor with ActorLogging {
     }
 
     private def manageQuestionData(questionNode:Node,operation: String): Unit ={
-        log.info("QUESTION: "+questionNode+ " Operation: "+operation)
+        Logger.info("QUESTION: "+questionNode+ " Operation: "+operation)
         var questionList  = new ListBuffer[Node]()
         operation match {
               case ("ADD" | "UPDATE")  =>{
@@ -149,7 +147,6 @@ class FileManagerActor extends Actor with ActorLogging {
                             }
                        }
                   }
-                  sender ! (questionNode \ "questionId").text.trim.toInt
               }
               case "DELETE" =>{
                   scala.xml.XML.loadFile("conf/question.xml") match {
@@ -165,7 +162,6 @@ class FileManagerActor extends Actor with ActorLogging {
                             }
                        }
                   }
-                  sender ! 0
               }
         }
         scala.xml.XML.save("conf/question.xml", <questions>{for(question <- questionList) yield question}</questions>, "UTF-8", false, null)

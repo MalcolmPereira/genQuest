@@ -2,18 +2,13 @@ package dao.file
 
 import java.util.concurrent.atomic.AtomicLong
 
-import akka.actor.Props
 import dao.QuestionDAO
 import model.{AnswerOption, AnswerOptions, Question}
-import play.api.Play.current
-import play.api.libs.concurrent.Akka
 
 import scala.collection.mutable.ListBuffer
 import scala.xml.{Elem, Node}
 
 object QuestionDAOXMLImpl extends QuestionDAO {
-
-  val fileManagerActor = Akka.system.actorOf(Props[FileManagerActor])
 
   private val idGenerator = new AtomicLong(
   {
@@ -75,7 +70,7 @@ object QuestionDAOXMLImpl extends QuestionDAO {
 
   override def addQuestion(question: Question): Integer = {
       val questionID     = idGenerator.getAndIncrement.toInt
-      fileManagerActor ! ManageNode(getQuestionNode(question, questionID),"QUESTION","ADD")
+      FileManager.receive(ManageNode(getQuestionNode(question, questionID),"QUESTION","ADD"))
       questionID
   }
 
@@ -84,7 +79,7 @@ object QuestionDAOXMLImpl extends QuestionDAO {
           case <questions>{questions @ _*}</questions> => {
               for (question_ <- questions) {
                   if ((question_ \ "questionId").text.trim.length > 0 && (question_ \ "questionId").text.trim.toInt > 0 && (question_ \ "questionId").text.trim.toInt == question.id) {
-                    fileManagerActor ! ManageNode(getQuestionNode(question, question_),"QUESTION","UPDATE")
+                    FileManager.receive(ManageNode(getQuestionNode(question, question_),"QUESTION","UPDATE"))
                     return question
                   }
               }
@@ -99,7 +94,7 @@ object QuestionDAOXMLImpl extends QuestionDAO {
       case <questions>{questions @ _*}</questions> => {
         for (question_ <- questions) {
           if ((question_ \ "questionId").text.trim.length > 0 && (question_ \ "questionId").text.trim.toInt > 0 && (question_ \ "questionId").text.trim.toInt == questionId) {
-                fileManagerActor ! ManageNode(question_,"QUESTION","DELETE")
+                FileManager.receive(ManageNode(question_,"QUESTION","DELETE"))
                 nodeCounter  = nodeCounter  + 1
                 return nodeCounter
           }
